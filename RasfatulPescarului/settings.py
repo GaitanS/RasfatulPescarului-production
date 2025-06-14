@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'compressor',
     'main.apps.MainConfig',
+    'django.contrib.sitemaps',  # Adaugă această linie
 ]
 
 MIDDLEWARE = [
@@ -89,19 +90,14 @@ WSGI_APPLICATION = 'RasfatulPescarului.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME', 'rasfatul_pescarului'),
-        'USER': os.getenv('DB_USER', 'root'),
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'USER': os.getenv('DB_USER', 'rasfatul_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'MariusEnachi2025'),
         'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '3306'),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
-
 # Fallback to SQLite for development
 if DEBUG and not os.getenv('DB_NAME'):
     DATABASES = {
@@ -144,8 +140,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Django Compressor settings
-COMPRESS_ENABLED = not DEBUG
-COMPRESS_OFFLINE = not DEBUG
+COMPRESS_ENABLED = False
+COMPRESS_OFFLINE = False
 COMPRESS_CSS_FILTERS = [
     'compressor.filters.css_default.CssAbsoluteFilter',
     'compressor.filters.cssmin.CSSMinFilter',
