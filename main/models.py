@@ -383,12 +383,24 @@ class Lake(models.Model):
         verbose_name="Facilități*",
         help_text="Selectează facilitățile disponibile la acest lac"
     )
-    price_per_day = models.DecimalField(
+    price_12h = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name="Prețuri/taxe de pescuit*",
-        help_text="Prețul pentru o zi de pescuit în lei românești (ex: 50.00)"
+        verbose_name="Preț pescuit 12h*",
+        help_text="Prețul pentru 12 ore de pescuit în lei românești (ex: 30.00)"
     )
+    price_24h = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Preț pescuit 24h*",
+        help_text="Prețul pentru 24 ore de pescuit în lei românești (ex: 50.00)"
+    )
+
+    # Backward compatibility property
+    @property
+    def price_per_day(self):
+        """Backward compatibility - returns 24h price"""
+        return self.price_24h
     rules = models.TextField(
         verbose_name="Regulament*",
         help_text="Regulile și restricțiile pentru pescuitul pe acest lac (ex: Permis obligatoriu, Se permite pescuitul din barcă, Program: 06:00-22:00)"

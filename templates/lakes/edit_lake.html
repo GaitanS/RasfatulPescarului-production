@@ -329,11 +329,22 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        {{ form.price_per_day }}
-                        <label for="{{ form.price_per_day.id_for_label }}">{{ form.price_per_day.label }}</label>
-                        {% if form.price_per_day.errors %}
+                        {{ form.price_12h }}
+                        <label for="{{ form.price_12h.id_for_label }}">{{ form.price_12h.label }}</label>
+                        {% if form.price_12h.errors %}
                             <div class="invalid-feedback d-block">
-                                {% for error in form.price_per_day.errors %}{{ error }}{% endfor %}
+                                {% for error in form.price_12h.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        {{ form.price_24h }}
+                        <label for="{{ form.price_24h.id_for_label }}">{{ form.price_24h.label }}</label>
+                        {% if form.price_24h.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.price_24h.errors %}{{ error }}{% endfor %}
                             </div>
                         {% endif %}
                     </div>

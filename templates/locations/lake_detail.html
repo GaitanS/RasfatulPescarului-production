@@ -179,10 +179,19 @@
 
                     <!-- Price -->
                     <div class="mb-4">
-                        <h5 class="mb-3">Preț</h5>
-                        <p class="h4 text-success">
-                            <i class="fas fa-coins me-2"></i>{{ lake.price_per_day }} Lei/zi
-                        </p>
+                        <h5 class="mb-3">Prețuri/taxe de pescuit</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="h5 text-success">
+                                    <i class="fas fa-coins me-2"></i>{{ lake.price_12h }} Lei/12h
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="h5 text-success">
+                                    <i class="fas fa-coins me-2"></i>{{ lake.price_24h }} Lei/24h
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Operating Hours -->

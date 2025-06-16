@@ -270,7 +270,7 @@ class LakePhotoInline(admin.TabularInline):
 @admin.register(Lake)
 class LakeAdmin(admin.ModelAdmin):
     form = CustomFacilityForm
-    list_display = ['name', 'owner', 'county', 'lake_type', 'price_per_day', 'is_active', 'created_at']
+    list_display = ['name', 'owner', 'county', 'lake_type', 'get_price_display', 'is_active', 'created_at']
     list_filter = ['county', 'lake_type', 'is_active', 'created_at', 'owner']
     search_fields = ['name', 'description', 'address', 'rules', 'owner__username', 'owner__first_name', 'owner__last_name']
     readonly_fields = ['created_at', 'updated_at']
@@ -291,7 +291,7 @@ class LakeAdmin(admin.ModelAdmin):
             'description': 'Coordonatele GPS ale lacului sau cod embed Google Maps. Poți găsi coordonatele pe Google Maps făcând click dreapta pe locație.'
         }),
         ('Detalii pescuit', {
-            'fields': ('lake_type', 'fish_species', 'facilities', 'price_per_day', 'rules')
+            'fields': ('lake_type', 'fish_species', 'facilities', 'price_12h', 'price_24h', 'rules')
         }),
         ('Date de contact', {
             'fields': ('contact_phone', 'contact_email')
@@ -314,6 +314,11 @@ class LakeAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+    def get_price_display(self, obj):
+        """Display both 12h and 24h prices"""
+        return f"{obj.price_12h} RON/12h • {obj.price_24h} RON/24h"
+    get_price_display.short_description = 'Prețuri pescuit'
 
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):

@@ -229,7 +229,8 @@ def locations_map(request):
         'longitude': float(lake.longitude),
         'fish_species': [{'name': fish.name} for fish in lake.fish_species.all()],
         'facilities': [{'name': facility.name, 'icon_class': facility.icon_class} for facility in lake.facilities.all()],
-        'price_per_day': float(lake.price_per_day),
+        'price_12h': float(lake.price_12h),
+        'price_24h': float(lake.price_24h),
         'image_url': lake.get_display_image().url if lake.get_display_image() else '/static/images/lake-placeholder.jpg',
         'average_rating': lake.average_rating,
         'total_reviews': lake.total_reviews

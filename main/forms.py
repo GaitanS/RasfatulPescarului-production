@@ -186,7 +186,7 @@ class LakeForm(forms.ModelForm):
         fields = [
             'name', 'description', 'address', 'county', 'latitude', 'longitude',
             'google_maps_embed', 'lake_type', 'fish_species', 'facilities',
-            'price_per_day', 'rules', 'contact_phone', 'contact_email',
+            'price_12h', 'price_24h', 'rules', 'contact_phone', 'contact_email',
             'number_of_stands', 'surface_area', 'depth_min', 'depth_max',
             'depth_average', 'length_min', 'length_max', 'width_min', 'width_max',
             'website', 'facebook_url', 'instagram_url'
@@ -228,7 +228,12 @@ class LakeForm(forms.ModelForm):
             }),
             'fish_species': forms.CheckboxSelectMultiple(),
             'facilities': forms.CheckboxSelectMultiple(),
-            'price_per_day': forms.NumberInput(attrs={
+            'price_12h': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': '30.00',
+                'step': '0.01'
+            }),
+            'price_24h': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'placeholder': '50.00',
                 'step': '0.01'

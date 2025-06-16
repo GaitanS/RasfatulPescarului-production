@@ -727,18 +727,35 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group-modern">
-                        <label for="{{ form.price_per_day.id_for_label }}" class="form-label-modern">
-                            {{ form.price_per_day.label }}
+                        <label for="{{ form.price_12h.id_for_label }}" class="form-label-modern">
+                            {{ form.price_12h.label }}
                         </label>
-                        {{ form.price_per_day|add_class:"form-input-modern" }}
-                        {% if form.price_per_day.errors %}
+                        {{ form.price_12h|add_class:"form-input-modern" }}
+                        {% if form.price_12h.errors %}
                             <div class="invalid-feedback d-block">
-                                {% for error in form.price_per_day.errors %}{{ error }}{% endfor %}
+                                {% for error in form.price_12h.errors %}{{ error }}{% endfor %}
                             </div>
                         {% endif %}
                         <div class="help-text-modern">
                             <i class="fas fa-info-circle"></i>
-                            <span>Prețul pentru o zi de pescuit (în RON)</span>
+                            <span>Prețul pentru 12 ore de pescuit (în RON)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group-modern">
+                        <label for="{{ form.price_24h.id_for_label }}" class="form-label-modern">
+                            {{ form.price_24h.label }}
+                        </label>
+                        {{ form.price_24h|add_class:"form-input-modern" }}
+                        {% if form.price_24h.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.price_24h.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="help-text-modern">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Prețul pentru 24 ore de pescuit (în RON)</span>
                         </div>
                     </div>
                 </div>
