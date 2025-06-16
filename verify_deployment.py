@@ -20,9 +20,13 @@ def check_database_structure():
     print("🔍 Verific structura bazei de date...")
     
     with connection.cursor() as cursor:
-        # Verifică dacă noile coloane există
-        cursor.execute("DESCRIBE main_lake")
-        columns = [row[0] for row in cursor.fetchall()]
+        # Verifică dacă noile coloane există (compatibil cu SQLite și MySQL)
+        if 'sqlite' in connection.vendor:
+            cursor.execute("PRAGMA table_info(main_lake)")
+            columns = [row[1] for row in cursor.fetchall()]  # SQLite: row[1] este numele coloanei
+        else:
+            cursor.execute("DESCRIBE main_lake")
+            columns = [row[0] for row in cursor.fetchall()]  # MySQL: row[0] este numele coloanei
         
         required_columns = ['price_12h', 'price_24h']
         missing_columns = [col for col in required_columns if col not in columns]
