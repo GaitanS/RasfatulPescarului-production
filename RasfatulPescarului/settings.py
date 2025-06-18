@@ -24,6 +24,7 @@ ALLOWED_HOSTS = [
     '145.223.117.86',
     'localhost',
     '127.0.0.1',
+    'testserver',  # For testing
 ]
 
 # Security settings for production
@@ -61,6 +62,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Custom SEO and security middleware
+    'main.middleware.seo.SEOMiddleware',
+    'main.middleware.seo.SecurityHeadersMiddleware',
+    'main.middleware.seo.CacheControlMiddleware',
 ]
 
 ROOT_URLCONF = 'RasfatulPescarului.urls'

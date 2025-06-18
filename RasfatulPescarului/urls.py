@@ -21,22 +21,42 @@ def robots_txt(request):
     content = """User-agent: *
 Allow: /
 
+# Sitemaps
 Sitemap: https://rasfatul-pescarului.ro/sitemap.xml
 
+# Disallow admin and private areas
 Disallow: /admin/
 Disallow: /accounts/
 Disallow: /api/
 Disallow: /static/admin/
 Disallow: /media/private/
+Disallow: /search?
+Disallow: /*?page=
+Disallow: /*?sort=
+Disallow: /*?filter=
 
+# Allow important content
 Allow: /static/
 Allow: /media/
 Allow: /locations/
 Allow: /solunar-calendar/
 Allow: /about/
 Allow: /contact/
+Allow: /privacy/
+Allow: /ads.txt
 
-Crawl-delay: 1"""
+# Crawl delay for respectful crawling
+Crawl-delay: 1
+
+# Special rules for different bots
+User-agent: Googlebot
+Crawl-delay: 0
+
+User-agent: Bingbot
+Crawl-delay: 1
+
+User-agent: facebookexternalhit
+Allow: /"""
     return HttpResponse(content, content_type="text/plain")
 
 urlpatterns = [

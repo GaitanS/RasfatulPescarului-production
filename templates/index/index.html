@@ -1,6 +1,44 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Răsfățul Pescarului - Locuri de Pescuit și Echipamente de Calitate{% endblock %}
+
+{% block description %}Descoperă cele mai bune locuri de pescuit din România! Ghid complet cu lacuri, echipamente de pescuit, calendar solunar și sfaturi pentru pescari. Comunitatea pescarilor din România.{% endblock %}
+
+{% block keywords %}pescuit România, locuri pescuit, lacuri pescuit, echipamente pescuit, calendar solunar, pescuit sportiv, pescuit la crap, pescuit la șalău, pescuit la clean, ghid pescuit{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": "https://rasfatul-pescarului.ro/",
+    "name": "Răsfățul Pescarului - Locuri de Pescuit și Echipamente",
+    "description": "Descoperă cele mai bune locuri de pescuit din România! Ghid complet cu lacuri, echipamente de pescuit, calendar solunar și sfaturi pentru pescari.",
+    "url": "https://rasfatul-pescarului.ro/",
+    "mainEntity": {
+        "@type": "Organization",
+        "name": "Răsfățul Pescarului",
+        "url": "https://rasfatul-pescarului.ro",
+        "description": "Comunitatea pescarilor din România",
+        "sameAs": [
+            "{{ hero.facebook_url }}",
+            "{{ hero.tiktok_url }}"
+        ]
+    },
+    "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Acasă",
+            "item": "https://rasfatul-pescarului.ro/"
+        }]
+    }
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <!-- Hero Section -->
 <section class="hero-section">

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pagina nu a fost găsită - Răsfățul Pescarului{% endblock %}
+
+{% block description %}Pagina pe care o căutați nu există. Explorați locurile de pescuit, echipamentele și calendarul solunar pe Răsfățul Pescarului.{% endblock %}
+
+{% block robots %}noindex, follow{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <div class="error-page">
+                <h1 class="display-1 text-success">404</h1>
+                <h2 class="mb-4">Pagina nu a fost găsită</h2>
+                <p class="lead mb-4">
+                    Ne pare rău, dar pagina pe care o căutați nu există sau a fost mutată.
+                </p>
+                
+                <div class="mb-4">
+                    <img src="{% static 'images/fishing-error.png' %}" alt="Pescuit" class="img-fluid" style="max-width: 300px;">
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="fas fa-map-marker-alt fa-2x text-success mb-3"></i>
+                                <h5>Locuri de Pescuit</h5>
+                                <p>Descoperă cele mai bune lacuri și râuri pentru pescuit din România.</p>
+                                <a href="{% url 'main:locations_list' %}" class="btn btn-success">Explorează</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <i class="fas fa-calendar-alt fa-2x text-success mb-3"></i>
+                                <h5>Calendar Solunar</h5>
+                                <p>Verifică cele mai bune momente pentru pescuit bazate pe fazele lunii.</p>
+                                <a href="{% url 'main:solunar_calendar' %}" class="btn btn-success">Vezi Calendar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="search-section mb-4">
+                    <h5>Caută ce te interesează:</h5>
+                    <form class="d-flex justify-content-center" method="GET" action="{% url 'main:locations_list' %}">
+                        <div class="input-group" style="max-width: 400px;">
+                            <input type="text" class="form-control" name="search" placeholder="Caută locuri de pescuit...">
+                            <button class="btn btn-success" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="quick-links">
+                    <h6>Linkuri utile:</h6>
+                    <a href="{% url 'main:home' %}" class="btn btn-outline-success me-2 mb-2">Acasă</a>
+                    <a href="{% url 'main:about' %}" class="btn btn-outline-success me-2 mb-2">Despre Noi</a>
+                    <a href="{% url 'main:contact' %}" class="btn btn-outline-success me-2 mb-2">Contact</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-page {
+    padding: 2rem 0;
+}
+
+.error-page .display-1 {
+    font-size: 8rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.error-page .card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.error-page .card:hover {
+    transform: translateY(-5px);
+}
+
+.search-section {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 10px;
+    margin: 2rem 0;
+}
+
+.quick-links {
+    margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+    .error-page .display-1 {
+        font-size: 5rem;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eroare de Server - Răsfățul Pescarului</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .error-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 3rem;
+            text-align: center;
+        }
+        
+        .error-code {
+            font-size: 6rem;
+            font-weight: bold;
+            color: #198754;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+        
+        .error-icon {
+            font-size: 4rem;
+            color: #dc3545;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 4rem;
+            }
+            .error-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="error-container">
+                    <i class="fas fa-exclamation-triangle error-icon"></i>
+                    <div class="error-code">500</div>
+                    <h2 class="mb-4">Eroare de Server</h2>
+                    <p class="lead mb-4">
+                        Ne pare rău, dar a apărut o problemă tehnică pe serverul nostru. 
+                        Echipa noastră a fost notificată și lucrează la rezolvarea problemei.
+                    </p>
+                    
+                    <div class="mb-4">
+                        <p class="text-muted">
+                            <i class="fas fa-clock me-2"></i>
+                            Vă rugăm să încercați din nou în câteva minute.
+                        </p>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-block">
+                        <a href="/" class="btn btn-success btn-lg me-2">
+                            <i class="fas fa-home me-2"></i>Înapoi Acasă
+                        </a>
+                        <button onclick="window.location.reload()" class="btn btn-outline-success btn-lg">
+                            <i class="fas fa-redo me-2"></i>Încearcă Din Nou
+                        </button>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-top">
+                        <p class="text-muted small">
+                            Dacă problema persistă, vă rugăm să ne contactați la 
+                            <a href="mailto:contact@rasfatul-pescarului.ro" class="text-success">
+                                contact@rasfatul-pescarului.ro
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

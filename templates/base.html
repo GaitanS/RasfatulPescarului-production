@@ -6,7 +6,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token }}">
-    <title>{% block title %}Răsfățul Pescarului{% endblock %}</title>
+
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}Răsfățul Pescarului - Locuri de Pescuit și Echipamente{% endblock %}</title>
+    <meta name="description" content="{% block description %}Descoperă cele mai bune locuri de pescuit din România, echipamente de calitate și calendarul solunar pentru pescuit. Ghidul complet al pescarului.{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}pescuit, locuri pescuit, echipamente pescuit, calendar solunar, pescuit România, lacuri pescuit{% endblock %}">
+    <meta name="author" content="Răsfățul Pescarului">
+    <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{% block og_title %}{{ block.super }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ block.super }}{% endblock %}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}https://rasfatul-pescarului.ro{{ request.get_full_path }}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% static 'images/logo.png' %}{% endblock %}">
+    <meta property="og:site_name" content="Răsfățul Pescarului">
+    <meta property="og:locale" content="ro_RO">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ block.super }}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{{ block.super }}{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{% static 'images/logo.png' %}{% endblock %}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{% block canonical %}https://rasfatul-pescarului.ro{{ request.get_full_path }}{% endblock %}">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
@@ -37,12 +61,42 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css">
     <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
     
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Răsfățul Pescarului",
+        "url": "https://rasfatul-pescarului.ro",
+        "description": "Descoperă cele mai bune locuri de pescuit din România, echipamente de calitate și calendarul solunar pentru pescuit.",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://rasfatul-pescarului.ro/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Răsfățul Pescarului",
+            "url": "https://rasfatul-pescarului.ro",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://rasfatul-pescarului.ro{% static 'images/logo.png' %}"
+            }
+        }
+    }
+    </script>
+
+    {% block structured_data %}{% endblock %}
+
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4988585637197167" crossorigin="anonymous"></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
     {% include 'navbar.html' %}
-    
+
+    <!-- Breadcrumbs -->
+    {% include 'breadcrumbs.html' %}
+
     <main>
         {% block content %}{% endblock %}
 
