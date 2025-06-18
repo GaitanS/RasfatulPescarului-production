@@ -3,6 +3,33 @@
 
 {% block title %}Contact - Răsfățul Pescarului{% endblock %}
 
+{% block description %}Contactează echipa Răsfățul Pescarului pentru întrebări despre locuri de pescuit, echipamente sau pentru a ne împărtăși experiențele tale de pescuit. Suntem aici să te ajutăm!{% endblock %}
+
+{% block keywords %}contact, răsfățul pescarului, întrebări pescuit, suport, ajutor pescuit, contactează-ne{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact - Răsfățul Pescarului",
+    "description": "Contactează echipa Răsfățul Pescarului pentru întrebări despre locuri de pescuit și echipamente.",
+    "url": "https://rasfatul-pescarului.ro/contact/",
+    "mainEntity": {
+        "@type": "Organization",
+        "name": "Răsfățul Pescarului",
+        "url": "https://rasfatul-pescarului.ro",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "email": "contact@rasfatul-pescarului.ro",
+            "availableLanguage": "Romanian"
+        }
+    }
+}
+</script>
+{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/contact.css' %}">
 <style>

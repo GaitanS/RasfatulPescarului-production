@@ -1,5 +1,28 @@
 {% extends 'base.html' %}
 
+{% block title %}Calendar Solunar pentru Pescuit - Răsfățul Pescarului{% endblock %}
+
+{% block description %}Descoperă cele mai bune perioade pentru pescuit cu calendarul solunar. Află când peștii sunt cei mai activi bazat pe fazele lunii și poziția soarelui. Planifică-ți ieșirile la pescuit!{% endblock %}
+
+{% block keywords %}calendar solunar, pescuit solunar, faze luna pescuit, când să pescuiesc, activitate pești, perioade pescuit{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Calendar Solunar pentru Pescuit",
+    "description": "Descoperă cele mai bune perioade pentru pescuit cu calendarul solunar bazat pe fazele lunii și poziția soarelui.",
+    "url": "https://rasfatul-pescarului.ro/solunar-calendar/",
+    "mainEntity": {
+        "@type": "Thing",
+        "name": "Calendar Solunar",
+        "description": "Sistem de predicție a activității peștilor bazat pe fazele lunii"
+    }
+}
+</script>
+{% endblock %}
+
 {% block body_class %}solunar-page{% endblock %}
 {% load static main_extras %}
 

@@ -1,6 +1,29 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Locuri de Pescuit în România - Răsfățul Pescarului{% endblock %}
+
+{% block description %}Descoperă cele mai bune locuri de pescuit din România! Găsește lacuri și bălți pentru pescuit cu informații complete despre prețuri, facilități și specii de pești. Ghidul complet al pescarului.{% endblock %}
+
+{% block keywords %}locuri pescuit România, lacuri pescuit, bălți pescuit, pescuit sportiv, locații pescuit, pescuit crap, pescuit șalău{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Locuri de Pescuit în România",
+    "description": "Descoperă cele mai bune locuri de pescuit din România cu informații complete despre prețuri, facilități și specii de pești.",
+    "url": "https://rasfatul-pescarului.ro/locations/",
+    "mainEntity": {
+        "@type": "ItemList",
+        "name": "Locuri de Pescuit",
+        "description": "Lista completă cu locuri de pescuit din România"
+    }
+}
+</script>
+{% endblock %}
+
 {% block extra_css %}
 <style>
 .locations-hero {

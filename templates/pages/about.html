@@ -3,6 +3,30 @@
 
 {% block title %}Despre Noi - Răsfățul Pescarului{% endblock %}
 
+{% block description %}Descoperă povestea Răsfățul Pescarului - comunitatea pescarilor din România. Misiunea noastră este să oferim acces la cele mai bune locații de pescuit și să creăm o comunitate unită de pasionați.{% endblock %}
+
+{% block keywords %}despre noi, răsfățul pescarului, comunitate pescari, misiune pescuit, echipa pescuit, povestea noastră{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "Despre Noi - Răsfățul Pescarului",
+    "description": "Descoperă povestea Răsfățul Pescarului - comunitatea pescarilor din România.",
+    "url": "https://rasfatul-pescarului.ro/about/",
+    "mainEntity": {
+        "@type": "Organization",
+        "name": "Răsfățul Pescarului",
+        "description": "Comunitatea pescarilor din România - ghid complet pentru locuri de pescuit și echipamente",
+        "url": "https://rasfatul-pescarului.ro",
+        "foundingDate": "2024",
+        "mission": "Să oferim pescarilor din România acces la cele mai bune locații de pescuit și să creăm o comunitate unită de pasionați"
+    }
+}
+</script>
+{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/about.css' %}">
 {% endblock %}
