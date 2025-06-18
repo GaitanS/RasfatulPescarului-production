@@ -130,10 +130,10 @@ def filter_lakes(request):
     if fish_types:
         lakes = lakes.filter(fish_species__name__in=fish_types).distinct()
 
-    # Apply price filter
+    # Apply price filter (using 12h price for filtering)
     max_price = request.GET.get('max_price')
     if max_price:
-        lakes = lakes.filter(price_per_day__lte=max_price)
+        lakes = lakes.filter(price_12h__lte=max_price)
 
     # Apply facilities filter
     facilities = request.GET.getlist('facilities[]')
@@ -170,7 +170,8 @@ def filter_lakes(request):
             'longitude': float(lake.longitude),
             'fish_species': [{'name': fish.name} for fish in lake.fish_species.all()],
             'facilities': [{'name': facility.name, 'icon_class': facility.icon_class} for facility in lake.facilities.all()],
-            'price_per_day': float(lake.price_per_day),
+            'price_12h': float(lake.price_12h),
+            'price_24h': float(lake.price_24h),
             'image_url': lake.get_display_image().url if lake.get_display_image() else None,
             'average_rating': lake.average_rating,
             'total_reviews': lake.total_reviews
@@ -200,7 +201,8 @@ def debug_lakes(request):
         'longitude': float(lake.longitude),
         'fish_species': [{'name': fish.name} for fish in lake.fish_species.all()],
         'facilities': [{'name': facility.name, 'icon_class': facility.icon_class} for facility in lake.facilities.all()],
-        'price_per_day': float(lake.price_per_day),
+        'price_12h': float(lake.price_12h),
+        'price_24h': float(lake.price_24h),
         'image_url': lake.get_display_image().url if lake.get_display_image() else '/static/images/lake-placeholder.jpg',
         'average_rating': lake.average_rating,
         'total_reviews': lake.total_reviews
@@ -281,7 +283,8 @@ def nearby_lakes(request):
                 'longitude': float(lake.longitude),
                 'fish_species': [{'name': fish.name} for fish in lake.fish_species.all()],
                 'facilities': [{'name': facility.name, 'icon_class': facility.icon_class} for facility in lake.facilities.all()],
-                'price_per_day': float(lake.price_per_day),
+                'price_12h': float(lake.price_12h),
+                'price_24h': float(lake.price_24h),
                 'image_url': lake.get_display_image().url if lake.get_display_image() else None,
                 'distance': round(distance, 1),
                 'average_rating': lake.average_rating,

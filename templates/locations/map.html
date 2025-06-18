@@ -830,7 +830,7 @@
                             <!-- Price Range Filter -->
                             <div class="filter-group">
                                 <label for="priceRange" class="filter-label">
-                                    <i class="fas fa-coins me-2"></i>Preț maxim/zi: <span id="priceValue" class="text-success fw-bold">100</span> Lei
+                                    <i class="fas fa-coins me-2"></i>Preț maxim/12h: <span id="priceValue" class="text-success fw-bold">100</span> Lei
                                 </label>
                                 <input type="range" class="form-range" id="priceRange" min="0" max="200" step="10" value="100">
                                 <div class="d-flex justify-content-between text-muted small">
@@ -1345,7 +1345,7 @@
 
                                             <div class="lake-info-item">
                                                 <i class="fas fa-coins"></i>
-                                                <span class="fw-bold text-success">${lake.price_per_day} Lei/zi</span>
+                                                <span class="fw-bold text-success">${lake.price_12h} Lei/12h</span>
                                             </div>
 
                                             ${ratingHtml}
@@ -1436,7 +1436,7 @@
                             <p><i class="fas fa-map-marker-alt me-2"></i>${lake.address}</p>
                             <p><i class="fas fa-fish me-2"></i>${lake.fish_species.map(fish => fish.name).join(', ')}</p>
                             ${ratingHtml}
-                            <p class="price"><i class="fas fa-tag me-2"></i>${lake.price_per_day} RON/zi</p>
+                            <p class="price"><i class="fas fa-tag me-2"></i>${lake.price_12h} Lei/12h | ${lake.price_24h} Lei/24h</p>
                             <div class="facilities">
                                 ${lake.facilities.map(facility => `
                                     <span class="facility">
