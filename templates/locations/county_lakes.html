@@ -40,7 +40,7 @@
                 {% if display_image %}
                 <img src="{{ display_image.url }}" class="card-img-top" alt="{{ lake.name }}" style="height: 200px; object-fit: cover;">
                 {% else %}
-                <img src="{% static 'images/lake-placeholder.jpg' %}" class="card-img-top" alt="{{ lake.name }}" style="height: 200px; object-fit: cover;">
+                <img src="{% static 'images/lake-placeholder.webp' %}" class="card-img-top" alt="{{ lake.name }}" style="height: 200px; object-fit: cover;" loading="lazy">
                 {% endif %}
                 {% endwith %}
                 <div class="card-body">

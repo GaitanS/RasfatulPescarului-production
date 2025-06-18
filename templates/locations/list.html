@@ -41,7 +41,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('{% static "images/hero.png" %}') center/cover;
+    background: url('{% static "images/hero.webp" %}') center/cover;
     opacity: 0.1;
     z-index: 1;
 }
@@ -514,7 +514,7 @@
                         {% if display_image %}
                         <img src="{{ display_image.url }}" class="lake-image" alt="{{ lake.name }}">
                         {% else %}
-                        <img src="{% static 'images/lake-placeholder.jpg' %}" class="lake-image" alt="{{ lake.name }}">
+                        <img src="{% static 'images/lake-placeholder.webp' %}" class="lake-image" alt="{{ lake.name }}" loading="lazy">
                         {% endif %}
                         {% endwith %}
 

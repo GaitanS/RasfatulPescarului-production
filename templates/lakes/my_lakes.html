@@ -307,7 +307,7 @@
                             {% if display_image %}
                                 <img src="{{ display_image.url }}" alt="{{ lake.name }}" class="lake-image">
                             {% else %}
-                                <img src="{% static 'images/lake-placeholder.jpg' %}" alt="{{ lake.name }}" class="lake-image">
+                                <img src="{% static 'images/lake-placeholder.webp' %}" alt="{{ lake.name }}" class="lake-image" loading="lazy">
                             {% endif %}
                             {% endwith %}
                             

@@ -85,7 +85,7 @@
                     {% if lake.image %}
                     <img src="{{ lake.image.url }}" alt="{{ lake.name }}" class="card-img-top">
                     {% else %}
-                    <img src="{% static 'images/lake-placeholder.jpg' %}" alt="{{ lake.name }}" class="card-img-top">
+                    <img src="{% static 'images/lake-placeholder.webp' %}" alt="{{ lake.name }}" class="card-img-top" loading="lazy">
                     {% endif %}
                 {% endif %}
                 <div class="card-body">
@@ -406,7 +406,7 @@
                                 {% if display_image %}
                                 <img src="{{ display_image.url }}" alt="{{ nearby.name }}" class="img-fluid rounded">
                                 {% else %}
-                                <img src="{% static 'images/lake-placeholder.jpg' %}" alt="{{ nearby.name }}" class="img-fluid rounded">
+                                <img src="{% static 'images/lake-placeholder.webp' %}" alt="{{ nearby.name }}" class="img-fluid rounded" loading="lazy">
                                 {% endif %}
                                 {% endwith %}
                             </div>

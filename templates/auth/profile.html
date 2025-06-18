@@ -569,7 +569,7 @@
                 {% for lake in lakes_page.object_list %}
                     <div class="lake-card-modern">
                         <div class="lake-image-modern"
-                             style="background-image: url('{% if lake.get_main_photo %}{{ lake.get_main_photo.url }}{% else %}{% static 'images/lake-placeholder.jpg' %}{% endif %}');">
+                             style="background-image: url('{% if lake.get_main_photo %}{{ lake.get_main_photo.url }}{% else %}{% static 'images/lake-placeholder.webp' %}{% endif %}');">
                             <div class="lake-badge-modern">{{ lake.get_lake_type_display }}</div>
                         </div>
                         <div class="lake-content-modern">
