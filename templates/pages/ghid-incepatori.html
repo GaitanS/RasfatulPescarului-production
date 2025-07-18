@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ghid Complet pentru Începători în Pescuit - Răsfățul Pescarului{% endblock %}
+
+{% block description %}Ghid complet pentru începători în pescuitul sportiv. Învață bazele pescuitului, echipamentele necesare, tehnicile de bază și secretele pescarilor experimentați din România.{% endblock %}
+
+{% block keywords %}ghid pescuit începători, învață să pescuiești, echipamente pescuit începători, tehnici pescuit de bază, pescuit sportiv România{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Ghid Complet pentru Începători în Pescuit",
+    "description": "Învață bazele pescuitului sportiv cu ghidul nostru complet pentru începători",
+    "image": "https://rasfatul-pescarului.ro/static/images/hero.webp",
+    "totalTime": "PT2H",
+    "estimatedCost": {
+        "@type": "MonetaryAmount",
+        "currency": "RON",
+        "value": "200-500"
+    },
+    "supply": [
+        {
+            "@type": "HowToSupply",
+            "name": "Undița de pescuit"
+        },
+        {
+            "@type": "HowToSupply", 
+            "name": "Mulineta"
+        },
+        {
+            "@type": "HowToSupply",
+            "name": "Fir de pescuit"
+        }
+    ],
+    "step": [
+        {
+            "@type": "HowToStep",
+            "name": "Alegerea echipamentului",
+            "text": "Selectează echipamentul de bază potrivit pentru începători"
+        },
+        {
+            "@type": "HowToStep",
+            "name": "Pregătirea echipamentului",
+            "text": "Montează corect undița, mulineta și firul de pescuit"
+        },
+        {
+            "@type": "HowToStep",
+            "name": "Alegerea locației",
+            "text": "Găsește un loc potrivit pentru primul tău pescuit"
+        }
+    ]
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.guide-hero {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    color: white;
+    padding: 5rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.guide-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{% static "images/hero.webp" %}') center/cover;
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.guide-hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+.guide-content {
+    padding: 4rem 0;
+    background: #f8f9fa;
+}
+
+.guide-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 3rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.guide-section h2 {
+    color: #198754;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid #e9ecef;
+    position: relative;
+}
+
+.guide-section h2::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: #198754;
+}
+
+.equipment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.equipment-item {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    border-left: 4px solid #198754;
+}
+
+.equipment-item h4 {
+    color: #198754;
+    margin-bottom: 1rem;
+}
+
+.step-list {
+    counter-reset: step-counter;
+}
+
+.step-item {
+    counter-increment: step-counter;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-left: 4rem;
+}
+
+.step-item::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    background: #198754;
+    color: white;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.tip-box {
+    background: #d1ecf1;
+    border: 1px solid #bee5eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.tip-box h5 {
+    color: #0c5460;
+    margin-bottom: 1rem;
+}
+
+.warning-box {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.warning-box h5 {
+    color: #856404;
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="guide-hero">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-10">
+                <h1>Ghid Complet pentru Începători în Pescuit</h1>
+                <p class="lead">Totul ce trebuie să știi pentru a începe aventura pescuitului sportiv în România</p>
+                <div class="mt-4">
+                    <span class="badge bg-light text-dark me-2"><i class="fas fa-clock me-1"></i>Timp de citire: 15 min</span>
+                    <span class="badge bg-light text-dark me-2"><i class="fas fa-user me-1"></i>Nivel: Începător</span>
+                    <span class="badge bg-light text-dark"><i class="fas fa-star me-1"></i>Ghid complet</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Guide Content -->
+<section class="guide-content">
+    <div class="container">
+        <!-- Introduction -->
+        <div class="guide-section">
+            <h2>Introducere în Pescuitul Sportiv</h2>
+            <p class="lead">Pescuitul sportiv este mult mai mult decât o simplă activitate de recreere - este o artă care combină răbdarea, strategia și conexiunea cu natura.</p>
+            
+            <p>În România, pescuitul sportiv are o tradiție îndelungată și oferă oportunități extraordinare datorită diversității apelor noastre: de la lacurile de munte la bălțile din Deltă, de la râurile de deal la lacurile de acumulare.</p>
+            
+            <p>Acest ghid te va îndruma pas cu pas prin toate aspectele esențiale ale pescuitului, de la alegerea echipamentului până la tehnicile avansate folosite de pescarii experimentați.</p>
+            
+            <div class="tip-box">
+                <h5><i class="fas fa-lightbulb me-2"></i>Sfat Important</h5>
+                <p class="mb-0">Pescuitul necesită răbdare și practică. Nu te descuraja dacă primele ieșiri nu sunt productive - fiecare pescar experimentat a început ca începător!</p>
+            </div>
+        </div>
+
+        <!-- Equipment Section -->
+        <div class="guide-section">
+            <h2>Echipamentul de Bază pentru Începători</h2>
+            <p>Alegerea echipamentului potrivit este crucială pentru succesul în pescuit. Iată ce ai nevoie pentru a începe:</p>
+            
+            <div class="equipment-grid">
+                <div class="equipment-item">
+                    <h4><i class="fas fa-fishing-rod me-2"></i>Undița</h4>
+                    <p><strong>Recomandare:</strong> 3.6-4.2 metri, acțiune medie</p>
+                    <p><strong>Preț:</strong> 100-300 lei</p>
+                    <p>Pentru începători, o undița universală cu acțiune medie este ideală. Permite pescuitul la distanțe medii și se potrivește pentru majoritatea speciilor.</p>
+                </div>
+                
+                <div class="equipment-item">
+                    <h4><i class="fas fa-circle me-2"></i>Mulineta</h4>
+                    <p><strong>Recomandare:</strong> Mărimea 3000-4000</p>
+                    <p><strong>Preț:</strong> 80-250 lei</p>
+                    <p>O mulinetă cu tambur fix, ușor de folosit și fiabilă. Asigură-te că are un sistem de frână bun și rulmenți de calitate.</p>
+                </div>
+                
+                <div class="equipment-item">
+                    <h4><i class="fas fa-thread me-2"></i>Firul de Pescuit</h4>
+                    <p><strong>Recomandare:</strong> Monofilament 0.25-0.30mm</p>
+                    <p><strong>Preț:</strong> 15-40 lei</p>
+                    <p>Monofilamentul este mai ușor de folosit pentru începători și mai iertător la greșeli decât firul împletit.</p>
+                </div>
+                
+                <div class="equipment-item">
+                    <h4><i class="fas fa-hook me-2"></i>Cârlige și Accesorii</h4>
+                    <p><strong>Mărimi:</strong> 6, 8, 10, 12</p>
+                    <p><strong>Preț:</strong> 20-50 lei</p>
+                    <p>Un set variat de cârlige, plumbi de diferite greutăți, floats și girelle pentru diverse situații de pescuit.</p>
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                <h5><i class="fas fa-exclamation-triangle me-2"></i>Atenție</h5>
+                <p class="mb-0">Nu cumpăra echipament foarte ieftin - se va rupe repede și îți va strica experiența. Investește în echipament de calitate medie care să dureze.</p>
+            </div>
+        </div>
+
+        <!-- Basic Techniques -->
+        <div class="guide-section">
+            <h2>Tehnici de Bază</h2>
+            <p>Să învățăm tehnicile fundamentale care te vor ajuta să prinzi primii pești:</p>
+            
+            <div class="step-list">
+                <div class="step-item">
+                    <h4>Montarea Echipamentului</h4>
+                    <p>Începe prin montarea mulinetei pe undița, apoi trece firul prin inelele undiței. Leagă un float la distanța dorită de cârlig și adaugă plumbii sub float pentru echilibru.</p>
+                </div>
+                
+                <div class="step-item">
+                    <h4>Alegerea Momelii</h4>
+                    <p>Pentru începători, cele mai eficiente momeli sunt: viermii de pământ, porumbul fiert, pastele de pescuit și puful de rață. Fiecare funcționează pentru specii diferite.</p>
+                </div>
+                
+                <div class="step-item">
+                    <h4>Aruncarea</h4>
+                    <p>Ține undița cu ambele mâini, deschide arcul mulinetei, balansează undița înapoi și apoi înainte într-o mișcare fluidă. Eliberează firul în momentul potrivit.</p>
+                </div>
+                
+                <div class="step-item">
+                    <h4>Așteptarea și Ferirea</h4>
+                    <p>Urmărește float-ul atent. Când se scufundă sau se mișcă nenatural, trage rapid undița în sus pentru a feri peștele. Menține tensiunea în fir în timpul luptei.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location Selection -->
+        <div class="guide-section">
+            <h2>Alegerea Locației Potrivite</h2>
+            <p>Locația este la fel de importantă ca echipamentul. Iată cum să alegi cel mai bun loc pentru pescuit:</p>
+            
+            <h3>Caracteristicile unui Loc Bun</h3>
+            <ul>
+                <li><strong>Adâncime variată:</strong> Zonele cu treceri de la adânc la puțin adânc</li>
+                <li><strong>Vegetație acvatică:</strong> Stufărișuri, nuferi sau alte plante acvatice</li>
+                <li><strong>Structuri subacvatice:</strong> Trunchiuri scufundate, pietre, denivelare</li>
+                <li><strong>Curenți slabi:</strong> Zonele cu apă liniștită sau curenți foarte slabi</li>
+                <li><strong>Umbră:</strong> Zonele umbrite sunt preferate de pești în zilele călduroase</li>
+            </ul>
+            
+            <h3>Folosește Platforma Noastră</h3>
+            <p>Pe <strong>Răsfățul Pescarului</strong> găsești:</p>
+            <ul>
+                <li>Harta interactivă cu toate lacurile din România</li>
+                <li>Recenzii detaliate de la alți pescari</li>
+                <li>Informații despre speciile de pești din fiecare lac</li>
+                <li>Prețuri actualizate și facilități disponibile</li>
+                <li>Coordonate GPS precise pentru fiecare locație</li>
+            </ul>
+        </div>
+
+        <!-- Best Practices -->
+        <div class="guide-section">
+            <h2>Cele Mai Bune Practici</h2>
+            
+            <h3>Când să Pescuiești</h3>
+            <ul>
+                <li><strong>Dimineața devreme:</strong> 5:00-9:00 - cea mai productivă perioadă</li>
+                <li><strong>Seara:</strong> 18:00-22:00 - a doua cea mai bună perioadă</li>
+                <li><strong>Vremea:</strong> Înainte de furtuni sau când presiunea atmosferică scade</li>
+                <li><strong>Anotimpul:</strong> Primăvara și toamna sunt cele mai productive</li>
+            </ul>
+            
+            <h3>Pescuitul Responsabil</h3>
+            <ul>
+                <li>Respectă dimensiunile minime legale pentru fiecare specie</li>
+                <li>Nu păstra mai mulți pești decât poți consuma</li>
+                <li>Folosește cârlige fără ghimpe pentru catch & release</li>
+                <li>Nu lăsa gunoi în natură</li>
+                <li>Respectă proprietatea privată și regulamentele locale</li>
+            </ul>
+            
+            <div class="tip-box">
+                <h5><i class="fas fa-heart me-2"></i>Pescuitul Catch & Release</h5>
+                <p class="mb-0">Consideră să practici catch & release pentru peștii mari - aceștia sunt reproducătorii care asigură viitorul populațiilor de pești.</p>
+            </div>
+        </div>
+
+        <!-- Common Mistakes -->
+        <div class="guide-section">
+            <h2>Greșeli Comune de Evitat</h2>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>❌ Greșeli Frecvente</h4>
+                    <ul>
+                        <li>Folosirea unui fir prea gros</li>
+                        <li>Momeli prea mari pentru cârlige mici</li>
+                        <li>Zgomot excesiv la malul apei</li>
+                        <li>Schimbarea frecventă a locației</li>
+                        <li>Neglijarea vremii și condițiilor</li>
+                        <li>Echipament prost întreținut</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h4>✅ Practici Corecte</h4>
+                    <ul>
+                        <li>Fir subțire și discret</li>
+                        <li>Momeli potrivite pentru cârlige</li>
+                        <li>Mișcări lente și silențioase</li>
+                        <li>Răbdare în același loc</li>
+                        <li>Adaptarea la condiții</li>
+                        <li>Întreținere regulată a echipamentului</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="guide-section">
+            <h2>Următorii Pași</h2>
+            <p>Acum că ai învățat bazele, iată cum să îți continui dezvoltarea ca pescar:</p>
+            
+            <ol>
+                <li><strong>Practică regulat:</strong> Ieși la pescuit cel puțin o dată pe săptămână</li>
+                <li><strong>Ține un jurnal:</strong> Notează ce funcționează și ce nu</li>
+                <li><strong>Alătură-te comunității:</strong> Interactionează cu alți pescari pe platforma noastră</li>
+                <li><strong>Învață continuu:</strong> Citește articolele noastre și urmărește tutorialele</li>
+                <li><strong>Experimentează:</strong> Încearcă tehnici și locații noi</li>
+                <li><strong>Specializează-te:</strong> Alege o specie preferată și învață tot despre ea</li>
+            </ol>
+            
+            <div class="text-center mt-4">
+                <a href="{% url 'main:fishing_locations' %}" class="btn btn-success btn-lg me-3">
+                    <i class="fas fa-map-marker-alt me-2"></i>Găsește Locuri de Pescuit
+                </a>
+                <a href="{% url 'main:solunar_calendar' %}" class="btn btn-outline-success btn-lg">
+                    <i class="fas fa-calendar me-2"></i>Calendar Solunar
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

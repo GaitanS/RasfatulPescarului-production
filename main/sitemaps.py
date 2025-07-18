@@ -19,6 +19,8 @@ class StaticViewSitemap(Sitemap):
             'main:about',
             'main:contact',
             'main:privacy',
+            'main:faq',
+            'main:ghid_incepatori',
             'main:solunar_calendar',
             'main:locations_list'
         ]
@@ -40,6 +42,8 @@ class StaticViewSitemap(Sitemap):
             'main:home': 1.0,
             'main:locations_list': 0.9,
             'main:solunar_calendar': 0.8,
+            'main:ghid_incepatori': 0.8,
+            'main:faq': 0.7,
             'main:about': 0.6,
             'main:contact': 0.6,
             'main:privacy': 0.4

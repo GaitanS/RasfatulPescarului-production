@@ -549,6 +549,14 @@ def privacy(request):
     """View function for the privacy policy page."""
     return render(request, 'pages/privacy.html')
 
+def faq(request):
+    """View function for the FAQ page."""
+    return render(request, 'pages/faq.html')
+
+def ghid_incepatori(request):
+    """View function for the beginners guide page."""
+    return render(request, 'pages/ghid-incepatori.html')
+
 def test_iframe(request):
     """Test iframe page"""
     return render(request, 'test_iframe.html')
