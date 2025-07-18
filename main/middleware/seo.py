@@ -90,14 +90,17 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' "
             "https://cdn.jsdelivr.net https://cdnjs.cloudflare.com "
             "https://code.jquery.com https://pagead2.googlesyndication.com "
-            "https://www.googletagmanager.com https://www.google-analytics.com; "
+            "https://www.googletagmanager.com https://www.google-analytics.com "
+            "https://unpkg.com https://ep1.adtrafficquality.google "
+            "https://ep2.adtrafficquality.google; "
             "style-src 'self' 'unsafe-inline' "
             "https://cdn.jsdelivr.net https://cdnjs.cloudflare.com "
-            "https://fonts.googleapis.com; "
+            "https://fonts.googleapis.com https://unpkg.com; "
             "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; "
             "img-src 'self' data: https: http:; "
-            "connect-src 'self' https://www.google-analytics.com; "
-            "frame-src https://www.google.com;"
+            "connect-src 'self' https://www.google-analytics.com "
+            "https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google; "
+            "frame-src https://www.google.com https://pagead2.googlesyndication.com;"
         )
         response['Content-Security-Policy'] = csp
         

@@ -57,6 +57,11 @@ def import_lakes():
                     error_count += 1
                     continue
             
+            # Convert price_per_day to price_12h and price_24h
+            price_per_day = Decimal(str(lake_data['price_per_day'])) if lake_data['price_per_day'] else Decimal('30.00')
+            price_12h = price_per_day * Decimal('0.6')  # 60% of daily price for 12h
+            price_24h = price_per_day  # Full daily price for 24h
+
             # Create lake
             lake = Lake.objects.create(
                 name=lake_data['name'],
@@ -68,7 +73,8 @@ def import_lakes():
                 longitude=Decimal(str(lake_data['longitude'])) if lake_data['longitude'] else None,
                 google_maps_embed=lake_data['google_maps_embed'],
                 lake_type=lake_data['lake_type'],
-                price_per_day=Decimal(str(lake_data['price_per_day'])) if lake_data['price_per_day'] else 0,
+                price_12h=price_12h,
+                price_24h=price_24h,
                 rules=lake_data['rules'],
                 contact_phone=lake_data['contact_phone'],
                 contact_email=lake_data['contact_email'],
