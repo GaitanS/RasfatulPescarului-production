@@ -97,18 +97,21 @@ TEMPLATES = [
 WSGI_APPLICATION = 'RasfatulPescarului.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'rasfatul_pescarului'),
-        'USER': os.getenv('DB_USER', 'rasfatul_user'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'MariusEnachi2025'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+# Use SQLite for local development if DB_NAME is not explicitly set in environment
+if os.getenv('DB_NAME'):
+    # PostgreSQL for production
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('DB_USER', 'rasfatul_user'),
+            'PASSWORD': os.getenv('DB_PASSWORD', ''),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
+            'PORT': os.getenv('DB_PORT', '5432'),
+        }
     }
-}
-# Fallback to SQLite for development
-if DEBUG and not os.getenv('DB_NAME'):
+else:
+    # SQLite for local development
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
