@@ -64,6 +64,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Custom SEO and security middleware
     'main.middleware.seo.SEOMiddleware',
+    # Search Console fixes - canonical URLs, redirects, error logging
+    'main.middleware.seo_fixes.SEOMiddleware',
+    'main.middleware.seo_fixes.CanonicalURLMiddleware',
+    'main.middleware.seo_fixes.RedirectMiddleware',
     'main.middleware.seo.SecurityHeadersMiddleware',
     'main.middleware.seo.CacheControlMiddleware',
 ]
@@ -295,6 +299,10 @@ CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = 'Lax'
 
+# URL settings - Fix for Search Console duplicate content issues
+APPEND_SLASH = True  # Always redirect URLs without trailing slash to version with slash
+PREPEND_WWW = False  # Don't force www subdomain
+
 # Email settings
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -308,6 +316,71 @@ else:
 
 DEFAULT_FROM_EMAIL = 'contact@rasfatulpescarului.ro'
 ADMIN_EMAIL = 'admin@rasfatulpescarului.ro'
+
+# Logging configuration - Track 500 errors for Search Console debugging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'file_errors': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'django_errors.log'),
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        'file_all': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'backupCount': 3,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file_errors', 'file_all'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['file_errors'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'main': {  # Your app logger
+            'handlers': ['console', 'file_errors', 'file_all'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
 
 # Site settings for templates
 SITE_URL = os.getenv('SITE_URL', 'https://rasfatul-pescarului.ro' if not DEBUG else 'http://127.0.0.1:8000')

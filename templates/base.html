@@ -29,8 +29,10 @@
     <meta name="twitter:description" content="{% block twitter_description %}{{ block.super }}{% endblock %}">
     <meta name="twitter:image" content="{% block twitter_image %}{% static 'images/logo.png' %}{% endblock %}">
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href="{% block canonical %}https://rasfatul-pescarului.ro{{ request.get_full_path }}{% endblock %}">
+    <!-- Canonical URL - Fixed for duplicate content -->
+    {% block canonical_tag %}
+    <link rel="canonical" href="{% block canonical %}https://rasfatul-pescarului.ro{{ request.path }}{% endblock %}">
+    {% endblock %}
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
