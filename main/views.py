@@ -625,9 +625,23 @@ def article_detail(request, slug):
         category=article.category
     ).exclude(id=article.id).order_by('-published_date')[:3]
 
+    # Get previous article (older)
+    previous_article = Article.objects.filter(
+        is_published=True,
+        published_date__lt=article.published_date
+    ).order_by('-published_date').first()
+
+    # Get next article (newer)
+    next_article = Article.objects.filter(
+        is_published=True,
+        published_date__gt=article.published_date
+    ).order_by('published_date').first()
+
     context = {
         'article': article,
         'related_articles': related_articles,
+        'previous_article': previous_article,
+        'next_article': next_article,
     }
 
     return render(request, 'blog/article_detail.html', context)

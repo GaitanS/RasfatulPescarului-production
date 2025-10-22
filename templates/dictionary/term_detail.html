@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ term.term }} - Dicționar Pescuit - Răsfățul Pescarului{% endblock %}
+
+{% block description %}{{ term.definition|truncatewords:30 }}{% endblock %}
+
+{% block keywords %}{{ term.term }}, pescuit, dicționar pescuit, {{ term.get_category_display }}{% endblock %}
+
+{% block canonical %}https://rasfatul-pescarului.ro{% url 'main:fishing_term_detail' term.slug %}{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "DefinedTerm",
+    "name": "{{ term.term }}",
+    "description": "{{ term.definition }}",
+    "inDefinedTermSet": {
+        "@type": "DefinedTermSet",
+        "name": "Dicționar Termeni Pescuit Sportiv",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Răsfățul Pescarului",
+            "url": "https://rasfatul-pescarului.ro"
+        }
+    }
+    {% if term.synonyms %}
+    ,"alternateName": "{{ term.synonyms }}"
+    {% endif %}
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Term Header -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mx-auto">
+            <!-- Back to Dictionary -->
+            <div class="mb-3">
+                <a href="{% url 'main:fishing_dictionary' %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Înapoi la Dicționar
+                </a>
+            </div>
+
+            <!-- Category Badge -->
+            <div class="mb-3">
+                <span class="badge bg-primary">
+                    {{ term.get_category_display }}
+                </span>
+            </div>
+
+            <!-- Term Title -->
+            <h1 class="display-4 mb-3">{{ term.term }}</h1>
+
+            <!-- Synonyms -->
+            {% if term.synonyms %}
+            <p class="text-muted">
+                <strong><i class="fas fa-tag"></i> Sinonime:</strong> {{ term.synonyms }}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Definition Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">
+                        <i class="fas fa-book-open text-primary"></i> Definiție
+                    </h4>
+                    <div class="term-definition">
+                        {{ term.definition|linebreaks }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Explanation -->
+            {% if term.detailed_explanation %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">
+                        <i class="fas fa-info-circle text-primary"></i> Explicație Detaliată
+                    </h4>
+                    <div class="term-explanation">
+                        {{ term.detailed_explanation|safe }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Usage Examples -->
+            {% if term.usage_examples %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">
+                        <i class="fas fa-quote-right text-primary"></i> Exemple de Utilizare
+                    </h4>
+                    <div class="term-examples">
+                        {{ term.usage_examples|linebreaks }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Related Terms -->
+            {% if related_terms %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">
+                        <i class="fas fa-link text-primary"></i> Termeni Înrudiți
+                    </h4>
+                    <div class="row row-cols-1 row-cols-md-2 g-3">
+                        {% for related in related_terms %}
+                        <div class="col">
+                            <div class="card h-100 border-0 bg-light">
+                                <div class="card-body">
+                                    <span class="badge bg-secondary mb-2">
+                                        {{ related.get_category_display }}
+                                    </span>
+                                    <h6 class="card-title">
+                                        <a href="{% url 'main:fishing_term_detail' related.slug %}" class="text-decoration-none">
+                                            {{ related.term }}
+                                        </a>
+                                    </h6>
+                                    <p class="card-text small text-muted mb-0">
+                                        {{ related.definition|truncatewords:15 }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Similar Terms (Same Category) -->
+            {% if similar_terms %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">
+                        <i class="fas fa-stream text-primary"></i> Termeni din Aceeași Categorie
+                    </h4>
+                    <div class="list-group list-group-flush">
+                        {% for similar in similar_terms %}
+                        <a href="{% url 'main:fishing_term_detail' similar.slug %}"
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">{{ similar.term }}</div>
+                                <small class="text-muted">{{ similar.definition|truncatewords:12 }}</small>
+                            </div>
+                            <i class="fas fa-chevron-right text-muted"></i>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Share Section -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h6 class="mb-3">
+                        <i class="fas fa-share-alt text-primary"></i> Distribuie acest termen
+                    </h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=https://rasfatul-pescarului.ro{% url 'main:fishing_term_detail' term.slug %}"
+                           target="_blank"
+                           class="btn btn-sm btn-primary">
+                            <i class="fab fa-facebook-f"></i> Facebook
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url=https://rasfatul-pescarului.ro{% url 'main:fishing_term_detail' term.slug %}&text={{ term.term }}"
+                           target="_blank"
+                           class="btn btn-sm btn-info text-white">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </a>
+                        <a href="https://wa.me/?text={{ term.term }}%20https://rasfatul-pescarului.ro{% url 'main:fishing_term_detail' term.slug %}"
+                           target="_blank"
+                           class="btn btn-sm btn-success">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back to Dictionary -->
+            <div class="text-center">
+                <a href="{% url 'main:fishing_dictionary' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Înapoi la Dicționar
+                </a>
+                <a href="{% url 'main:fishing_dictionary' %}?category={{ term.category }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-folder"></i> Mai multe în {{ term.get_category_display }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+.term-definition,
+.term-explanation,
+.term-examples {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+}
+
+.term-definition p,
+.term-explanation p,
+.term-examples p {
+    margin-bottom: 1rem;
+}
+
+.term-explanation h2,
+.term-explanation h3 {
+    color: #198754;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.term-explanation ul,
+.term-explanation ol {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+}
+
+.term-explanation li {
+    margin-bottom: 0.5rem;
+}
+
+.term-examples {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-left: 4px solid #198754;
+    border-radius: 4px;
+}
+
+.card-title a {
+    color: #198754;
+}
+
+.card-title a:hover {
+    color: #146c43;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .term-definition,
+    .term-explanation,
+    .term-examples {
+        font-size: 1rem;
+    }
+}
+</style>
+{% endblock %}

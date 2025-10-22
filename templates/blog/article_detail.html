@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ article.title }} - Blog Pescuit - Răsfățul Pescarului{% endblock %}
+
+{% block description %}{{ article.excerpt }}{% endblock %}
+
+{% block keywords %}{{ article.meta_keywords|default:"pescuit, blog pescuit, "|add:article.category.name|add:", sfaturi pescuit" }}{% endblock %}
+
+{% block canonical %}https://rasfatul-pescarului.ro{% url 'main:article_detail' article.slug %}{% endblock %}
+
+{% block og_title %}{{ article.title }}{% endblock %}
+{% block og_description %}{{ article.excerpt }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_url %}https://rasfatul-pescarului.ro{% url 'main:article_detail' article.slug %}{% endblock %}
+{% block og_image %}{% if article.featured_image %}{{ article.featured_image.url }}{% else %}{% static 'images/logo.png' %}{% endif %}{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "{{ article.title }}",
+    "description": "{{ article.excerpt }}",
+    "image": "{% if article.featured_image %}https://rasfatul-pescarului.ro{{ article.featured_image.url }}{% else %}https://rasfatul-pescarului.ro{% static 'images/logo.png' %}{% endif %}",
+    "author": {
+        "@type": "Person",
+        "name": "{{ article.author_name }}"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Răsfățul Pescarului",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://rasfatul-pescarului.ro{% static 'images/logo.png' %}"
+        }
+    },
+    "datePublished": "{{ article.published_date|date:'c' }}",
+    "dateModified": "{{ article.updated_at|date:'c' }}",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://rasfatul-pescarului.ro{% url 'main:article_detail' article.slug %}"
+    },
+    "articleSection": "{{ article.category.name }}",
+    "keywords": "{{ article.meta_keywords|default:'pescuit, blog pescuit' }}",
+    "wordCount": "{{ article.content|wordcount }}"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Article Header -->
+    <div class="row mb-4">
+        <div class="col-lg-8 mx-auto">
+            <!-- Category Badge -->
+            {% if article.category %}
+            <div class="mb-3">
+                <a href="{% url 'main:blog_home' %}?category={{ article.category.slug }}" class="badge bg-primary text-decoration-none">
+                    <i class="{{ article.category.icon_class }}"></i> {{ article.category.name }}
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Title -->
+            <h1 class="display-4 mb-3">{{ article.title }}</h1>
+
+            <!-- Excerpt -->
+            <p class="lead text-muted">{{ article.excerpt }}</p>
+
+            <!-- Meta Information -->
+            <div class="d-flex flex-wrap align-items-center text-muted mb-4 pb-4 border-bottom">
+                <div class="me-4 mb-2">
+                    <i class="fas fa-user"></i> {{ article.author_name }}
+                </div>
+                <div class="me-4 mb-2">
+                    <i class="fas fa-calendar"></i> {{ article.published_date|date:"d M Y" }}
+                </div>
+                <div class="me-4 mb-2">
+                    <i class="fas fa-clock"></i> {{ article.reading_time }} min citire
+                </div>
+                <div class="me-4 mb-2">
+                    <i class="fas fa-eye"></i> {{ article.views_count }} vizualizări
+                </div>
+                {% if article.is_featured %}
+                <div class="me-4 mb-2">
+                    <span class="badge bg-warning text-dark">
+                        <i class="fas fa-star"></i> Recomandat
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Featured Image -->
+            {% if article.featured_image %}
+            <div class="mb-4">
+                <img src="{{ article.featured_image.url }}"
+                     class="img-fluid rounded shadow-sm"
+                     alt="{{ article.title }}"
+                     style="width: 100%; max-height: 500px; object-fit: cover;">
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Article Content -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Main Content -->
+            <div class="article-content mb-5">
+                {{ article.content|safe }}
+            </div>
+
+            <!-- Tags -->
+            {% if article.meta_keywords %}
+            <div class="mb-4 pb-4 border-bottom">
+                <h6 class="text-muted mb-2"><i class="fas fa-tags"></i> Etichete:</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for tag in article.meta_keywords.split:',' %}
+                    <span class="badge bg-secondary">{{ tag.strip }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Social Share Buttons -->
+            <div class="mb-5 pb-4 border-bottom">
+                <h6 class="text-muted mb-3"><i class="fas fa-share-alt"></i> Distribuie:</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://rasfatul-pescarului.ro{% url 'main:article_detail' article.slug %}"
+                       target="_blank"
+                       class="btn btn-primary btn-sm">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?url=https://rasfatul-pescarului.ro{% url 'main:article_detail' article.slug %}&text={{ article.title }}"
+                       target="_blank"
+                       class="btn btn-info btn-sm text-white">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://rasfatul-pescarului.ro{% url 'main:article_detail' article.slug %}"
+                       target="_blank"
+                       class="btn btn-primary btn-sm">
+                        <i class="fab fa-linkedin-in"></i> LinkedIn
+                    </a>
+                    <a href="https://wa.me/?text={{ article.title }}%20https://rasfatul-pescarului.ro{% url 'main:article_detail' article.slug %}"
+                       target="_blank"
+                       class="btn btn-success btn-sm">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                </div>
+            </div>
+
+            <!-- Navigation to Previous/Next Articles -->
+            <div class="d-flex justify-content-between mb-5">
+                {% if previous_article %}
+                <div>
+                    <small class="text-muted d-block mb-1">
+                        <i class="fas fa-arrow-left"></i> Articol anterior
+                    </small>
+                    <a href="{% url 'main:article_detail' previous_article.slug %}" class="text-decoration-none">
+                        {{ previous_article.title|truncatewords:10 }}
+                    </a>
+                </div>
+                {% else %}
+                <div></div>
+                {% endif %}
+
+                {% if next_article %}
+                <div class="text-end">
+                    <small class="text-muted d-block mb-1">
+                        Articol următor <i class="fas fa-arrow-right"></i>
+                    </small>
+                    <a href="{% url 'main:article_detail' next_article.slug %}" class="text-decoration-none">
+                        {{ next_article.title|truncatewords:10 }}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Related Articles -->
+            {% if related_articles %}
+            <div class="mb-5">
+                <h3 class="mb-4">
+                    <i class="fas fa-newspaper text-primary"></i> Articole Similare
+                </h3>
+                <div class="row">
+                    {% for related in related_articles %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            {% if related.featured_image %}
+                            <img src="{{ related.featured_image.url }}"
+                                 class="card-img-top"
+                                 alt="{{ related.title }}"
+                                 style="height: 150px; object-fit: cover;">
+                            {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                                <i class="fas fa-fish fa-2x text-muted"></i>
+                            </div>
+                            {% endif %}
+                            <div class="card-body">
+                                {% if related.category %}
+                                <span class="badge bg-primary mb-2">
+                                    <i class="{{ related.category.icon_class }}"></i> {{ related.category.name }}
+                                </span>
+                                {% endif %}
+                                <h6 class="card-title">{{ related.title }}</h6>
+                                <p class="card-text small text-muted">{{ related.excerpt|truncatewords:15 }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock"></i> {{ related.reading_time }} min
+                                    </small>
+                                    <a href="{% url 'main:article_detail' related.slug %}" class="btn btn-sm btn-outline-primary">
+                                        Citește
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Back to Blog -->
+            <div class="text-center">
+                <a href="{% url 'main:blog_home' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Înapoi la Blog
+                </a>
+                {% if article.category %}
+                <a href="{% url 'main:blog_home' %}?category={{ article.category.slug }}" class="btn btn-outline-secondary">
+                    <i class="{{ article.category.icon_class }}"></i> Mai multe în {{ article.category.name }}
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Article Content Styling -->
+<style>
+.article-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+}
+
+.article-content h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #198754;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.article-content h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #198754;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.article-content p {
+    margin-bottom: 1.25rem;
+}
+
+.article-content ul,
+.article-content ol {
+    margin-bottom: 1.25rem;
+    padding-left: 2rem;
+}
+
+.article-content li {
+    margin-bottom: 0.5rem;
+}
+
+.article-content blockquote {
+    border-left: 4px solid #198754;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #666;
+}
+
+.article-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.article-content code {
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+.article-content pre {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+
+.article-content a {
+    color: #198754;
+    text-decoration: underline;
+}
+
+.article-content a:hover {
+    color: #146c43;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .article-content {
+        font-size: 1rem;
+    }
+
+    .article-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .article-content h3 {
+        font-size: 1.25rem;
+    }
+}
+</style>
+{% endblock %}

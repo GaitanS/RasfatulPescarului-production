@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dicționar Termeni Pescuit - Răsfățul Pescarului{% endblock %}
+
+{% block description %}Dicționar complet de termeni și expresii de pescuit sportiv. Învață limbajul pescarilor profesioniști și îmbunătățește-ți cunoștințele despre pescuit.{% endblock %}
+
+{% block keywords %}dicționar pescuit, termeni pescuit, vocabular pescuit, expresii pescuit, glosar pescuit{% endblock %}
+
+{% block canonical %}https://rasfatul-pescarului.ro/dictionar-pescuit/{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Dicționar Termeni Pescuit Sportiv",
+    "description": "Dicționar complet de termeni și expresii de pescuit sportiv",
+    "url": "https://rasfatul-pescarului.ro/dictionar-pescuit/",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Răsfățul Pescarului",
+        "url": "https://rasfatul-pescarului.ro"
+    },
+    "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Acasă",
+            "item": "https://rasfatul-pescarului.ro/"
+        }, {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Dicționar Pescuit",
+            "item": "https://rasfatul-pescarului.ro/dictionar-pescuit/"
+        }]
+    }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4">
+                <i class="fas fa-book text-primary"></i> Dicționar Termeni Pescuit
+            </h1>
+            <p class="lead">Descoperă și învață termenii esențiali ai pescuitului sportiv</p>
+            <p class="text-muted">
+                Total termeni: <strong>{{ total_terms }}</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="get" action="{% url 'main:fishing_dictionary' %}" class="row g-3">
+                        <!-- Search Input -->
+                        <div class="col-md-6">
+                            <label for="search" class="form-label">
+                                <i class="fas fa-search"></i> Caută termen
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="search"
+                                   name="search"
+                                   placeholder="Introdu termenul sau cuvinte cheie..."
+                                   value="{{ search_query|default:'' }}">
+                        </div>
+
+                        <!-- Category Filter -->
+                        <div class="col-md-4">
+                            <label for="category" class="form-label">
+                                <i class="fas fa-filter"></i> Categorie
+                            </label>
+                            <select class="form-select" id="category" name="category">
+                                <option value="">Toate categoriile</option>
+                                {% for cat_value, cat_label in categories %}
+                                <option value="{{ cat_value }}" {% if selected_category == cat_value %}selected{% endif %}>
+                                    {{ cat_label }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search"></i> Caută
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Clear Filters -->
+                    {% if search_query or selected_category or selected_letter %}
+                    <div class="mt-3">
+                        <a href="{% url 'main:fishing_dictionary' %}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-times"></i> Șterge filtre
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alphabet Navigation -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="mb-3">
+                        <i class="fas fa-font"></i> Navigare alfabetică
+                    </h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="{% url 'main:fishing_dictionary' %}"
+                           class="btn btn-sm {% if not selected_letter %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            Toate
+                        </a>
+                        {% for letter in alphabet %}
+                        {% if letter in available_letters %}
+                        <a href="?letter={{ letter }}"
+                           class="btn btn-sm {% if selected_letter == letter %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            {{ letter }}
+                        </a>
+                        {% else %}
+                        <button class="btn btn-sm btn-outline-secondary" disabled>{{ letter }}</button>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms List -->
+    <div class="row">
+        <div class="col-12">
+            {% if terms %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for term in terms %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm hover-shadow">
+                        <div class="card-body">
+                            <!-- Category Badge -->
+                            <span class="badge bg-primary mb-2">
+                                {{ term.get_category_display }}
+                            </span>
+
+                            <!-- Term Title -->
+                            <h5 class="card-title">
+                                <a href="{% url 'main:fishing_term_detail' term.slug %}" class="text-decoration-none">
+                                    {{ term.term }}
+                                </a>
+                            </h5>
+
+                            <!-- Short Definition -->
+                            <p class="card-text text-muted">
+                                {{ term.definition|truncatewords:20 }}
+                            </p>
+
+                            <!-- Read More -->
+                            <a href="{% url 'main:fishing_term_detail' term.slug %}" class="btn btn-sm btn-outline-primary">
+                                Citește mai mult <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+
+                        <!-- Footer with Meta Info -->
+                        {% if term.synonyms or term.related_terms.exists %}
+                        <div class="card-footer bg-light">
+                            <small class="text-muted">
+                                {% if term.synonyms %}
+                                <i class="fas fa-tag"></i> Sinonime: {{ term.synonyms|truncatewords:3 }}
+                                {% endif %}
+                                {% if term.related_terms.exists %}
+                                <i class="fas fa-link"></i> {{ term.related_terms.count }} termeni înrudiți
+                                {% endif %}
+                            </small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% else %}
+            <!-- No Results -->
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                Nu am găsit termeni care să corespundă criteriilor tale de căutare.
+                {% if search_query or selected_category or selected_letter %}
+                <a href="{% url 'main:fishing_dictionary' %}" class="alert-link">Vezi toți termenii</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="row mt-5">
+        <div class="col-md-8 mx-auto">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h3 class="mb-3">
+                        <i class="fas fa-graduation-cap text-primary"></i> Despre Dicționarul de Pescuit
+                    </h3>
+                    <p class="mb-0">
+                        Dicționarul nostru conține termeni esențiali pentru orice pescar, de la începători la profesioniști.
+                        Învață limbajul specific pescuitului sportiv și îmbunătățește-ți comunicarea cu alți pescari pasionați.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+.hover-shadow {
+    transition: box-shadow 0.3s ease;
+}
+
+.hover-shadow:hover {
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+}
+
+.card-title a {
+    color: #198754;
+}
+
+.card-title a:hover {
+    color: #146c43;
+}
+
+/* Alphabet navigation responsive */
+@media (max-width: 768px) {
+    .d-flex.flex-wrap.gap-2 {
+        gap: 0.5rem !important;
+    }
+
+    .d-flex.flex-wrap.gap-2 .btn {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+</style>
+{% endblock %}
