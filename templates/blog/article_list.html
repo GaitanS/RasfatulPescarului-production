@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blog Pescuit Sportiv - Răsfățul Pescarului{% endblock %}
+
+{% block description %}Articole despre pescuit sportiv, tehnici, echipamente și cele mai bune locuri de pescuit din România. Ghiduri complete și sfaturi de la experți.{% endblock %}
+
+{% block keywords %}blog pescuit, articole pescuit, tehnici pescuit, echipamente, sfaturi pescuit{% endblock %}
+
+{% block canonical %}https://rasfatul-pescarului.ro/blog/{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Blog Pescuit Sportiv - Răsfățul Pescarului",
+    "description": "Articole despre pescuit sportiv în România",
+    "url": "https://rasfatul-pescarului.ro/blog/",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Răsfățul Pescarului",
+        "url": "https://rasfatul-pescarului.ro"
+    }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4">Blog Pescuit Sportiv</h1>
+            <p class="lead">Articole, ghiduri și sfaturi pentru pescarii pasionați</p>
+        </div>
+    </div>
+
+    <!-- Categories Filter -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="btn-group flex-wrap" role="group">
+                <a href="{% url 'main:blog_home' %}"
+                   class="btn {% if not selected_category %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    <i class="fas fa-th"></i> Toate ({{ total_articles }})
+                </a>
+                {% for category in categories %}
+                <a href="{% url 'main:blog_home' %}?category={{ category.slug }}"
+                   class="btn {% if selected_category == category %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    <i class="{{ category.icon_class }}"></i> {{ category.name }} ({{ category.article_count }})
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Articles Grid -->
+    <div class="row">
+        {% for article in articles %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if article.featured_image %}
+                <img src="{{ article.featured_image.url }}" class="card-img-top" alt="{{ article.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-fish fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+
+                <div class="card-body d-flex flex-column">
+                    {% if article.category %}
+                    <span class="badge bg-primary mb-2 align-self-start">
+                        <i class="{{ article.category.icon_class }}"></i> {{ article.category.name }}
+                    </span>
+                    {% endif %}
+
+                    <h5 class="card-title">{{ article.title }}</h5>
+                    <p class="card-text text-muted">{{ article.excerpt|truncatewords:20 }}</p>
+
+                    <div class="mt-auto">
+                        <small class="text-muted d-block mb-2">
+                            <i class="fas fa-user"></i> {{ article.author_name }}
+                            | <i class="fas fa-calendar"></i> {{ article.published_date|date:"d M Y" }}
+                        </small>
+                        <small class="text-muted d-block mb-3">
+                            <i class="fas fa-clock"></i> {{ article.reading_time }} min citire
+                            | <i class="fas fa-eye"></i> {{ article.views_count }} vizualizări
+                        </small>
+
+                        <a href="{% url 'main:article_detail' article.slug %}" class="btn btn-outline-primary btn-sm">
+                            Citește articolul <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                {% if article.is_featured %}
+                <div class="card-footer bg-warning text-dark">
+                    <i class="fas fa-star"></i> Articol Recomandat
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Nu există articole disponibile în această categorie.
+                {% if selected_category %}
+                <a href="{% url 'main:blog_home' %}" class="alert-link">Vezi toate articolele</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if articles.has_other_pages %}
+    <nav aria-label="Navigare pagini" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if articles.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ articles.previous_page_number }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}">
+                    <i class="fas fa-chevron-left"></i> Anterior
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in articles.paginator.page_range %}
+                {% if num == articles.number %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num > articles.number|add:'-3' and num < articles.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}">
+                        {{ num }}
+                    </a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if articles.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ articles.next_page_number }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}">
+                    Următor <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    <!-- Sidebar (Featured articles) -->
+    {% if featured_articles %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3><i class="fas fa-star text-warning"></i> Articole Recomandate</h3>
+            <div class="row">
+                {% for article in featured_articles %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ article.title }}</h6>
+                            <p class="card-text small text-muted">{{ article.excerpt|truncatewords:15 }}</p>
+                            <a href="{% url 'main:article_detail' article.slug %}" class="btn btn-sm btn-outline-primary">
+                                Citește
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
