@@ -116,9 +116,7 @@
             <div class="mb-4 pb-4 border-bottom">
                 <h6 class="text-muted mb-2"><i class="fas fa-tags"></i> Etichete:</h6>
                 <div class="d-flex flex-wrap gap-2">
-                    {% for tag in article.meta_keywords.split:',' %}
-                    <span class="badge bg-secondary">{{ tag.strip }}</span>
-                    {% endfor %}
+                    <span class="badge bg-secondary">{{ article.meta_keywords }}</span>
                 </div>
             </div>
             {% endif %}
