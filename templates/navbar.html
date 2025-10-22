@@ -140,6 +140,7 @@
     border-radius: 0.25rem;
     padding: 0.5rem 0;
     margin-top: 0.125rem;
+    min-width: 220px;
 }
 
 .navbar .dropdown-item {
@@ -166,13 +167,19 @@
     border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Styling pentru dropdown toggle */
-.navbar .nav-link.dropdown-toggle {
-    color: rgba(0, 0, 0, 0.55);
+/* Styling pentru dropdown toggle - aceeași culoare ca celelalte link-uri */
+.navbar-light .navbar-nav .nav-link.dropdown-toggle {
+    color: rgba(0, 0, 0, 0.55) !important;
 }
 
-.navbar .nav-link.dropdown-toggle:hover {
-    color: rgba(0, 0, 0, 0.7);
+.navbar-light .navbar-nav .nav-link.dropdown-toggle:hover,
+.navbar-light .navbar-nav .nav-link.dropdown-toggle:focus {
+    color: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Când dropdown-ul este activ/deschis */
+.navbar-light .navbar-nav .show > .nav-link.dropdown-toggle {
+    color: rgba(0, 0, 0, 0.9) !important;
 }
 
 /* Pentru mobile - asigură că dropdown-ul este vizibil */
