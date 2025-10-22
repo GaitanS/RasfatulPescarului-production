@@ -32,6 +32,32 @@
                         <i class="fas fa-play-circle me-1"></i>Tutoriale
                     </a>
                 </li>
+
+                <!-- Resources Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-book me-1"></i>Resurse
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
+                        <li><a class="dropdown-item" href="{% url 'main:blog_home' %}">
+                            <i class="fas fa-newspaper me-2"></i>Blog Pescuit
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'main:fishing_dictionary' %}">
+                            <i class="fas fa-book-open me-2"></i>Dicționar Pescuit
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'main:fish_species_list' %}">
+                            <i class="fas fa-fish me-2"></i>Specii de Pești
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'main:ghid_incepatori' %}">
+                            <i class="fas fa-graduation-cap me-2"></i>Ghid Începători
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'main:faq' %}">
+                            <i class="fas fa-question-circle me-2"></i>Întrebări Frecvente
+                        </a></li>
+                    </ul>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'main:about' %}">
                         <i class="fas fa-info-circle me-1"></i>Despre noi
@@ -40,16 +66,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'main:contact' %}">
                         <i class="fas fa-envelope me-1"></i>Contact
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'main:faq' %}">
-                        <i class="fas fa-question-circle me-1"></i>FAQ
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'main:ghid_incepatori' %}">
-                        <i class="fas fa-graduation-cap me-1"></i>Ghid Începători
                     </a>
                 </li>
             </ul>
