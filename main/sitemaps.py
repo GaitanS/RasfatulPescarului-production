@@ -4,10 +4,13 @@ from django.utils import timezone
 
 # Import models cu try/except pentru a evita erorile
 try:
-    from .models import Lake, County
+    from .models import Lake, County, Article, FishingTerm, FishSpecies
 except ImportError:
     Lake = None
     County = None
+    Article = None
+    FishingTerm = None
+    FishSpecies = None
 
 class StaticViewSitemap(Sitemap):
     changefreq = 'weekly'
@@ -22,7 +25,10 @@ class StaticViewSitemap(Sitemap):
             'main:faq',
             'main:ghid_incepatori',
             'main:solunar_calendar',
-            'main:locations_list'
+            'main:locations_list',
+            'main:blog_home',
+            'main:fishing_dictionary',
+            'main:fish_species_list'
         ]
 
     def location(self, item):
@@ -41,6 +47,9 @@ class StaticViewSitemap(Sitemap):
         priorities = {
             'main:home': 1.0,
             'main:locations_list': 0.9,
+            'main:blog_home': 0.9,
+            'main:fishing_dictionary': 0.8,
+            'main:fish_species_list': 0.8,
             'main:solunar_calendar': 0.8,
             'main:ghid_incepatori': 0.8,
             'main:faq': 0.7,
@@ -94,6 +103,76 @@ class CountySitemap(Sitemap):
             return 0.8
         return 0.6
 
+class ArticleSitemap(Sitemap):
+    changefreq = "weekly"
+    priority = 0.8
+    protocol = 'https'
+
+    def items(self):
+        if Article:
+            return Article.objects.filter(is_published=True).order_by('-published_date')
+        return []
+
+    def lastmod(self, obj):
+        return getattr(obj, 'updated_at', timezone.now())
+
+    def location(self, obj):
+        return f'/blog/{obj.slug}/'
+
+    def priority(self, obj):
+        # Higher priority for featured articles
+        if hasattr(obj, 'is_featured') and obj.is_featured:
+            return 0.9
+        return 0.8
+
+class FishingTermSitemap(Sitemap):
+    changefreq = "monthly"
+    priority = 0.7
+    protocol = 'https'
+
+    def items(self):
+        if FishingTerm:
+            return FishingTerm.objects.filter(is_active=True).order_by('term')
+        return []
+
+    def lastmod(self, obj):
+        return getattr(obj, 'updated_at', timezone.now())
+
+    def location(self, obj):
+        return f'/dictionar-pescuit/{obj.slug}/'
+
+class FishSpeciesSitemap(Sitemap):
+    changefreq = "monthly"
+    priority = 0.7
+    protocol = 'https'
+
+    def items(self):
+        if FishSpecies:
+            return FishSpecies.objects.filter(is_active=True).order_by('name')
+        return []
+
+    def lastmod(self, obj):
+        return getattr(obj, 'updated_at', timezone.now())
+
+    def location(self, obj):
+        return f'/specii-de-pesti/{obj.slug}/'
+
+class CountyGuideSitemap(Sitemap):
+    changefreq = "monthly"
+    priority = 0.8
+    protocol = 'https'
+
+    def items(self):
+        if County:
+            return County.objects.filter(has_guide=True).order_by('name')
+        return []
+
+    def lastmod(self, obj):
+        return getattr(obj, 'updated_at', timezone.now())
+
+    def location(self, obj):
+        return f'/judete/{obj.slug}/ghid/'
+
 # Definește sitemaps
 sitemaps = {
     'static': StaticViewSitemap,
@@ -104,3 +183,10 @@ if Lake:
     sitemaps['lakes'] = LakeSitemap
 if County:
     sitemaps['counties'] = CountySitemap
+    sitemaps['county-guides'] = CountyGuideSitemap
+if Article:
+    sitemaps['articles'] = ArticleSitemap
+if FishingTerm:
+    sitemaps['fishing-terms'] = FishingTermSitemap
+if FishSpecies:
+    sitemaps['fish-species'] = FishSpeciesSitemap
