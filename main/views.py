@@ -570,6 +570,7 @@ def blog_home(request):
     """Homepage for blog articles"""
     from main.models import Article, ArticleCategory
     from django.core.paginator import Paginator
+    from django.db import models
 
     # Get filter parameters
     category_slug = request.GET.get('category')
@@ -654,6 +655,7 @@ def article_detail(request, slug):
 def fishing_dictionary(request):
     """View for fishing terms dictionary"""
     from main.models import FishingTerm
+    from django.db import models
 
     # Get filter parameters
     category = request.GET.get('category')
@@ -736,7 +738,7 @@ def fishing_term_detail(request, slug):
 
 def county_guide(request, slug):
     """Detail view for county fishing guide"""
-    from main.models import County
+    from main.models import County, FishSpecies
 
     county = get_object_or_404(County, slug=slug, has_guide=True)
 
