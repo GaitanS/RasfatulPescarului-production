@@ -82,6 +82,13 @@ class FishSpecies(models.Model):
         verbose_name="Numele științific",
         help_text="Numele latin al speciei (opțional)"
     )
+    slug = models.SlugField(
+        max_length=100,
+        unique=True,
+        blank=True,
+        verbose_name="URL slug",
+        help_text="Se generează automat din nume"
+    )
     category = models.CharField(
         max_length=20,
         choices=CATEGORY_CHOICES,
@@ -89,6 +96,53 @@ class FishSpecies(models.Model):
         verbose_name="Categoria",
         help_text="Categoria biologică a peștelui"
     )
+
+    # Detailed information fields
+    detailed_description = models.TextField(
+        blank=True,
+        verbose_name="Descriere detaliată",
+        help_text="Descriere completă a speciei (aspect, caracteristici, comportament)"
+    )
+    habitat = models.TextField(
+        blank=True,
+        verbose_name="Habitat",
+        help_text="Informații despre habitatul preferat al speciei"
+    )
+    fishing_techniques = models.TextField(
+        blank=True,
+        verbose_name="Tehnici de pescuit",
+        help_text="Tehnici recomandate pentru pescuitul acestei specii"
+    )
+    best_baits = models.TextField(
+        blank=True,
+        verbose_name="Momeli recomandate",
+        help_text="Cele mai eficiente momeli pentru această specie"
+    )
+    legal_info = models.TextField(
+        blank=True,
+        verbose_name="Informații legale",
+        help_text="Dimensiuni minime legale, perioade de prohibiție, etc."
+    )
+    average_size = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="Dimensiune medie",
+        help_text="Dimensiunea medie a speciei (ex: 30-50 cm)"
+    )
+    max_size = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="Dimensiune maximă",
+        help_text="Dimensiunea maximă înregistrată (ex: 120 cm)"
+    )
+    image = models.ImageField(
+        upload_to='fish_species/',
+        null=True,
+        blank=True,
+        verbose_name="Imagine specie",
+        help_text="Fotografie reprezentativă a speciei"
+    )
+
     is_active = models.BooleanField(
         default=True,
         verbose_name="Activ"
@@ -103,6 +157,16 @@ class FishSpecies(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        """Get URL for fish species detail page"""
+        from django.urls import reverse
+        return reverse('main:fish_species_detail', kwargs={'slug': self.slug})
 
 class Facility(models.Model):
     CATEGORY_CHOICES = [
@@ -187,8 +251,33 @@ class County(models.Model):
             ('BUCURESTI', 'București')
         ],
         verbose_name="Regiune",
-        help_text="Regiunea istorică din care face parte județul"
+        help_text="Regiunea istorică din care face parte județului"
     )
+
+    # County Guide Content
+    guide_content = models.TextField(
+        blank=True,
+        verbose_name="Ghid pescuit județ",
+        help_text="Ghid detaliat despre pescuitul în acest județ (acceptă HTML)"
+    )
+    guide_title = models.CharField(
+        max_length=250,
+        blank=True,
+        verbose_name="Titlu ghid",
+        help_text="Titlul ghidului de pescuit pentru județ (ex: Ghid Complet Pescuit în Cluj)"
+    )
+    guide_excerpt = models.TextField(
+        max_length=500,
+        blank=True,
+        verbose_name="Rezumat ghid",
+        help_text="Rezumat scurt al ghidului pentru județ"
+    )
+    has_guide = models.BooleanField(
+        default=False,
+        verbose_name="Are ghid",
+        help_text="Bifează dacă există un ghid de pescuit pentru acest județ"
+    )
+
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data creării")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Data actualizării")
 
@@ -204,6 +293,17 @@ class County(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def get_guide_url(self):
+        """Get URL for county guide"""
+        from django.urls import reverse
+        if self.has_guide:
+            return reverse('main:county_guide', kwargs={'slug': self.slug})
+        return None
+
+    def get_lakes_count(self):
+        """Get count of active lakes in this county"""
+        return self.lakes.filter(is_active=True).count()
 
 class SiteSettings(models.Model):
     site_name = models.CharField(
@@ -1136,3 +1236,263 @@ class ContactSettings(models.Model):
         if not settings:
             settings = cls.objects.create()
         return settings
+
+
+# ========================================
+# BLOG & EDITORIAL CONTENT MODELS
+# ========================================
+
+class ArticleCategory(models.Model):
+    """Categories for blog articles"""
+    name = models.CharField(
+        max_length=100,
+        verbose_name="Numele categoriei",
+        help_text="Numele categoriei de articole (ex: Tehnici de Pescuit, Echipamente)"
+    )
+    slug = models.SlugField(
+        max_length=100,
+        unique=True,
+        verbose_name="URL slug",
+        help_text="Se generează automat din nume"
+    )
+    description = models.TextField(
+        blank=True,
+        verbose_name="Descriere",
+        help_text="Descrierea categoriei"
+    )
+    icon_class = models.CharField(
+        max_length=50,
+        default='fas fa-fish',
+        verbose_name="Clasa icon FontAwesome",
+        help_text="Ex: fas fa-fish, fas fa-water"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Ordine",
+        help_text="Ordinea de afișare (număr mai mic = mai sus)"
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="Activ"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Categorie articol"
+        verbose_name_plural = "Categorii articole"
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def get_articles_count(self):
+        """Get count of published articles in this category"""
+        return self.articles.filter(is_published=True).count()
+
+
+class Article(models.Model):
+    """Blog articles for editorial content"""
+    title = models.CharField(
+        max_length=250,
+        verbose_name="Titlu articol",
+        help_text="Titlul complet al articolului"
+    )
+    slug = models.SlugField(
+        max_length=250,
+        unique=True,
+        verbose_name="URL slug",
+        help_text="Se generează automat din titlu"
+    )
+    category = models.ForeignKey(
+        ArticleCategory,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='articles',
+        verbose_name="Categorie",
+        help_text="Categoria din care face parte articolul"
+    )
+    excerpt = models.TextField(
+        max_length=500,
+        verbose_name="Rezumat",
+        help_text="Rezumat scurt al articolului (max 500 caractere)"
+    )
+    content = models.TextField(
+        verbose_name="Conținut",
+        help_text="Conținutul complet al articolului (acceptă HTML)"
+    )
+    featured_image = models.ImageField(
+        upload_to='articles/',
+        null=True,
+        blank=True,
+        verbose_name="Imagine principală",
+        help_text="Imaginea principală a articolului"
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='articles',
+        verbose_name="Autor",
+        help_text="Autorul articolului"
+    )
+    author_name = models.CharField(
+        max_length=100,
+        default='Echipa Răsfățul Pescarului',
+        verbose_name="Nume autor afișat",
+        help_text="Numele care apare ca autor pe articol"
+    )
+    is_published = models.BooleanField(
+        default=True,
+        verbose_name="Publicat",
+        help_text="Bifează pentru a publica articolul"
+    )
+    is_featured = models.BooleanField(
+        default=False,
+        verbose_name="Recomandat",
+        help_text="Articol recomandat (apare în secțiuni speciale)"
+    )
+    views_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Vizualizări",
+        help_text="Numărul de vizualizări al articolului"
+    )
+    reading_time = models.PositiveIntegerField(
+        default=5,
+        verbose_name="Timp de citire (minute)",
+        help_text="Timpul estimat de citire în minute"
+    )
+    published_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Data publicării",
+        help_text="Data și ora când articolul a fost publicat"
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Data creării")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Data actualizării")
+
+    # SEO fields
+    meta_description = models.CharField(
+        max_length=160,
+        blank=True,
+        verbose_name="Meta descriere SEO",
+        help_text="Descriere pentru motoarele de căutare (max 160 caractere)"
+    )
+    meta_keywords = models.CharField(
+        max_length=250,
+        blank=True,
+        verbose_name="Meta keywords SEO",
+        help_text="Cuvinte cheie separate prin virgulă"
+    )
+
+    class Meta:
+        verbose_name = "Articol"
+        verbose_name_plural = "Articole"
+        ordering = ['-published_date', '-created_at']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.title)
+            slug = base_slug
+            counter = 1
+            while Article.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+
+        # Auto-set published_date when first published
+        if self.is_published and not self.published_date:
+            from django.utils import timezone
+            self.published_date = timezone.now()
+
+        # Calculate reading time if not set (average 200 words per minute)
+        if not self.reading_time or self.reading_time == 5:
+            word_count = len(self.content.split())
+            self.reading_time = max(1, round(word_count / 200))
+
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('main:article_detail', kwargs={'slug': self.slug})
+
+    def increment_views(self):
+        """Increment article views count"""
+        self.views_count += 1
+        self.save(update_fields=['views_count'])
+
+
+class FishingTerm(models.Model):
+    """Dictionary of fishing terms"""
+    CATEGORY_CHOICES = [
+        ('equipment', 'Echipamente'),
+        ('techniques', 'Tehnici'),
+        ('species', 'Specii'),
+        ('regulations', 'Regulamente'),
+        ('general', 'Termeni Generali'),
+    ]
+
+    term = models.CharField(
+        max_length=200,
+        unique=True,
+        verbose_name="Termen",
+        help_text="Termenul pescăresc (ex: Feeder, Boilies, Catch & Release)"
+    )
+    slug = models.SlugField(
+        max_length=200,
+        unique=True,
+        verbose_name="URL slug"
+    )
+    definition = models.TextField(
+        verbose_name="Definiție",
+        help_text="Definiția completă a termenului"
+    )
+    category = models.CharField(
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        default='general',
+        verbose_name="Categorie"
+    )
+    related_terms = models.ManyToManyField(
+        'self',
+        blank=True,
+        symmetrical=True,
+        verbose_name="Termeni relevanți",
+        help_text="Alți termeni legați de acesta"
+    )
+    example_usage = models.TextField(
+        blank=True,
+        verbose_name="Exemplu de utilizare",
+        help_text="Exemplu de utilizare a termenului în context"
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="Activ"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Termen pescăresc"
+        verbose_name_plural = "Termeni pescărești"
+        ordering = ['term']
+
+    def __str__(self):
+        return self.term
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.term)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('main:fishing_term_detail', kwargs={'slug': self.slug})

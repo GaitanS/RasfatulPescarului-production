@@ -65,4 +65,19 @@ urlpatterns = [
 
     # Test iframe
     path('test-iframe/', views.test_iframe, name='test_iframe'),
+
+    # Blog URLs
+    path('blog/', views.blog_home, name='blog_home'),
+    path('blog/<slug:slug>/', views.article_detail, name='article_detail'),
+
+    # Fishing Dictionary URLs
+    path('dictionar-pescuit/', views.fishing_dictionary, name='fishing_dictionary'),
+    path('dictionar-pescuit/<slug:slug>/', views.fishing_term_detail, name='fishing_term_detail'),
+
+    # County Guide URLs
+    path('judete/<slug:slug>/ghid/', views.county_guide, name='county_guide'),
+
+    # Fish Species URLs
+    path('specii-de-pesti/', views.fish_species_list, name='fish_species_list'),
+    path('specii-de-pesti/<slug:slug>/', views.fish_species_detail, name='fish_species_detail'),
 ]

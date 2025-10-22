@@ -4,7 +4,8 @@ from django import forms
 from django.db import models
 from .models import (
     SiteSettings, County, Lake, Video, HeroSection, FooterSettings,
-    FishSpecies, Facility, OperatingHours, LakeReview, LakePhoto, UserProfile, ContactMessage, ContactSettings
+    FishSpecies, Facility, OperatingHours, LakeReview, LakePhoto, UserProfile, ContactMessage, ContactSettings,
+    Article, ArticleCategory, FishingTerm
 )
 
 class OperatingHoursForm(forms.ModelForm):
@@ -493,3 +494,116 @@ class ContactSettingsAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         # Prevent deletion of the only instance
         return False
+
+
+# ========================================
+# BLOG & EDITORIAL CONTENT ADMIN
+# ========================================
+
+@admin.register(ArticleCategory)
+class ArticleCategoryAdmin(admin.ModelAdmin):
+    """Admin for article categories"""
+    list_display = ['name', 'slug', 'order', 'get_articles_count', 'is_active', 'created_at']
+    list_filter = ['is_active', 'created_at']
+    search_fields = ['name', 'description']
+    list_editable = ['order', 'is_active']
+    prepopulated_fields = {'slug': ('name',)}
+
+    fieldsets = (
+        ('Informații de Bază', {
+            'fields': ('name', 'slug', 'description', 'icon_class')
+        }),
+        ('Setări', {
+            'fields': ('order', 'is_active')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    readonly_fields = ['created_at', 'updated_at']
+
+    def get_articles_count(self, obj):
+        """Display number of articles in category"""
+        return obj.get_articles_count()
+    get_articles_count.short_description = 'Număr Articole'
+
+
+@admin.register(Article)
+class ArticleAdmin(admin.ModelAdmin):
+    """Admin for blog articles"""
+    list_display = ['title', 'category', 'author_name', 'is_published', 'is_featured', 'views_count', 'published_date', 'created_at']
+    list_filter = ['is_published', 'is_featured', 'category', 'created_at', 'published_date']
+    search_fields = ['title', 'content', 'excerpt', 'author_name']
+    list_editable = ['is_published', 'is_featured']
+    prepopulated_fields = {'slug': ('title',)}
+    date_hierarchy = 'published_date'
+
+    fieldsets = (
+        ('Informații de Bază', {
+            'fields': ('title', 'slug', 'category', 'excerpt')
+        }),
+        ('Conținut', {
+            'fields': ('content', 'featured_image')
+        }),
+        ('Autor', {
+            'fields': ('author', 'author_name')
+        }),
+        ('Setări Publicare', {
+            'fields': ('is_published', 'is_featured', 'published_date', 'reading_time')
+        }),
+        ('SEO', {
+            'fields': ('meta_description', 'meta_keywords'),
+            'classes': ('collapse',)
+        }),
+        ('Statistici', {
+            'fields': ('views_count',),
+            'classes': ('collapse',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    readonly_fields = ['created_at', 'updated_at', 'views_count']
+
+    def save_model(self, request, obj, form, change):
+        """Auto-set author if not set"""
+        if not obj.author:
+            obj.author = request.user
+        super().save_model(request, obj, form, change)
+
+
+@admin.register(FishingTerm)
+class FishingTermAdmin(admin.ModelAdmin):
+    """Admin for fishing dictionary terms"""
+    list_display = ['term', 'category', 'is_active', 'created_at']
+    list_filter = ['category', 'is_active', 'created_at']
+    search_fields = ['term', 'definition', 'example_usage']
+    list_editable = ['is_active']
+    prepopulated_fields = {'slug': ('term',)}
+    filter_horizontal = ['related_terms']
+
+    fieldsets = (
+        ('Informații de Bază', {
+            'fields': ('term', 'slug', 'category')
+        }),
+        ('Definiție', {
+            'fields': ('definition', 'example_usage')
+        }),
+        ('Relații', {
+            'fields': ('related_terms',),
+            'classes': ('collapse',)
+        }),
+        ('Setări', {
+            'fields': ('is_active',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    readonly_fields = ['created_at', 'updated_at']

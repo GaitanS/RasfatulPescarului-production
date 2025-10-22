@@ -560,3 +560,251 @@ def ghid_incepatori(request):
 def test_iframe(request):
     """Test iframe page"""
     return render(request, 'test_iframe.html')
+
+
+# ========================================
+# BLOG VIEWS
+# ========================================
+
+def blog_home(request):
+    """Homepage for blog articles"""
+    from main.models import Article, ArticleCategory
+    from django.core.paginator import Paginator
+
+    # Get filter parameters
+    category_slug = request.GET.get('category')
+
+    # Base queryset - only published articles
+    articles = Article.objects.filter(is_published=True).select_related('category', 'author')
+
+    # Filter by category if specified
+    selected_category = None
+    if category_slug:
+        selected_category = get_object_or_404(ArticleCategory, slug=category_slug, is_active=True)
+        articles = articles.filter(category=selected_category)
+
+    # Pagination
+    paginator = Paginator(articles, 12)  # 12 articles per page
+    page_number = request.GET.get('page')
+    articles_page = paginator.get_page(page_number)
+
+    # Get all active categories for sidebar
+    categories = ArticleCategory.objects.filter(is_active=True).annotate(
+        article_count=models.Count('articles', filter=models.Q(articles__is_published=True))
+    )
+
+    # Get featured articles for sidebar
+    featured_articles = Article.objects.filter(
+        is_published=True,
+        is_featured=True
+    ).order_by('-published_date')[:5]
+
+    context = {
+        'articles': articles_page,
+        'categories': categories,
+        'selected_category': selected_category,
+        'featured_articles': featured_articles,
+        'total_articles': articles.count(),
+    }
+
+    return render(request, 'blog/article_list.html', context)
+
+
+def article_detail(request, slug):
+    """Detail view for a single article"""
+    from main.models import Article
+
+    article = get_object_or_404(Article, slug=slug, is_published=True)
+
+    # Increment views count
+    article.increment_views()
+
+    # Get related articles (same category, exclude current)
+    related_articles = Article.objects.filter(
+        is_published=True,
+        category=article.category
+    ).exclude(id=article.id).order_by('-published_date')[:3]
+
+    context = {
+        'article': article,
+        'related_articles': related_articles,
+    }
+
+    return render(request, 'blog/article_detail.html', context)
+
+
+# ========================================
+# FISHING DICTIONARY VIEWS
+# ========================================
+
+def fishing_dictionary(request):
+    """View for fishing terms dictionary"""
+    from main.models import FishingTerm
+
+    # Get filter parameters
+    category = request.GET.get('category')
+    search = request.GET.get('search')
+    letter = request.GET.get('letter')
+
+    # Base queryset
+    terms = FishingTerm.objects.filter(is_active=True)
+
+    # Apply filters
+    if category:
+        terms = terms.filter(category=category)
+
+    if search:
+        terms = terms.filter(
+            models.Q(term__icontains=search) |
+            models.Q(definition__icontains=search)
+        )
+
+    if letter:
+        terms = terms.filter(term__istartswith=letter)
+
+    # Order alphabetically
+    terms = terms.order_by('term')
+
+    # Get all categories for filter
+    categories = FishingTerm.CATEGORY_CHOICES
+
+    # Get alphabet for letter navigation
+    import string
+    alphabet = list(string.ascii_uppercase)
+
+    # Get first letters that have terms
+    available_letters = FishingTerm.objects.filter(is_active=True).values_list(
+        'term', flat=True
+    )
+    available_letters = sorted(set(term[0].upper() for term in available_letters if term))
+
+    context = {
+        'terms': terms,
+        'categories': categories,
+        'selected_category': category,
+        'search_query': search,
+        'selected_letter': letter,
+        'alphabet': alphabet,
+        'available_letters': available_letters,
+        'total_terms': terms.count(),
+    }
+
+    return render(request, 'dictionary/fishing_terms.html', context)
+
+
+def fishing_term_detail(request, slug):
+    """Detail view for a fishing term"""
+    from main.models import FishingTerm
+
+    term = get_object_or_404(FishingTerm, slug=slug, is_active=True)
+
+    # Get related terms
+    related_terms = term.related_terms.filter(is_active=True)[:6]
+
+    # Get terms in same category
+    similar_terms = FishingTerm.objects.filter(
+        is_active=True,
+        category=term.category
+    ).exclude(id=term.id).order_by('?')[:5]
+
+    context = {
+        'term': term,
+        'related_terms': related_terms,
+        'similar_terms': similar_terms,
+    }
+
+    return render(request, 'dictionary/term_detail.html', context)
+
+
+# ========================================
+# COUNTY GUIDE VIEWS
+# ========================================
+
+def county_guide(request, slug):
+    """Detail view for county fishing guide"""
+    from main.models import County
+
+    county = get_object_or_404(County, slug=slug, has_guide=True)
+
+    # Get lakes in this county
+    lakes = county.lakes.filter(is_active=True).select_related('county').prefetch_related(
+        'fish_species', 'facilities'
+    )[:10]  # Show top 10 lakes
+
+    # Get fish species available in this county
+    fish_species = FishSpecies.objects.filter(
+        lake__county=county,
+        lake__is_active=True,
+        is_active=True
+    ).distinct()
+
+    context = {
+        'county': county,
+        'lakes': lakes,
+        'fish_species': fish_species,
+        'total_lakes': county.get_lakes_count(),
+    }
+
+    return render(request, 'guides/county_guide.html', context)
+
+
+# ========================================
+# FISH SPECIES VIEWS
+# ========================================
+
+def fish_species_list(request):
+    """List of all fish species"""
+    from main.models import FishSpecies
+
+    # Get filter parameters
+    category = request.GET.get('category')
+
+    # Base queryset
+    species = FishSpecies.objects.filter(is_active=True)
+
+    # Filter by category if specified
+    if category:
+        species = species.filter(category=category)
+
+    # Order by category and name
+    species = species.order_by('category', 'name')
+
+    # Get categories for filter
+    categories = FishSpecies.CATEGORY_CHOICES
+
+    context = {
+        'species_list': species,
+        'categories': categories,
+        'selected_category': category,
+        'total_species': species.count(),
+    }
+
+    return render(request, 'species/fish_species_list.html', context)
+
+
+def fish_species_detail(request, slug):
+    """Detail view for a fish species"""
+    from main.models import FishSpecies, Lake
+
+    species = get_object_or_404(FishSpecies, slug=slug, is_active=True)
+
+    # Get lakes where this species can be found
+    lakes = Lake.objects.filter(
+        fish_species=species,
+        is_active=True
+    ).select_related('county').prefetch_related('facilities')[:12]
+
+    # Get related species (same category)
+    related_species = FishSpecies.objects.filter(
+        is_active=True,
+        category=species.category
+    ).exclude(id=species.id)[:6]
+
+    context = {
+        'species': species,
+        'lakes': lakes,
+        'related_species': related_species,
+        'total_lakes': lakes.count(),
+    }
+
+    return render(request, 'species/fish_species_detail.html', context)
