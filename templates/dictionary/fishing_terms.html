@@ -40,26 +40,131 @@
 </script>
 {% endblock %}
 
+{% block extra_css %}
+<style>
+.dictionary-hero {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    color: white;
+    padding: 5rem 0 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.dictionary-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{% static "images/hero.webp" %}') center/cover;
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.dictionary-hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+.dictionary-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.dictionary-content {
+    padding: 4rem 0;
+    background: #f8f9fa;
+}
+
+.search-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.alphabet-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.alphabet-card h6 {
+    color: #198754;
+    font-weight: 600;
+}
+
+.term-card {
+    background: white;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    height: 100%;
+}
+
+.term-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.term-card .card-title a {
+    color: #198754;
+    font-weight: 600;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #198754, #20c997);
+    border: none;
+}
+
+.btn-outline-success:hover {
+    background: linear-gradient(135deg, #198754, #20c997);
+    border-color: #198754;
+}
+
+.info-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 2.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.info-section h3 {
+    color: #198754;
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="display-4">
-                <i class="fas fa-book text-primary"></i> Dicționar Termeni Pescuit
-            </h1>
-            <p class="lead">Descoperă și învață termenii esențiali ai pescuitului sportiv</p>
-            <p class="text-muted">
-                Total termeni: <strong>{{ total_terms }}</strong>
-            </p>
+<!-- Hero Section -->
+<section class="dictionary-hero">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-10">
+                <h1>
+                    <i class="fas fa-book me-2"></i> Dicționar Termeni Pescuit
+                </h1>
+                <p class="lead">Descoperă și învață termenii esențiali ai pescuitului sportiv</p>
+                <p class="mb-0">
+                    Total termeni: <strong>{{ total_terms }}</strong>
+                </p>
+            </div>
         </div>
     </div>
+</section>
 
-    <!-- Search and Filters -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body">
+<!-- Content Section -->
+<section class="dictionary-content">
+    <div class="container">
+        <!-- Search and Filters -->
+        <div class="search-card">
                     <form method="get" action="{% url 'main:fishing_dictionary' %}" class="row g-3">
                         <!-- Search Input -->
                         <div class="col-md-6">
@@ -91,7 +196,7 @@
 
                         <!-- Submit Button -->
                         <div class="col-md-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100">
+                            <button type="submit" class="btn btn-success w-100">
                                 <i class="fas fa-search"></i> Caută
                             </button>
                         </div>
@@ -106,38 +211,29 @@
                     </div>
                     {% endif %}
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Alphabet Navigation -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h6 class="mb-3">
-                        <i class="fas fa-font"></i> Navigare alfabetică
-                    </h6>
-                    <div class="d-flex flex-wrap gap-2">
-                        <a href="{% url 'main:fishing_dictionary' %}"
-                           class="btn btn-sm {% if not selected_letter %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                            Toate
-                        </a>
-                        {% for letter in alphabet %}
-                        {% if letter in available_letters %}
-                        <a href="?letter={{ letter }}"
-                           class="btn btn-sm {% if selected_letter == letter %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                            {{ letter }}
-                        </a>
-                        {% else %}
-                        <button class="btn btn-sm btn-outline-secondary" disabled>{{ letter }}</button>
-                        {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
+        <!-- Alphabet Navigation -->
+        <div class="alphabet-card">
+            <h6 class="mb-3">
+                <i class="fas fa-font"></i> Navigare alfabetică
+            </h6>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{% url 'main:fishing_dictionary' %}"
+                   class="btn btn-sm {% if not selected_letter %}btn-success{% else %}btn-outline-success{% endif %}">
+                    Toate
+                </a>
+                {% for letter in alphabet %}
+                {% if letter in available_letters %}
+                <a href="?letter={{ letter }}"
+                   class="btn btn-sm {% if selected_letter == letter %}btn-success{% else %}btn-outline-success{% endif %}">
+                    {{ letter }}
+                </a>
+                {% else %}
+                <button class="btn btn-sm btn-outline-secondary" disabled>{{ letter }}</button>
+                {% endif %}
+                {% endfor %}
             </div>
         </div>
-    </div>
 
     <!-- Terms List -->
     <div class="row">
@@ -146,10 +242,10 @@
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 {% for term in terms %}
                 <div class="col">
-                    <div class="card h-100 shadow-sm hover-shadow">
+                    <div class="term-card">
                         <div class="card-body">
                             <!-- Category Badge -->
-                            <span class="badge bg-primary mb-2">
+                            <span class="badge bg-success mb-2">
                                 {{ term.get_category_display }}
                             </span>
 
@@ -166,7 +262,7 @@
                             </p>
 
                             <!-- Read More -->
-                            <a href="{% url 'main:fishing_term_detail' term.slug %}" class="btn btn-sm btn-outline-primary">
+                            <a href="{% url 'main:fishing_term_detail' term.slug %}" class="btn btn-sm btn-outline-success">
                                 Citește mai mult <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
@@ -202,13 +298,12 @@
         </div>
     </div>
 
-    <!-- Info Section -->
-    <div class="row mt-5">
-        <div class="col-md-8 mx-auto">
-            <div class="card bg-light">
-                <div class="card-body text-center">
+        <!-- Info Section -->
+        <div class="row mt-5">
+            <div class="col-md-8 mx-auto">
+                <div class="info-section text-center">
                     <h3 class="mb-3">
-                        <i class="fas fa-graduation-cap text-primary"></i> Despre Dicționarul de Pescuit
+                        <i class="fas fa-graduation-cap me-2"></i> Despre Dicționarul de Pescuit
                     </h3>
                     <p class="mb-0">
                         Dicționarul nostru conține termeni esențiali pentru orice pescar, de la începători la profesioniști.
@@ -218,36 +313,5 @@
             </div>
         </div>
     </div>
-</div>
-
-<!-- Custom Styles -->
-<style>
-.hover-shadow {
-    transition: box-shadow 0.3s ease;
-}
-
-.hover-shadow:hover {
-    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
-}
-
-.card-title a {
-    color: #198754;
-}
-
-.card-title a:hover {
-    color: #146c43;
-}
-
-/* Alphabet navigation responsive */
-@media (max-width: 768px) {
-    .d-flex.flex-wrap.gap-2 {
-        gap: 0.5rem !important;
-    }
-
-    .d-flex.flex-wrap.gap-2 .btn {
-        font-size: 0.875rem;
-        padding: 0.25rem 0.5rem;
-    }
-}
-</style>
+</section>
 {% endblock %}
