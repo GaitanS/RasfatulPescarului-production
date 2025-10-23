@@ -39,6 +39,71 @@
 </script>
 {% endblock %}
 
+{% block extra_css %}
+<style>
+/* Random Lakes Section - Card Symmetry */
+.random-lakes .card {
+    display: flex;
+    flex-direction: column;
+}
+
+.random-lakes .card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* Title with minimum height */
+.random-lakes .card-title {
+    min-height: 3em;
+    line-height: 1.5;
+}
+
+/* Description with fixed height */
+.random-lakes .card-text {
+    min-height: 3.2em;
+    line-height: 1.6;
+    margin-bottom: 1rem !important;
+}
+
+/* Rating section with fixed height */
+.random-lakes .rating-section {
+    min-height: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* Fish species badges with FIXED height */
+.random-lakes .fish-species-section {
+    height: 5.5rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.random-lakes .fish-species-section .d-flex {
+    align-content: flex-start;
+}
+
+/* Lake info grows to fill space */
+.random-lakes .lake-info {
+    flex-grow: 1;
+}
+
+.random-lakes .lake-info ul {
+    margin-bottom: 0.5rem;
+}
+
+/* Button section stays at bottom */
+.random-lakes .card-footer-btn {
+    margin-top: auto;
+}
+
+.random-lakes .badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- Hero Section -->
 <section class="hero-section">
@@ -169,11 +234,16 @@
                         <div class="fish-species-section">
                             {% if lake.fish_species.all %}
                             <div class="d-flex flex-wrap gap-1">
-                                {% for fish in lake.fish_species.all %}
+                                {% for fish in lake.fish_species.all|slice:":4" %}
                                 <span class="badge" style="background-color: #198754 !important; font-size: 0.75rem;">
                                     <i class="fas fa-fish me-1"></i>{{ fish.name }}
                                 </span>
                                 {% endfor %}
+                                {% if lake.fish_species.count > 4 %}
+                                <span class="badge" style="background-color: #198754 !important; font-size: 0.75rem;">
+                                    +{{ lake.fish_species.count|add:"-4" }}
+                                </span>
+                                {% endif %}
                             </div>
                             {% endif %}
                         </div>
