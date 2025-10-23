@@ -1,6 +1,51 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<style>
+/* Card symmetry styling */
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* Title with minimum height */
+.card-title {
+    min-height: 3em;
+    line-height: 1.5;
+}
+
+/* Description with fixed height */
+.card-text {
+    min-height: 3.2em;
+    line-height: 1.6;
+    margin-bottom: 1rem !important;
+}
+
+/* List items container grows to fill space */
+.card-body ul {
+    flex-grow: 1;
+    margin-bottom: 1rem;
+}
+
+/* Button section stays at bottom */
+.card-body .d-grid {
+    margin-top: auto;
+}
+
+/* Rating section with fixed height */
+.card-body > div.mb-2 {
+    min-height: 2rem;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container py-4">
     <div class="row mb-4">
