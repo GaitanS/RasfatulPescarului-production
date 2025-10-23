@@ -63,3 +63,13 @@ media/testimonials/
 .env
 *.pem
 *.key
+
+# Claude Code settings
+.claude/
+
+# Content backup data
+content_data/
+
+# Temporary files
+temp_*.html
+nul
