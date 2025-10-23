@@ -90,8 +90,9 @@
 
     {% block structured_data %}{% endblock %}
 
-    <!-- Google AdSense -->
+    <!-- ADSENSE: REACTIVATE AFTER APPROVAL
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4988585637197167" crossorigin="anonymous"></script>
+    -->
 </head>
 <body class="{% block body_class %}{% endblock %}">
     {% include 'navbar.html' %}
@@ -102,7 +103,7 @@
     <main>
         {% block content %}{% endblock %}
 
-            <!-- Bottom Ad Slot -->
+            <!-- ADSENSE: REACTIVATE AFTER APPROVAL
             <div class="ad-container text-center my-4">
                 <div class="ad-label">
                     <small class="text-muted">Publicitate</small>
@@ -115,6 +116,7 @@
                     data-full-width-responsive="true"></ins>
                 <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             </div>
+            -->
     </main>
     
     {% include 'footer.html' %}
@@ -175,10 +177,10 @@
             if (type == 'opt-in' && didConsent) {
                 // Enable cookies and ads
                 document.body.classList.add('cookies-accepted');
-                // Initialize AdSense ads
-                if (typeof adsbygoogle !== 'undefined') {
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                }
+                // ADSENSE: REACTIVATE AFTER APPROVAL
+                // if (typeof adsbygoogle !== 'undefined') {
+                //     (adsbygoogle = window.adsbygoogle || []).push({});
+                // }
             }
         },
         onStatusChange: function(status, chosenBefore) {

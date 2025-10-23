@@ -739,8 +739,13 @@ def fishing_term_detail(request, slug):
 def county_guide(request, slug):
     """Detail view for county fishing guide"""
     from main.models import County, FishSpecies
+    from django.db.models import Q
 
-    county = get_object_or_404(County, slug=slug, has_guide=True)
+    # Get county that has guide content populated
+    county = get_object_or_404(
+        County.objects.exclude(Q(guide_content='') | Q(guide_content__isnull=True)),
+        slug=slug
+    )
 
     # Get lakes in this county
     lakes = county.lakes.filter(is_active=True).select_related('county').prefetch_related(

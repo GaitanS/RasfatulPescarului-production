@@ -164,7 +164,8 @@ class CountyGuideSitemap(Sitemap):
 
     def items(self):
         if County:
-            return County.objects.filter(has_guide=True).order_by('name')
+            # Filter counties that have guide content populated
+            return County.objects.exclude(guide_content='').exclude(guide_content__isnull=True).order_by('name')
         return []
 
     def lastmod(self, obj):
