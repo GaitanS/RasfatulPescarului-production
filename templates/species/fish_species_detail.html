@@ -44,180 +44,265 @@
 </script>
 {% endblock %}
 
+{% block extra_css %}
+<style>
+    .species-hero {
+        background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+        color: white;
+        padding: 3rem 0 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .species-hero h1 {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .species-hero .lead {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .badge-success-custom {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        font-weight: 600;
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #198754;
+    }
+
+    .content-card h4 {
+        color: #198754;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .content-card .fa-fish,
+    .content-card .fa-info-circle,
+    .content-card .fa-water,
+    .content-card .fa-fishing-rod,
+    .content-card .fa-carrot,
+    .content-card .fa-gavel,
+    .content-card .fa-ruler {
+        color: #198754;
+    }
+
+    .species-image-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        margin-top: 2rem;
+    }
+
+    .species-image-container img {
+        width: 100%;
+        max-height: 500px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .species-image-container:hover img {
+        transform: scale(1.05);
+    }
+
+    .btn-success-custom {
+        background: linear-gradient(135deg, #198754, #20c997);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
+        color: white;
+    }
+
+    .spec-item {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        border-left: 3px solid #198754;
+    }
+
+    .spec-item strong {
+        color: #198754;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-    <!-- Species Header -->
-    <div class="row mb-4">
-        <div class="col-lg-10 mx-auto">
-            <!-- Back to List -->
-            <div class="mb-3">
-                <a href="{% url 'main:fish_species_list' %}" class="btn btn-sm btn-outline-secondary">
-                    <i class="fas fa-arrow-left"></i> Înapoi la Lista Speciilor
-                </a>
+<!-- Hero Section -->
+<section class="species-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="mb-3">
+                    <a href="{% url 'main:fish_species_list' %}" class="btn btn-light btn-sm">
+                        <i class="fas fa-arrow-left"></i> Înapoi la Lista Speciilor
+                    </a>
+                </div>
+
+                <div class="mb-3">
+                    <span class="badge-success-custom">
+                        <i class="fas fa-fish me-2"></i>{{ species.get_category_display }}
+                    </span>
+                </div>
+
+                <h1 class="display-4">{{ species.name }}</h1>
+
+                {% if species.scientific_name %}
+                <p class="lead fst-italic">{{ species.scientific_name }}</p>
+                {% endif %}
             </div>
-
-            <!-- Category Badge -->
-            <div class="mb-3">
-                <span class="badge bg-primary">
-                    {{ species.get_category_display }}
-                </span>
-            </div>
-
-            <!-- Species Name -->
-            <h1 class="display-4 mb-2">{{ species.name }}</h1>
-
-            <!-- Scientific Name -->
-            {% if species.scientific_name %}
-            <p class="lead text-muted fst-italic">{{ species.scientific_name }}</p>
-            {% endif %}
-
-            <!-- Featured Image -->
-            {% if species.image %}
-            <div class="mt-4">
-                <img src="{{ species.image.url }}"
-                     class="img-fluid rounded shadow-sm"
-                     alt="{{ species.name }}"
-                     style="width: 100%; max-height: 500px; object-fit: cover;">
-            </div>
-            {% endif %}
         </div>
     </div>
+</section>
+
+<div class="container">
+    <!-- Featured Image -->
+    {% if species.image %}
+    <div class="row mb-4">
+        <div class="col-lg-10 mx-auto">
+            <div class="species-image-container">
+                <img src="{{ species.image.url }}" alt="{{ species.name }}">
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Main Content -->
     <div class="row">
         <div class="col-lg-10 mx-auto">
-            <!-- Basic Description -->
             <!-- Detailed Description -->
             {% if species.detailed_description %}
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h4 class="card-title mb-3">
-                        <i class="fas fa-info-circle text-primary"></i> Descriere
-                    </h4>
-                    <div class="species-content">
-                        {{ species.detailed_description|linebreaks }}
-                    </div>
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-info-circle me-2"></i> Descriere
+                </h4>
+                <div class="species-content">
+                    {{ species.detailed_description|linebreaks }}
                 </div>
             </div>
             {% else %}
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h4 class="card-title mb-3">
-                        <i class="fas fa-info-circle text-primary"></i> Descriere
-                    </h4>
-                    <div class="species-content">
-                        <p class="text-muted">Descrierea detaliată pentru această specie va fi adăugată în curând.</p>
-                    </div>
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-info-circle me-2"></i> Descriere
+                </h4>
+                <div class="species-content">
+                    <p class="text-muted">Descrierea detaliată pentru această specie va fi adăugată în curând.</p>
                 </div>
             </div>
             {% endif %}
 
             <!-- Habitat -->
             {% if species.habitat %}
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h4 class="card-title mb-3">
-                        <i class="fas fa-water text-primary"></i> Habitat și Distribuție
-                    </h4>
-                    <div class="species-content">
-                        {{ species.habitat|safe }}
-                    </div>
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-water me-2"></i> Habitat și Distribuție
+                </h4>
+                <div class="species-content">
+                    {{ species.habitat|safe }}
                 </div>
             </div>
             {% endif %}
 
             <!-- Fishing Techniques -->
             {% if species.fishing_techniques %}
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h4 class="card-title mb-3">
-                        <i class="fas fa-fishing-rod text-primary"></i> Tehnici de Pescuit
-                    </h4>
-                    <div class="species-content">
-                        {{ species.fishing_techniques|safe }}
-                    </div>
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-fishing-rod me-2"></i> Tehnici de Pescuit
+                </h4>
+                <div class="species-content">
+                    {{ species.fishing_techniques|safe }}
                 </div>
             </div>
             {% endif %}
 
             <!-- Best Baits -->
             {% if species.best_baits %}
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h4 class="card-title mb-3">
-                        <i class="fas fa-cheese text-primary"></i> Momeală Recomandată
-                    </h4>
-                    <div class="species-content">
-                        {{ species.best_baits|safe }}
-                    </div>
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-carrot me-2"></i> Momeală Recomandată
+                </h4>
+                <div class="species-content">
+                    {{ species.best_baits|safe }}
                 </div>
             </div>
             {% endif %}
 
             <!-- Legal Information -->
             {% if species.legal_info %}
-            <div class="card shadow-sm mb-4 border-warning">
-                <div class="card-body">
-                    <h4 class="card-title mb-3">
-                        <i class="fas fa-gavel text-warning"></i> Informații Legale
-                    </h4>
-                    <div class="species-content">
-                        {{ species.legal_info|safe }}
-                    </div>
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-gavel me-2"></i> Informații Legale
+                </h4>
+                <div class="species-content alert alert-warning">
+                    {{ species.legal_info|safe }}
                 </div>
             </div>
             {% endif %}
 
             <!-- Lakes Where This Species Can Be Found -->
             {% if lakes %}
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h4 class="card-title mb-3">
-                        <i class="fas fa-map-marked-alt text-primary"></i>
-                        Lacuri Unde Poți Găsi {{ species.name }}
-                        <small class="text-muted">({{ total_lakes }} locații)</small>
-                    </h4>
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-map-marked-alt me-2"></i>
+                    Lacuri Unde Poți Găsi {{ species.name }}
+                    <small class="text-muted">({{ total_lakes }} locații)</small>
+                </h4>
 
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
-                        {% for lake in lakes %}
-                        <div class="col">
-                            <div class="card h-100 border-0 bg-light">
-                                <div class="card-body">
-                                    <h6 class="card-title">
-                                        <a href="{% url 'main:lake_detail' lake.slug %}" class="text-decoration-none">
-                                            {{ lake.name }}
-                                        </a>
-                                    </h6>
-                                    <p class="card-text small text-muted mb-2">
-                                        <i class="fas fa-map-marker-alt"></i> {{ lake.county.name }}
-                                    </p>
-                                    <p class="card-text small mb-0">
-                                        <span class="badge bg-success">{{ lake.price_24h }} RON / 24h</span>
-                                    </p>
-                                </div>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                    {% for lake in lakes %}
+                    <div class="col">
+                        <div class="card h-100 border-0 bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <a href="{% url 'main:lake_detail' lake.slug %}" class="text-success text-decoration-none">
+                                        {{ lake.name }}
+                                    </a>
+                                </h6>
+                                <p class="card-text small text-muted mb-2">
+                                    <i class="fas fa-map-marker-alt"></i> {{ lake.county.name }}
+                                </p>
+                                <p class="card-text small mb-0">
+                                    <span class="badge bg-success">{{ lake.price_24h }} RON / 24h</span>
+                                </p>
                             </div>
                         </div>
-                        {% endfor %}
                     </div>
-
-                    {% if total_lakes > 12 %}
-                    <div class="text-center mt-3">
-                        <a href="{% url 'main:fishing_locations' %}?fish_types[]={{ species.name }}" class="btn btn-outline-primary">
-                            <i class="fas fa-search"></i> Vezi Toate Locațiile ({{ total_lakes }})
-                        </a>
-                    </div>
-                    {% endif %}
+                    {% endfor %}
                 </div>
+
+                {% if total_lakes > 12 %}
+                <div class="text-center mt-3">
+                    <a href="{% url 'main:fishing_locations' %}?fish_types[]={{ species.name }}" class="btn btn-success">
+                        <i class="fas fa-search"></i> Vezi Toate Locațiile ({{ total_lakes }})
+                    </a>
+                </div>
+                {% endif %}
             </div>
             {% endif %}
 
             <!-- Related Species -->
             {% if related_species %}
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h4 class="card-title mb-3">
-                        <i class="fas fa-fish text-primary"></i> Specii Similare
-                    </h4>
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-fish me-2"></i> Specii Similare
+                </h4>
                     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
                         {% for related in related_species %}
                         <div class="col">
@@ -230,12 +315,12 @@
                                 {% else %}
                                 <div class="card-img-top d-flex align-items-center justify-content-center"
                                      style="height: 120px; background-color: #f8f9fa;">
-                                    <i class="fas fa-fish fa-2x text-muted"></i>
+                                    <i class="fas fa-fish fa-2x text-success"></i>
                                 </div>
                                 {% endif %}
                                 <div class="card-body">
                                     <h6 class="card-title small mb-0">
-                                        <a href="{% url 'main:fish_species_detail' related.slug %}" class="text-decoration-none">
+                                        <a href="{% url 'main:fish_species_detail' related.slug %}" class="text-success text-decoration-none">
                                             {{ related.name }}
                                         </a>
                                     </h6>
@@ -244,31 +329,29 @@
                         </div>
                         {% endfor %}
                     </div>
-                </div>
             </div>
             {% endif %}
 
             <!-- Share Section -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h6 class="mb-3">
-                        <i class="fas fa-share-alt text-primary"></i> Distribuie acest ghid
-                    </h6>
-                    <div class="d-flex flex-wrap gap-2">
-                        <a href="https://www.facebook.com/sharer/sharer.php?u=https://rasfatul-pescarului.ro{% url 'main:fish_species_detail' species.slug %}"
-                           target="_blank"
-                           class="btn btn-sm btn-primary">
-                            <i class="fab fa-facebook-f"></i> Facebook
-                        </a>
-                        <a href="https://twitter.com/intent/tweet?url=https://rasfatul-pescarului.ro{% url 'main:fish_species_detail' species.slug %}&text={{ species.name }}"
-                           target="_blank"
-                           class="btn btn-sm btn-info text-white">
-                            <i class="fab fa-twitter"></i> Twitter
-                        </a>
-                        <a href="https://wa.me/?text={{ species.name }}%20https://rasfatul-pescarului.ro{% url 'main:fish_species_detail' species.slug %}"
-                           target="_blank"
-                           class="btn btn-sm btn-success">
-                            <i class="fab fa-whatsapp"></i> WhatsApp
+            <div class="content-card" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                <h6 class="mb-3">
+                    <i class="fas fa-share-alt text-success me-2"></i> Distribuie acest ghid
+                </h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://rasfatul-pescarului.ro{% url 'main:fish_species_detail' species.slug %}"
+                       target="_blank"
+                       class="btn btn-sm btn-primary">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?url=https://rasfatul-pescarului.ro{% url 'main:fish_species_detail' species.slug %}&text={{ species.name }}"
+                       target="_blank"
+                       class="btn btn-sm btn-info text-white">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                    <a href="https://wa.me/?text={{ species.name }}%20https://rasfatul-pescarului.ro{% url 'main:fish_species_detail' species.slug %}"
+                       target="_blank"
+                       class="btn btn-sm btn-success">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
                         </a>
                     </div>
                 </div>
