@@ -150,10 +150,11 @@
     line-height: 1.6;
 }
 
-/* Fish species container with fixed height */
+/* Fish species container with FIXED height to prevent card height variations */
 .fish-species-container {
-    min-height: 3.5rem;
+    height: 5.5rem;
     align-content: flex-start;
+    overflow: hidden;
 }
 
 /* Stats container grows to fill space */
@@ -190,6 +191,9 @@
     flex-wrap: wrap;
     gap: 0.25rem;
     margin-bottom: 1rem;
+    height: 5.5rem;
+    overflow: hidden;
+    align-content: flex-start;
 }
 
 .fish-badge {
