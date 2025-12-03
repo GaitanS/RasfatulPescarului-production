@@ -412,7 +412,7 @@ def create_blog_articles():
                 'author': admin_user,
                 'is_published': True,
                 'published_date': published_date,
-                'meta_description': article_data['excerpt'],
+                'meta_description': (article_data['excerpt'][:157] + '...') if len(article_data['excerpt']) > 160 else article_data['excerpt'],
                 'meta_keywords': 'pescuit, România, ' + article_data['category'].name.lower(),
             }
         )
