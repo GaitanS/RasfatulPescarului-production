@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://rasfatul-pescarului.ro/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /accounts/
+Disallow: /api/
+Disallow: /static/admin/
+Disallow: /media/private/
+
+# Allow important pages
+Allow: /static/
+Allow: /media/
+Allow: /locations/
+Allow: /solunar-calendar/
+Allow: /about/
+Allow: /contact/
+
+# Crawl delay (optional)
+Crawl-delay: 1

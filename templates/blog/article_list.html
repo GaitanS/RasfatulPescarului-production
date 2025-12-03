@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blog Pescuit Sportiv - Răsfățul Pescarului{% endblock %}
+
+{% block description %}Articole despre pescuit sportiv, tehnici, echipamente și cele mai bune locuri de pescuit din România. Ghiduri complete și sfaturi de la experți.{% endblock %}
+
+{% block keywords %}blog pescuit, articole pescuit, tehnici pescuit, echipamente, sfaturi pescuit{% endblock %}
+
+{% block canonical %}https://rasfatul-pescarului.ro/blog/{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Blog Pescuit Sportiv - Răsfățul Pescarului",
+    "description": "Articole despre pescuit sportiv în România",
+    "url": "https://rasfatul-pescarului.ro/blog/",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Răsfățul Pescarului",
+        "url": "https://rasfatul-pescarului.ro"
+    }
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.blog-hero {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    color: white;
+    padding: 5rem 0 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.blog-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{% static "images/hero.webp" %}') center/cover;
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.blog-hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+.blog-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.blog-content {
+    padding: 4rem 0;
+    background: #f8f9fa;
+}
+
+.filter-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.article-card {
+    background: white;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.article-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.article-card .card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.article-card .card-title {
+    color: #198754;
+    font-weight: 600;
+    min-height: 3em;
+    line-height: 1.5;
+}
+
+.article-card .card-text {
+    flex-grow: 1;
+    margin-bottom: 1rem;
+}
+
+.article-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #198754, #20c997);
+    border: none;
+}
+
+.btn-outline-success:hover {
+    background: linear-gradient(135deg, #198754, #20c997);
+    border-color: #198754;
+}
+
+.btn-group {
+    gap: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.btn-group .btn {
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .btn-group {
+        flex-direction: column;
+    }
+
+    .btn-group .btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="blog-hero">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-10">
+                <h1>
+                    <i class="fas fa-newspaper me-2"></i> Blog Pescuit Sportiv
+                </h1>
+                <p class="lead">Articole, ghiduri și sfaturi pentru pescarii pasionați</p>
+                <p class="mb-0">
+                    Total articole: <strong>{{ total_articles }}</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Content Section -->
+<section class="blog-content">
+    <div class="container">
+        <!-- Categories Filter -->
+        <div class="filter-section">
+            <h6 class="text-success fw-bold mb-3">
+                <i class="fas fa-filter"></i> Filtrează după categorie
+            </h6>
+            <div class="btn-group flex-wrap" role="group">
+                <a href="{% url 'main:blog_home' %}"
+                   class="btn {% if not selected_category %}btn-success{% else %}btn-outline-success{% endif %}">
+                    <i class="fas fa-th"></i> Toate ({{ total_articles }})
+                </a>
+                {% for category in categories %}
+                <a href="{% url 'main:blog_home' %}?category={{ category.slug }}"
+                   class="btn {% if selected_category == category %}btn-success{% else %}btn-outline-success{% endif %}">
+                    <i class="{{ category.icon_class }}"></i> {{ category.name }} ({{ category.article_count }})
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Articles Grid -->
+        <div class="row">
+            {% for article in articles %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="article-card">
+                {% if article.featured_image %}
+                <img src="{{ article.featured_image.url }}" class="card-img-top" alt="{{ article.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-fish fa-3x text-muted"></i>
+                </div>
+                {% endif %}
+
+                <div class="card-body d-flex flex-column">
+                    {% if article.category %}
+                    <span class="badge bg-success mb-2 align-self-start">
+                        <i class="{{ article.category.icon_class }}"></i> {{ article.category.name }}
+                    </span>
+                    {% endif %}
+
+                    <h5 class="card-title">{{ article.title }}</h5>
+                    <p class="card-text text-muted">{{ article.excerpt|truncatewords:20 }}</p>
+
+                    <div class="mt-auto">
+                        <small class="text-muted d-block mb-2">
+                            <i class="fas fa-user"></i> {{ article.author_name }}
+                            | <i class="fas fa-calendar"></i> {{ article.published_date|date:"d M Y" }}
+                        </small>
+                        <small class="text-muted d-block mb-3">
+                            <i class="fas fa-clock"></i> {{ article.reading_time }} min citire
+                            | <i class="fas fa-eye"></i> {{ article.views_count }} vizualizări
+                        </small>
+
+                        <a href="{% url 'main:article_detail' article.slug %}" class="btn btn-outline-success btn-sm">
+                            Citește articolul <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Nu există articole disponibile în această categorie.
+                {% if selected_category %}
+                <a href="{% url 'main:blog_home' %}" class="alert-link">Vezi toate articolele</a>
+                {% endif %}
+            </div>
+        </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if articles.has_other_pages %}
+    <nav aria-label="Navigare pagini" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if articles.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ articles.previous_page_number }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}">
+                    <i class="fas fa-chevron-left"></i> Anterior
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in articles.paginator.page_range %}
+                {% if num == articles.number %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num > articles.number|add:'-3' and num < articles.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}">
+                        {{ num }}
+                    </a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if articles.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ articles.next_page_number }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}">
+                    Următor <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+        <!-- Sidebar (Featured articles) -->
+        {% if featured_articles %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="text-success mb-4">
+                    <i class="fas fa-star me-2"></i> Articole Recomandate
+                </h3>
+                <div class="row">
+                    {% for article in featured_articles %}
+                    <div class="col-md-4 mb-3">
+                        <div class="article-card">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ article.title }}</h6>
+                                <p class="card-text small text-muted">{{ article.excerpt|truncatewords:15 }}</p>
+                                <a href="{% url 'main:article_detail' article.slug %}" class="btn btn-sm btn-outline-success">
+                                    Citește
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,209 @@
+{% load static %}
+{% load compress %}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}Răsfățul Pescarului - Locuri de Pescuit și Echipamente{% endblock %}</title>
+    <meta name="description" content="{% block description %}Descoperă cele mai bune locuri de pescuit din România, echipamente de calitate și calendarul solunar pentru pescuit. Ghidul complet al pescarului.{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}pescuit, locuri pescuit, echipamente pescuit, calendar solunar, pescuit România, lacuri pescuit{% endblock %}">
+    <meta name="author" content="Răsfățul Pescarului">
+    <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{% block og_title %}{{ block.super }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ block.super }}{% endblock %}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}https://rasfatul-pescarului.ro{{ request.get_full_path }}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% static 'images/logo.png' %}{% endblock %}">
+    <meta property="og:site_name" content="Răsfățul Pescarului">
+    <meta property="og:locale" content="ro_RO">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ block.super }}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{{ block.super }}{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{% static 'images/logo.png' %}{% endblock %}">
+
+    <!-- Canonical URL - Fixed for duplicate content -->
+    {% block canonical_tag %}
+    <link rel="canonical" href="{% block canonical %}https://rasfatul-pescarului.ro{{ request.path }}{% endblock %}">
+    {% endblock %}
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    {% block external_css %}{% endblock %}
+
+    <!-- Extra CSS -->
+    {% block extra_css %}{% endblock %}
+
+    <!-- Compressed CSS -->
+    {% compress css %}
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/adsense.css' %}" rel="stylesheet">
+    {% block compressed_css %}{% endblock %}
+    {% endcompress %}
+
+    {% block styles %}{% endblock %}
+    <!-- Cookie Consent -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Răsfățul Pescarului",
+        "url": "https://rasfatul-pescarului.ro",
+        "description": "Descoperă cele mai bune locuri de pescuit din România, echipamente de calitate și calendarul solunar pentru pescuit.",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://rasfatul-pescarului.ro/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Răsfățul Pescarului",
+            "url": "https://rasfatul-pescarului.ro",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://rasfatul-pescarului.ro{% static 'images/logo.png' %}"
+            }
+        }
+    }
+    </script>
+
+    {% block structured_data %}{% endblock %}
+
+    <!-- ADSENSE: REACTIVATE AFTER APPROVAL
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4988585637197167" crossorigin="anonymous"></script>
+    -->
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    {% include 'navbar.html' %}
+
+    <!-- Breadcrumbs -->
+    {% include 'breadcrumbs.html' %}
+
+    <main>
+        {% block content %}{% endblock %}
+
+            <!-- ADSENSE: REACTIVATE AFTER APPROVAL
+            <div class="ad-container text-center my-4">
+                <div class="ad-label">
+                    <small class="text-muted">Publicitate</small>
+                </div>
+                <ins class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-4988585637197167"
+                    data-ad-slot="auto"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            </div>
+            -->
+    </main>
+    
+    {% include 'footer.html' %}
+    
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Dropdown debug script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Test dropdown functionality
+            const dropdownToggle = document.getElementById('navbarDropdown');
+            if (dropdownToggle) {
+                dropdownToggle.addEventListener('click', function(e) {
+                    console.log('Dropdown clicked');
+                });
+            }
+        });
+    </script>
+    
+    {% block external_js %}{% endblock %}
+    
+    <!-- Compressed JavaScript -->
+    {% compress js %}
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/adsense.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+    {% endcompress %}
+    
+    {% block scripts %}{% endblock %}
+
+    <script>
+    window.cookieconsent.initialise({
+        palette: {
+            popup: {
+                background: "#198754",
+                text: "#ffffff"
+            },
+            button: {
+                background: "#ffffff",
+                text: "#198754"
+            }
+        },
+        type: "opt-in",
+        content: {
+            message: "Acest site folosește cookie-uri pentru a vă oferi cea mai bună experiență și pentru a personaliza conținutul și reclamele.",
+            allow: "Accept",
+            deny: "Refuz",
+            link: "Află mai multe",
+            href: "{% url 'main:privacy' %}"
+        },
+        onInitialise: function(status) {
+            var type = this.options.type;
+            var didConsent = this.hasConsented();
+            if (type == 'opt-in' && didConsent) {
+                // Enable cookies and ads
+                document.body.classList.add('cookies-accepted');
+                // ADSENSE: REACTIVATE AFTER APPROVAL
+                // if (typeof adsbygoogle !== 'undefined') {
+                //     (adsbygoogle = window.adsbygoogle || []).push({});
+                // }
+            }
+        },
+        onStatusChange: function(status, chosenBefore) {
+            var type = this.options.type;
+            var didConsent = this.hasConsented();
+            if (type == 'opt-in' && didConsent) {
+                // Enable cookies and ads
+                document.body.classList.add('cookies-accepted');
+                // Reload page to show ads
+                if (chosenBefore) {
+                    window.location.reload();
+                }
+            } else {
+                // Disable cookies and ads
+                document.body.classList.remove('cookies-accepted');
+            }
+        }
+    });
+
+    // Check if user has already consented and add class
+    if (window.cookieconsent && window.cookieconsent.hasConsented && window.cookieconsent.hasConsented()) {
+        document.body.classList.add('cookies-accepted');
+    }
+    </script>
+</body>
+</html>

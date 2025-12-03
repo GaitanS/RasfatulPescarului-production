@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+/* Card symmetry styling */
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* Title with minimum height */
+.card-title {
+    min-height: 3em;
+    line-height: 1.5;
+}
+
+/* Description with fixed height */
+.card-text {
+    min-height: 3.2em;
+    line-height: 1.6;
+    margin-bottom: 1rem !important;
+}
+
+/* Lake info container grows to fill space */
+.lake-info {
+    flex-grow: 1;
+}
+
+.lake-info ul {
+    margin-bottom: 0.5rem;
+}
+
+/* Button section stays at bottom */
+.card-body .d-grid {
+    margin-top: auto;
+}
+
+/* Rating section with fixed height */
+.card-body > div.mb-2 {
+    min-height: 2rem;
+}
+
+/* Fish species badges styling */
+.fish-species-section {
+    height: 5.5rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.fish-species-section .d-flex {
+    align-content: flex-start;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'main:home' %}">Acasă</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'main:fishing_locations' %}">Bălți de pescuit</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ county.name }}</li>
+                </ol>
+            </nav>
+            <h1 class="mb-3">Bălți de pescuit în {{ county.name }}</h1>
+            <p class="lead">Descoperă cele mai bune locuri de pescuit din județul {{ county.name }}</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="mb-0">{{ lakes.count }} rezultate găsite</p>
+                </div>
+                <div>
+                    <a href="{% url 'main:locations_map' %}" class="btn btn-outline-success">
+                        <i class="fas fa-map-marker-alt me-2"></i>Vezi pe hartă
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for lake in lakes %}
+        <div class="col">
+            <div class="card h-100">
+                {% with display_image=lake.get_display_image %}
+                {% if display_image %}
+                <img src="{{ display_image.url }}" class="card-img-top" alt="{{ lake.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="{% static 'images/lake-placeholder.webp' %}" class="card-img-top" alt="{{ lake.name }}" style="height: 200px; object-fit: cover;" loading="lazy">
+                {% endif %}
+                {% endwith %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ lake.name }}</h5>
+                    <p class="card-text">{{ lake.description|truncatechars:100 }}</p>
+
+                    <!-- Rating Display -->
+                    {% if lake.total_reviews > 0 %}
+                    <div class="mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="rating-stars">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= lake.average_rating %}
+                                        <i class="fas fa-star" style="color: #ffc107;"></i>
+                                    {% else %}
+                                        <i class="far fa-star" style="color: #e9ecef;"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="fw-bold" style="color: #ffc107;">{{ lake.average_rating }}</span>
+                            <small class="text-muted">({{ lake.total_reviews }})</small>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Fish Species Badges -->
+                    <div class="fish-species-section">
+                        {% if lake.fish_species.all %}
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for fish in lake.fish_species.all|slice:":4" %}
+                            <span class="badge" style="background-color: #198754 !important; font-size: 0.75rem;">
+                                <i class="fas fa-fish me-1"></i>{{ fish.name }}
+                            </span>
+                            {% endfor %}
+                            {% if lake.fish_species.count > 4 %}
+                            <span class="badge" style="background-color: #198754 !important; font-size: 0.75rem;">
+                                +{{ lake.fish_species.count|add:"-4" }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Lake Information -->
+                    <div class="lake-info">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-coins me-2"></i>{{ lake.price_12h }} Lei/12h • {{ lake.price_24h }} Lei/24h</li>
+                            <li><i class="fas fa-map-marker-alt me-2"></i>{{ lake.address }}</li>
+                        </ul>
+                    </div>
+                    <div class="d-grid">
+                        <a href="{% url 'main:lake_detail' lake.slug %}" class="btn btn-success">
+                            Vezi detalii
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                Nu există bălți de pescuit înregistrate în acest județ.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

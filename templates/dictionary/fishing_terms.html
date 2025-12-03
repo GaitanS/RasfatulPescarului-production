@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dicționar Termeni Pescuit - Răsfățul Pescarului{% endblock %}
+
+{% block description %}Dicționar complet de termeni și expresii de pescuit sportiv. Învață limbajul pescarilor profesioniști și îmbunătățește-ți cunoștințele despre pescuit.{% endblock %}
+
+{% block keywords %}dicționar pescuit, termeni pescuit, vocabular pescuit, expresii pescuit, glosar pescuit{% endblock %}
+
+{% block canonical %}https://rasfatul-pescarului.ro/dictionar-pescuit/{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Dicționar Termeni Pescuit Sportiv",
+    "description": "Dicționar complet de termeni și expresii de pescuit sportiv",
+    "url": "https://rasfatul-pescarului.ro/dictionar-pescuit/",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Răsfățul Pescarului",
+        "url": "https://rasfatul-pescarului.ro"
+    },
+    "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Acasă",
+            "item": "https://rasfatul-pescarului.ro/"
+        }, {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Dicționar Pescuit",
+            "item": "https://rasfatul-pescarului.ro/dictionar-pescuit/"
+        }]
+    }
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.dictionary-hero {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    color: white;
+    padding: 5rem 0 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.dictionary-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{% static "images/hero.webp" %}') center/cover;
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.dictionary-hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+.dictionary-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.dictionary-content {
+    padding: 4rem 0;
+    background: #f8f9fa;
+}
+
+.search-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.alphabet-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.alphabet-card h6 {
+    color: #198754;
+    font-weight: 600;
+}
+
+.term-card {
+    background: white;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    height: 100%;
+}
+
+.term-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.term-card .card-title a {
+    color: #198754;
+    font-weight: 600;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #198754, #20c997);
+    border: none;
+}
+
+.btn-outline-success:hover {
+    background: linear-gradient(135deg, #198754, #20c997);
+    border-color: #198754;
+}
+
+.info-section {
+    background: white;
+    border-radius: 1rem;
+    padding: 2.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.info-section h3 {
+    color: #198754;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="dictionary-hero">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-10">
+                <h1>
+                    <i class="fas fa-book me-2"></i> Dicționar Termeni Pescuit
+                </h1>
+                <p class="lead">Descoperă și învață termenii esențiali ai pescuitului sportiv</p>
+                <p class="mb-0">
+                    Total termeni: <strong>{{ total_terms }}</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Content Section -->
+<section class="dictionary-content">
+    <div class="container">
+        <!-- Search and Filters -->
+        <div class="search-card">
+                    <form method="get" action="{% url 'main:fishing_dictionary' %}" class="row g-3">
+                        <!-- Search Input -->
+                        <div class="col-md-6">
+                            <label for="search" class="form-label">
+                                <i class="fas fa-search"></i> Caută termen
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="search"
+                                   name="search"
+                                   placeholder="Introdu termenul sau cuvinte cheie..."
+                                   value="{{ search_query|default:'' }}">
+                        </div>
+
+                        <!-- Category Filter -->
+                        <div class="col-md-4">
+                            <label for="category" class="form-label">
+                                <i class="fas fa-filter"></i> Categorie
+                            </label>
+                            <select class="form-select" id="category" name="category">
+                                <option value="">Toate categoriile</option>
+                                {% for cat_value, cat_label in categories %}
+                                <option value="{{ cat_value }}" {% if selected_category == cat_value %}selected{% endif %}>
+                                    {{ cat_label }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-search"></i> Caută
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Clear Filters -->
+                    {% if search_query or selected_category or selected_letter %}
+                    <div class="mt-3">
+                        <a href="{% url 'main:fishing_dictionary' %}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-times"></i> Șterge filtre
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+        <!-- Alphabet Navigation -->
+        <div class="alphabet-card">
+            <h6 class="mb-3">
+                <i class="fas fa-font"></i> Navigare alfabetică
+            </h6>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{% url 'main:fishing_dictionary' %}"
+                   class="btn btn-sm {% if not selected_letter %}btn-success{% else %}btn-outline-success{% endif %}">
+                    Toate
+                </a>
+                {% for letter in alphabet %}
+                {% if letter in available_letters %}
+                <a href="?letter={{ letter }}"
+                   class="btn btn-sm {% if selected_letter == letter %}btn-success{% else %}btn-outline-success{% endif %}">
+                    {{ letter }}
+                </a>
+                {% else %}
+                <button class="btn btn-sm btn-outline-secondary" disabled>{{ letter }}</button>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+    <!-- Terms List -->
+    <div class="row">
+        <div class="col-12">
+            {% if terms %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for term in terms %}
+                <div class="col">
+                    <div class="term-card">
+                        <div class="card-body">
+                            <!-- Category Badge -->
+                            <span class="badge bg-success mb-2">
+                                {{ term.get_category_display }}
+                            </span>
+
+                            <!-- Term Title -->
+                            <h5 class="card-title">
+                                <a href="{% url 'main:fishing_term_detail' term.slug %}" class="text-decoration-none">
+                                    {{ term.term }}
+                                </a>
+                            </h5>
+
+                            <!-- Short Definition -->
+                            <p class="card-text text-muted">
+                                {{ term.definition|truncatewords:20 }}
+                            </p>
+
+                            <!-- Read More -->
+                            <a href="{% url 'main:fishing_term_detail' term.slug %}" class="btn btn-sm btn-outline-success">
+                                Citește mai mult <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+
+                        <!-- Footer with Meta Info -->
+                        {% if term.synonyms or term.related_terms.exists %}
+                        <div class="card-footer bg-light">
+                            <small class="text-muted">
+                                {% if term.synonyms %}
+                                <i class="fas fa-tag"></i> Sinonime: {{ term.synonyms|truncatewords:3 }}
+                                {% endif %}
+                                {% if term.related_terms.exists %}
+                                <i class="fas fa-link"></i> {{ term.related_terms.count }} termeni înrudiți
+                                {% endif %}
+                            </small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% else %}
+            <!-- No Results -->
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                Nu am găsit termeni care să corespundă criteriilor tale de căutare.
+                {% if search_query or selected_category or selected_letter %}
+                <a href="{% url 'main:fishing_dictionary' %}" class="alert-link">Vezi toți termenii</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+        <!-- Info Section -->
+        <div class="row mt-5">
+            <div class="col-md-8 mx-auto">
+                <div class="info-section text-center">
+                    <h3 class="mb-3">
+                        <i class="fas fa-graduation-cap me-2"></i> Despre Dicționarul de Pescuit
+                    </h3>
+                    <p class="mb-0">
+                        Dicționarul nostru conține termeni esențiali pentru orice pescar, de la începători la profesioniști.
+                        Învață limbajul specific pescuitului sportiv și îmbunătățește-ți comunicarea cu alți pescari pasionați.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

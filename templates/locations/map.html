@@ -1,0 +1,1760 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block external_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block compressed_css %}
+<style>
+    /* Hero Section */
+    .map-hero {
+        background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+        color: white;
+        padding: 3rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .map-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "images/hero.png" %}') center/cover;
+        opacity: 0.1;
+        z-index: 1;
+    }
+
+    .map-hero .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Map container */
+    #map {
+        height: 70vh;
+        min-height: 500px;
+        width: 100%;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        background: #198754 !important;
+        overflow: hidden;
+        border: 3px solid white;
+    }
+
+    .leaflet-container {
+        background: #198754 !important;
+        border-radius: 1rem;
+    }
+
+    .leaflet-tile-container {
+        background-color: #198754 !important;
+    }
+
+    .leaflet-tile-pane {
+        display: none !important; /* Hide tile layer completely */
+    }
+
+    .leaflet-control-attribution {
+        display: none;
+    }
+
+    /* Map controls styling */
+    .leaflet-control-zoom {
+        border: none !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
+
+    .leaflet-control-zoom a {
+        background: white !important;
+        color: #198754 !important;
+        border: none !important;
+        font-weight: bold !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .leaflet-control-zoom a:hover {
+        background: #198754 !important;
+        color: white !important;
+    }
+
+    .marker {
+        position: absolute;
+        width: 25px;
+        height: 41px;
+        margin-left: -12px;
+        margin-top: -41px;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    .marker-popup {
+        position: absolute;
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        z-index: 3;
+        display: none;
+    }
+
+    .marker-popup.active {
+        display: block;
+    }
+
+    /* Filters sidebar */
+    .filters-card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border: none;
+        overflow: hidden;
+        position: sticky;
+        top: 2rem;
+    }
+
+    .filters-header {
+        background: linear-gradient(135deg, #198754, #20c997);
+        color: white;
+        padding: 1.5rem;
+        margin: 0;
+    }
+
+    .filters-body {
+        padding: 1.5rem;
+    }
+
+    .filter-group {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .filter-group:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .filter-label {
+        font-weight: 600;
+        color: #198754;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .form-check {
+        margin-bottom: 0.5rem;
+    }
+
+    .form-check-input:checked {
+        background-color: #198754;
+        border-color: #198754;
+    }
+
+    .form-range::-webkit-slider-thumb {
+        background: #198754;
+    }
+
+    .form-range::-moz-range-thumb {
+        background: #198754;
+        border: none;
+    }
+
+    .btn-apply-filters {
+        background: linear-gradient(135deg, #198754, #20c997);
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-apply-filters:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
+        color: white;
+    }
+
+    /* Fix dropdown styling */
+    .form-select {
+        border: 1px solid #e9ecef;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        background-color: white;
+        color: #495057;
+        transition: all 0.3s ease;
+        width: 100%;
+        box-sizing: border-box;
+        appearance: menulist;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+        padding-right: 2.5rem;
+    }
+
+    .form-select:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+        outline: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23198754' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+    }
+
+    .form-select option {
+        padding: 0.5rem;
+        background-color: white;
+        color: #495057;
+    }
+
+    /* Prevent dropdown overflow */
+    .form-select {
+        overflow: hidden;
+    }
+
+    /* Fix dropdown positioning and overflow */
+    .filters-card {
+        position: static !important;
+        overflow: visible !important;
+        z-index: 1050;
+    }
+
+    /* Hide filters when modal is open */
+    body.modal-open .filters-card {
+        z-index: 1040 !important;
+    }
+
+    .filters-body {
+        position: static !important;
+        overflow: visible !important;
+    }
+
+    .filter-group {
+        position: static !important;
+        overflow: visible !important;
+    }
+
+    /* Force dropdown to stay within viewport */
+    .form-select {
+        position: static !important;
+        z-index: 9999 !important;
+    }
+
+    /* Hide form elements when modal is open */
+    body.modal-open .form-select {
+        z-index: 1040 !important;
+    }
+
+    /* Container fixes */
+    .col-lg-3 {
+        position: static !important;
+        overflow: visible !important;
+        z-index: 9999 !important;
+    }
+
+    /* Hide container when modal is open */
+    body.modal-open .col-lg-3 {
+        z-index: 1040 !important;
+    }
+
+    .container {
+        overflow: visible !important;
+    }
+
+    .row {
+        overflow: visible !important;
+    }
+
+    /* Custom dropdown styles */
+    .custom-dropdown {
+        position: relative;
+        width: 100%;
+    }
+
+    .custom-dropdown-toggle {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e9ecef;
+        border-radius: 0.5rem;
+        background-color: white;
+        color: #495057;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .custom-dropdown-toggle:hover {
+        border-color: #198754;
+    }
+
+    .custom-dropdown-toggle:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+        outline: none;
+    }
+
+    .dropdown-arrow {
+        transition: transform 0.3s ease;
+        color: #6c757d;
+    }
+
+    .custom-dropdown-toggle.active .dropdown-arrow {
+        transform: rotate(180deg);
+        color: #198754;
+    }
+
+    .custom-dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 9999;
+        display: none;
+        margin-top: 2px;
+    }
+
+    /* Hide custom dropdown when modal is open */
+    body.modal-open .custom-dropdown-menu {
+        z-index: 1040 !important;
+    }
+
+    .custom-dropdown-menu.show {
+        display: block;
+    }
+
+    .dropdown-item {
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid #f8f9fa;
+    }
+
+    .dropdown-item:last-child {
+        border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #198754;
+    }
+
+    .dropdown-item.selected {
+        background-color: #198754;
+        color: white;
+    }
+
+    /* Mobile fixes */
+    @media (max-width: 768px) {
+        /* Navbar mobile fixes */
+        .navbar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 1030 !important;
+            width: 100% !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+        }
+
+        .navbar .container {
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+
+        .navbar-brand {
+            margin: 0 auto !important;
+            position: absolute !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+        }
+
+        .navbar-toggler {
+            position: relative !important;
+            z-index: 1031 !important;
+        }
+
+        /* Add top padding to body to account for fixed navbar */
+        body {
+            padding-top: 76px !important;
+        }
+
+        /* Map hero section adjustments */
+        .map-hero {
+            margin-top: 0 !important;
+            padding-top: 2rem !important;
+        }
+
+        /* Filters card mobile positioning */
+        .filters-card {
+            position: static !important;
+            overflow: visible !important;
+            top: auto !important;
+            margin-bottom: 2rem !important;
+            z-index: 1020 !important;
+        }
+
+        /* Hide mobile filters when modal is open */
+        body.modal-open .filters-card {
+            z-index: 1040 !important;
+        }
+
+        /* Custom dropdown mobile optimization */
+        .custom-dropdown-menu {
+            max-height: 50vh !important;
+            overflow-y: auto !important;
+            position: fixed !important;
+            left: 10px !important;
+            right: 10px !important;
+            width: auto !important;
+            z-index: 9999 !important;
+            border-radius: 0.75rem !important;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3) !important;
+            border: 2px solid #198754 !important;
+        }
+
+        /* Hide mobile dropdown when modal is open */
+        body.modal-open .custom-dropdown-menu {
+            z-index: 1040 !important;
+        }
+
+        /* Mobile dropdown items styling */
+        .custom-dropdown-menu .dropdown-item {
+            padding: 1rem 1.25rem !important;
+            font-size: 1rem !important;
+            border-bottom: 1px solid #f0f0f0 !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .custom-dropdown-menu .dropdown-item:hover,
+        .custom-dropdown-menu .dropdown-item:focus {
+            background-color: #f8f9fa !important;
+            color: #198754 !important;
+            font-weight: 600 !important;
+        }
+
+        .custom-dropdown-menu .dropdown-item.selected {
+            background-color: #198754 !important;
+            color: white !important;
+            font-weight: 600 !important;
+        }
+
+        .custom-dropdown-menu.show {
+            display: block !important;
+        }
+
+        /* Prevent body scroll when dropdown is open */
+        body.dropdown-open {
+            overflow: hidden !important;
+        }
+
+        /* Mobile dropdown backdrop */
+        .dropdown-backdrop {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            background: rgba(0,0,0,0.5) !important;
+            z-index: 9998 !important;
+            display: none !important;
+            backdrop-filter: blur(2px) !important;
+            -webkit-backdrop-filter: blur(2px) !important;
+        }
+
+        .dropdown-backdrop.show {
+            display: block !important;
+        }
+
+        /* Mobile map adjustments */
+        #map {
+            height: 60vh !important;
+            min-height: 400px !important;
+        }
+
+        /* Mobile filter adjustments */
+        .col-lg-3 {
+            order: 2 !important;
+        }
+
+        .col-lg-9 {
+            order: 1 !important;
+        }
+
+        /* Mobile nearby lakes section */
+        .nearby-lakes {
+            margin-top: 1rem !important;
+            padding: 1rem !important;
+        }
+
+        .nearby-lake-card {
+            padding: 1rem !important;
+        }
+    }
+
+    /* User location tooltip styling */
+    .user-location-tooltip {
+        background: rgba(25, 135, 84, 0.9) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 6px !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        padding: 0.5rem 0.75rem !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
+    }
+
+    .user-location-tooltip::before {
+        border-top-color: rgba(25, 135, 84, 0.9) !important;
+    }
+
+    /* Nearby lakes section */
+    .nearby-lakes {
+        margin-top: 2rem;
+        padding: 2rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .nearby-lakes-header {
+        border-bottom: 2px solid #f8f9fa;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .nearby-lake-card {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .nearby-lake-card:hover {
+        box-shadow: 0 8px 25px rgba(25, 135, 84, 0.15);
+        transform: translateY(-3px);
+        border-color: #198754;
+    }
+
+    .nearby-lake-card .distance {
+        color: #198754;
+        font-weight: 700;
+        background: rgba(25, 135, 84, 0.1);
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.875rem;
+    }
+
+    .nearby-lake-card h5 {
+        color: #198754;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .lake-info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        color: #6c757d;
+    }
+
+    .lake-info-item i {
+        color: #198754;
+        width: 20px;
+        margin-right: 0.5rem;
+    }
+
+    /* Location permission modal */
+    .location-modal {
+        z-index: 1055 !important;
+    }
+
+    .location-modal .modal-backdrop {
+        z-index: 1054 !important;
+    }
+
+    .location-modal .modal-content {
+        border-radius: 1rem;
+    }
+
+    .location-modal .modal-header {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .location-modal .modal-body {
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .location-modal .modal-footer {
+        border-top: none;
+        justify-content: center;
+        padding-top: 0;
+    }
+
+    .location-modal .location-icon {
+        font-size: 3rem;
+        color: #198653;
+        margin-bottom: 1rem;
+    }
+
+    .lake-popup {
+        max-width: 350px;
+    }
+
+    .lake-popup img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    .lake-popup h5 {
+        margin: 0 0 10px 0;
+        color: var(--dark-color);
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .lake-popup p {
+        margin: 8px 0;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .lake-popup i {
+        color: var(--primary-color);
+        width: 20px;
+        text-align: center;
+    }
+
+    .lake-popup .facilities {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 10px 0;
+    }
+
+    .lake-popup .facility {
+        background-color: #f8f9fa;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .lake-popup .price {
+        font-weight: 600;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+        margin: 12px 0;
+    }
+
+    .lake-popup .btn {
+        margin-top: 15px;
+        width: 100%;
+    }
+
+    /* Rating stars in popup */
+    .lake-popup .rating-stars {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        margin: 8px 0;
+    }
+
+    .lake-popup .rating-stars i {
+        color: #ffc107;
+        font-size: 1rem;
+        width: auto;
+    }
+
+    .lake-popup .rating-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 8px 0;
+        color: #666;
+    }
+
+    .lake-popup .rating-value {
+        font-weight: 600;
+        color: #ffc107;
+    }
+
+    /* User location pin marker */
+    .user-location-pin {
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        z-index: 1000;
+    }
+
+    .user-location-pin svg {
+        cursor: pointer;
+    }
+
+    /* User location tooltip */
+    .user-location-tooltip {
+        background-color: #198754 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 4px !important;
+        font-weight: bold !important;
+        font-size: 12px !important;
+        padding: 4px 8px !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+    }
+
+    .user-location-tooltip::before {
+        border-top-color: #198754 !important;
+    }
+
+    /* County tooltip */
+    .county-tooltip {
+        background-color: #00ff88 !important;
+        color: #000 !important;
+        border: none !important;
+        border-radius: 4px !important;
+        font-weight: bold !important;
+        font-size: 14px !important;
+        padding: 6px 10px !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3) !important;
+    }
+
+    .county-tooltip::before {
+        border-top-color: #00ff88 !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="map-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-3">Harta Locurilor de Pescuit</h1>
+                <p class="lead mb-0">Explorează și filtrează cele mai bune bălți din România</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 mb-4">
+                <!-- Filters -->
+                <div class="filters-card">
+                    <div class="filters-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-filter me-2"></i>Filtrează Locațiile
+                        </h5>
+                    </div>
+                    <div class="filters-body">
+                        <form id="filterForm">
+                            <!-- County Filter -->
+                            <div class="filter-group">
+                                <label for="county" class="filter-label">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Județ
+                                </label>
+                                <div class="custom-dropdown">
+                                    <button type="button" class="custom-dropdown-toggle" id="countyDropdown">
+                                        <span class="dropdown-text">Toate județele</span>
+                                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                                    </button>
+                                    <div class="custom-dropdown-menu" id="countyDropdownMenu">
+                                        <div class="dropdown-item" data-value="">Toate județele</div>
+                                        {% for county in counties %}
+                                        <div class="dropdown-item" data-value="{{ county.id }}">{{ county.name }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <input type="hidden" id="county" name="county" value="">
+                                </div>
+                            </div>
+
+                            <!-- Fish Types Filter -->
+                            <div class="filter-group">
+                                <label class="filter-label">
+                                    <i class="fas fa-fish me-2"></i>Specii de pești
+                                </label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Crap" id="crapCheck">
+                                    <label class="form-check-label" for="crapCheck">
+                                        <i class="fas fa-fish me-1"></i>Crap
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Caras" id="carasCheck">
+                                    <label class="form-check-label" for="carasCheck">
+                                        <i class="fas fa-fish me-1"></i>Caras
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Știucă" id="stiucaCheck">
+                                    <label class="form-check-label" for="stiucaCheck">
+                                        <i class="fas fa-fish me-1"></i>Știucă
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Șalău" id="salauCheck">
+                                    <label class="form-check-label" for="salauCheck">
+                                        <i class="fas fa-fish me-1"></i>Șalău
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Price Range Filter -->
+                            <div class="filter-group">
+                                <label for="priceRange" class="filter-label">
+                                    <i class="fas fa-coins me-2"></i>Preț maxim/12h: <span id="priceValue" class="text-success fw-bold">100</span> Lei
+                                </label>
+                                <input type="range" class="form-range" id="priceRange" min="0" max="200" step="10" value="100">
+                                <div class="d-flex justify-content-between text-muted small">
+                                    <span>0 Lei</span>
+                                    <span>200 Lei</span>
+                                </div>
+                            </div>
+
+                            <!-- Rating Filter -->
+                            <div class="filter-group">
+                                <label for="ratingFilter" class="filter-label">
+                                    <i class="fas fa-star me-2"></i>Rating minim
+                                </label>
+                                <div class="custom-dropdown">
+                                    <button type="button" class="custom-dropdown-toggle" id="ratingDropdown">
+                                        <span class="dropdown-text">Toate rating-urile</span>
+                                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                                    </button>
+                                    <div class="custom-dropdown-menu" id="ratingDropdownMenu">
+                                        <div class="dropdown-item" data-value="">Toate rating-urile</div>
+                                        <div class="dropdown-item" data-value="1">⭐ 1+ stele</div>
+                                        <div class="dropdown-item" data-value="2">⭐⭐ 2+ stele</div>
+                                        <div class="dropdown-item" data-value="3">⭐⭐⭐ 3+ stele</div>
+                                        <div class="dropdown-item" data-value="4">⭐⭐⭐⭐ 4+ stele</div>
+                                        <div class="dropdown-item" data-value="5">⭐⭐⭐⭐⭐ 5 stele</div>
+                                    </div>
+                                    <input type="hidden" id="ratingFilter" name="min_rating" value="">
+                                </div>
+                            </div>
+
+                            <!-- Facilities Filter -->
+                            <div class="filter-group">
+                                <label class="filter-label">
+                                    <i class="fas fa-cogs me-2"></i>Facilități
+                                </label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Parcare" id="parkingCheck">
+                                    <label class="form-check-label" for="parkingCheck">
+                                        <i class="fas fa-parking me-1"></i>Parcare
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Cazare" id="accommodationCheck">
+                                    <label class="form-check-label" for="accommodationCheck">
+                                        <i class="fas fa-bed me-1"></i>Cazare
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Restaurant" id="restaurantCheck">
+                                    <label class="form-check-label" for="restaurantCheck">
+                                        <i class="fas fa-utensils me-1"></i>Restaurant
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="Toalete" id="toiletsCheck">
+                                    <label class="form-check-label" for="toiletsCheck">
+                                        <i class="fas fa-restroom me-1"></i>Toalete
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-apply-filters">
+                                <i class="fas fa-search me-2"></i>Aplică Filtre
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-9">
+                <!-- Map Container -->
+                <div class="position-relative">
+                    <div id="map"></div>
+
+                    <!-- Map Legend -->
+                    <div class="position-absolute top-0 end-0 m-3" style="z-index: 1000;">
+                        <div class="bg-white rounded-3 p-3 shadow-sm">
+                            <h6 class="mb-2 fw-bold text-success">
+                                <i class="fas fa-info-circle me-1"></i>Legendă
+                            </h6>
+                            <div class="d-flex align-items-center mb-1">
+                                <div class="bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                                <small>Bălți de pescuit</small>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="bg-white border border-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                                <small>Locația mea</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nearby Lakes Section -->
+                <div class="nearby-lakes d-none" id="nearbyLakesSection">
+                    <div class="nearby-lakes-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-1 text-success fw-bold">
+                                    <i class="fas fa-location-dot me-2"></i>Bălți în Apropiere
+                                </h3>
+                                <p class="text-muted mb-0">Locațiile de pescuit din zona ta</p>
+                            </div>
+                            <button class="btn btn-outline-success" onclick="requestLocation()">
+                                <i class="fas fa-location-crosshairs me-2"></i>Actualizează Locația
+                            </button>
+                        </div>
+                    </div>
+                    <div id="nearbyLakesList" class="row">
+                        <!-- Nearby lakes will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Location Permission Modal -->
+<div class="modal fade location-modal" id="locationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="handleLocationDenied()"></button>
+            </div>
+            <div class="modal-body">
+                <i class="fas fa-location-dot location-icon"></i>
+                <h4>Permiteți accesul la locație</h4>
+                <p>Pentru a vă arăta bălțile și lacurile din apropiere, avem nevoie de permisiunea de a vă accesa locația.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="handleLocationDenied()">Nu acum</button>
+                <button type="button" class="btn btn-success" onclick="requestLocation()">Permite accesul</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block external_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fix mobile menu close button for map page
+        const navbarToggler = document.querySelector('.navbar-toggler');
+        const navbarCollapse = document.querySelector('.navbar-collapse');
+
+        if (navbarToggler && navbarCollapse) {
+            // Ensure Bootstrap collapse is properly initialized
+            const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+                toggle: false
+            });
+
+            // Add specific event listener for map page
+            navbarToggler.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                bsCollapse.toggle();
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!navbarCollapse.contains(e.target) &&
+                    !navbarToggler.contains(e.target) &&
+                    navbarCollapse.classList.contains('show')) {
+                    bsCollapse.hide();
+                }
+            });
+
+            // Close menu when clicking nav links
+            document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    bsCollapse.hide();
+                });
+            });
+        }
+
+        // Initialize map and variables
+        var activePopup = null;  // Track currently open popup
+        var romaniaCenter = [45.9432, 24.9668];
+
+        // Show location permission modal on page load
+        var locationModal = new bootstrap.Modal(document.getElementById('locationModal'));
+        var initialMapSetupComplete = false;
+
+        // Handle modal being dismissed without choosing location
+        document.getElementById('locationModal').addEventListener('hidden.bs.modal', function () {
+            if (!initialMapSetupComplete) {
+                showFullRomaniaView();
+            }
+        });
+
+        locationModal.show();
+        var map = L.map('map', {
+            zoomControl: true,
+            scrollWheelZoom: true,
+            keyboard: true,
+            doubleClickZoom: true,
+            boxZoom: true,
+            touchZoom: true,
+            minZoom: 6,
+            maxZoom: 18,
+            dragging: true
+        }).setView(romaniaCenter, 7);
+
+        // Set map background color to green - no tile layer needed
+        map.getContainer().style.background = '#198754';
+
+        // Load GeoJSON data for Romania's national borders first
+        fetch('/static/data/romania-borders.geojson')
+            .then(response => {
+                if (!response.ok) {
+                    console.log('National borders GeoJSON file not found, skipping border display');
+                    return null;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data) return;
+
+                console.log('National borders data loaded successfully');
+
+                // Create the country shape with green fill
+                L.geoJSON(data, {
+                    style: {
+                        color: '#198754',
+                        weight: 0,
+                        fillColor: '#198754',
+                        fillOpacity: 1,
+                        opacity: 1
+                    },
+                    interactive: false
+                }).addTo(map);
+
+                // Store Romania bounds for later use
+                window.romaniaBounds = L.geoJSON(data).getBounds();
+
+                // Don't set initial view yet - wait for user location choice
+                // The view will be set based on location permission response
+
+                // After national borders are loaded, load county boundaries
+                return fetch('/static/data/romania-counties.geojson');
+            })
+            .then(response => {
+                if (!response || !response.ok) {
+                    console.log('Counties GeoJSON file not found, skipping county borders');
+                    return null;
+                }
+                return response.json();
+            })
+            .then(countiesData => {
+                if (!countiesData) return;
+
+                console.log('Counties data loaded successfully:', countiesData.features.length, 'counties');
+
+                // Store counties data for auto-fit functionality
+                countiesGeoJSON = countiesData;
+
+                // Add interactive county boundaries
+                countiesLayer = L.geoJSON(countiesData, {
+                    style: function(feature) {
+                        return getCountyStyle(feature);
+                    },
+                    onEachFeature: function(feature, layer) {
+                        setupCountyInteraction(feature, layer);
+                    }
+                }).addTo(map);
+            })
+            .catch(error => {
+                console.log('Error loading GeoJSON data:', error);
+            });
+
+        // Price range display
+        var priceRange = document.getElementById('priceRange');
+        var priceValue = document.getElementById('priceValue');
+        priceRange.addEventListener('input', function() {
+            priceValue.textContent = this.value;
+        });
+
+        // Custom dropdown functionality
+        function initCustomDropdown(dropdownId, menuId, inputId) {
+            const dropdown = document.getElementById(dropdownId);
+            const dropdownMenu = document.getElementById(menuId);
+            const dropdownText = dropdown.querySelector('.dropdown-text');
+            const hiddenInput = document.getElementById(inputId);
+            const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
+
+            // Create backdrop for mobile
+            let backdrop = document.querySelector('.dropdown-backdrop');
+            if (!backdrop) {
+                backdrop = document.createElement('div');
+                backdrop.className = 'dropdown-backdrop';
+                document.body.appendChild(backdrop);
+            }
+
+            // Toggle dropdown
+            dropdown.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Close other dropdowns first
+                document.querySelectorAll('.custom-dropdown-toggle.active').forEach(toggle => {
+                    if (toggle !== dropdown) {
+                        toggle.classList.remove('active');
+                        toggle.parentNode.querySelector('.custom-dropdown-menu').classList.remove('show');
+                    }
+                });
+
+                const isOpening = !dropdown.classList.contains('active');
+
+                dropdown.classList.toggle('active');
+                dropdownMenu.classList.toggle('show');
+
+                // Mobile specific handling
+                if (window.innerWidth <= 768) {
+                    if (isOpening) {
+                        backdrop.classList.add('show');
+                        document.body.classList.add('dropdown-open');
+
+                        // Position dropdown menu properly on mobile
+                        const rect = dropdown.getBoundingClientRect();
+                        dropdownMenu.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+                    } else {
+                        backdrop.classList.remove('show');
+                        document.body.classList.remove('dropdown-open');
+                    }
+                }
+            });
+
+            // Handle item selection
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Remove previous selection
+                    dropdownItems.forEach(i => i.classList.remove('selected'));
+
+                    // Add selection to clicked item
+                    this.classList.add('selected');
+
+                    // Update display text and hidden input
+                    dropdownText.textContent = this.textContent;
+                    hiddenInput.value = this.getAttribute('data-value');
+
+                    // Close dropdown
+                    dropdown.classList.remove('active');
+                    dropdownMenu.classList.remove('show');
+
+                    // Close mobile backdrop
+                    if (window.innerWidth <= 768) {
+                        backdrop.classList.remove('show');
+                        document.body.classList.remove('dropdown-open');
+                    }
+                });
+            });
+
+            // Close dropdown when clicking outside or on backdrop
+            document.addEventListener('click', function(e) {
+                // Exclude navbar and its elements from dropdown close logic
+                const navbar = document.querySelector('.navbar');
+                const isNavbarClick = navbar && navbar.contains(e.target);
+
+                if (!dropdown.contains(e.target) &&
+                    !dropdownMenu.contains(e.target) &&
+                    !isNavbarClick) {
+                    dropdown.classList.remove('active');
+                    dropdownMenu.classList.remove('show');
+
+                    // Close mobile backdrop
+                    if (window.innerWidth <= 768) {
+                        backdrop.classList.remove('show');
+                        document.body.classList.remove('dropdown-open');
+                    }
+                }
+            });
+
+            // Close dropdown when clicking backdrop
+            backdrop.addEventListener('click', function() {
+                dropdown.classList.remove('active');
+                dropdownMenu.classList.remove('show');
+                backdrop.classList.remove('show');
+                document.body.classList.remove('dropdown-open');
+            });
+        }
+
+        // Initialize custom dropdowns
+        initCustomDropdown('countyDropdown', 'countyDropdownMenu', 'county');
+        initCustomDropdown('ratingDropdown', 'ratingDropdownMenu', 'ratingFilter');
+
+        // Store all markers in an array
+        var markers = [];
+        var userLocationMarker = null;
+        var countiesGeoJSON = null; // Store counties data for auto-fit functionality
+        var countiesLayer = null; // Store counties layer for interaction
+        var selectedCountyName = null; // Store currently selected county name
+
+        // Function to show full Romania view
+        function showFullRomaniaView() {
+            if (window.romaniaBounds) {
+                map.fitBounds(window.romaniaBounds, {
+                    animate: true,
+                    padding: [20, 20]
+                });
+            } else {
+                // Fallback to Romania center if bounds not available
+                map.setView(romaniaCenter, 7);
+            }
+            initialMapSetupComplete = true;
+        }
+
+        // Function to handle location permission denied
+        window.handleLocationDenied = function() {
+            showFullRomaniaView();
+        };
+
+        // Function to request location
+        window.requestLocation = function() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+
+                    // Remove existing user location marker to prevent duplicates
+                    if (userLocationMarker) {
+                        map.removeLayer(userLocationMarker);
+                        userLocationMarker = null;
+                    }
+
+                    // Create custom white pin icon for user location (same shape as lake markers)
+                    const userLocationIcon = L.divIcon({
+                        className: 'user-location-pin',
+                        html: `
+                            <svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.5 0C5.6 0 0 5.6 0 12.5C0 19.4 12.5 41 12.5 41S25 19.4 25 12.5C25 5.6 19.4 0 12.5 0Z"
+                                      fill="white" stroke="#198754" stroke-width="2"/>
+                                <circle cx="12.5" cy="12.5" r="6" fill="#198754"/>
+                            </svg>
+                        `,
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34]
+                    });
+
+                    userLocationMarker = L.marker([userLat, userLng], { icon: userLocationIcon })
+                        .bindTooltip('Locația mea', {
+                            permanent: true,
+                            direction: 'top',
+                            offset: [0, -45],
+                            className: 'user-location-tooltip'
+                        })
+                        .addTo(map);
+
+                    // Center map on user location with optimal zoom level
+                    // Zoom level 11 provides good balance between showing user location
+                    // prominently and displaying nearby lake markers in the surrounding area
+                    map.setView([userLat, userLng], 11, {
+                        animate: true
+                    });
+
+                    initialMapSetupComplete = true;
+
+                    // Fetch nearby lakes
+                    fetch(`/api/nearby-lakes/?lat=${userLat}&lng=${userLng}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Show nearby lakes section
+                            document.getElementById('nearbyLakesSection').classList.remove('d-none');
+                            
+                            // Populate nearby lakes
+                            const nearbyLakesList = document.getElementById('nearbyLakesList');
+                            nearbyLakesList.innerHTML = data.lakes.map(lake => {
+                                // Generate rating HTML for nearby lakes
+                                let ratingHtml = '';
+                                if (lake.total_reviews > 0) {
+                                    const fullStars = Math.floor(lake.average_rating);
+                                    const hasHalfStar = lake.average_rating % 1 >= 0.5;
+                                    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+                                    ratingHtml = `
+                                        <div class="rating-info mb-2">
+                                            <div class="rating-stars">
+                                                ${'<i class="fas fa-star" style="color: #ffc107;"></i>'.repeat(fullStars)}
+                                                ${hasHalfStar ? '<i class="fas fa-star-half-alt" style="color: #ffc107;"></i>' : ''}
+                                                ${'<i class="far fa-star" style="color: #e9ecef;"></i>'.repeat(emptyStars)}
+                                            </div>
+                                            <span class="rating-value">${lake.average_rating}</span>
+                                            <span>(${lake.total_reviews})</span>
+                                        </div>
+                                    `;
+                                }
+
+                                return `
+                                    <div class="col-lg-6 mb-4">
+                                        <div class="nearby-lake-card">
+                                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                                <h5 class="mb-0">${lake.name}</h5>
+                                                <span class="distance">${lake.distance} km</span>
+                                            </div>
+
+                                            <div class="lake-info-item">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                                <span>${lake.address}</span>
+                                            </div>
+
+                                            <div class="lake-info-item">
+                                                <i class="fas fa-fish"></i>
+                                                <span>${lake.fish_species.map(fish => fish.name).join(', ')}</span>
+                                            </div>
+
+                                            <div class="lake-info-item">
+                                                <i class="fas fa-coins"></i>
+                                                <span class="fw-bold text-success">${lake.price_12h} Lei/12h</span>
+                                            </div>
+
+                                            ${ratingHtml}
+
+                                            <div class="d-flex gap-2 mt-3">
+                                                <a href="/locations/lake/${lake.slug}/" class="btn btn-success flex-grow-1">
+                                                    <i class="fas fa-eye me-1"></i>Vezi detalii
+                                                </a>
+                                                <a href="https://www.google.com/maps/dir/?api=1&destination=${lake.latitude},${lake.longitude}"
+                                                   class="btn btn-outline-success" target="_blank" title="Navigare cu Google Maps">
+                                                    <i class="fas fa-directions"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('');
+                        });
+
+                    // Close modal if open
+                    const locationModal = bootstrap.Modal.getInstance(document.getElementById('locationModal'));
+                    if (locationModal) {
+                        locationModal.hide();
+                    }
+                }, function(error) {
+                    // Handle geolocation errors
+                    console.error('Geolocation error:', error);
+                    alert('Nu am putut obține locația dvs. Vă rugăm să verificați setările de locație din browser.');
+
+                    // Show full Romania view on error
+                    showFullRomaniaView();
+
+                    // Close modal if open
+                    const locationModal = bootstrap.Modal.getInstance(document.getElementById('locationModal'));
+                    if (locationModal) {
+                        locationModal.hide();
+                    }
+                });
+            } else {
+                alert('Geolocation nu este suportat de acest browser.');
+
+                // Show full Romania view if geolocation not supported
+                showFullRomaniaView();
+
+                // Close modal if open
+                const locationModal = bootstrap.Modal.getInstance(document.getElementById('locationModal'));
+                if (locationModal) {
+                    locationModal.hide();
+                }
+            }
+        };
+
+        // Function to add markers to map
+        function addMarkers(lakes) {
+            // Clear existing markers
+            markers.forEach(marker => marker.remove());
+            markers = [];
+
+            if (!lakes || lakes.length === 0) {
+                return;
+            }
+
+            lakes.forEach(lake => {
+                // Generate rating stars HTML
+                let ratingHtml = '';
+                if (lake.total_reviews > 0) {
+                    const fullStars = Math.floor(lake.average_rating);
+                    const hasHalfStar = lake.average_rating % 1 >= 0.5;
+                    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+                    ratingHtml = `
+                        <div class="rating-info">
+                            <div class="rating-stars">
+                                ${'<i class="fas fa-star"></i>'.repeat(fullStars)}
+                                ${hasHalfStar ? '<i class="fas fa-star-half-alt"></i>' : ''}
+                                ${'<i class="far fa-star"></i>'.repeat(emptyStars)}
+                            </div>
+                            <span class="rating-value">${lake.average_rating}</span>
+                            <span>(${lake.total_reviews} recenzi${lake.total_reviews === 1 ? 'e' : 'i'})</span>
+                        </div>
+                    `;
+                }
+
+                const marker = L.marker([lake.latitude, lake.longitude])
+                    .bindPopup(`
+                        <div class="lake-popup">
+                            <h5>${lake.name}</h5>
+                            <p><i class="fas fa-map-marker-alt me-2"></i>${lake.address}</p>
+                            <p><i class="fas fa-fish me-2"></i>${lake.fish_species.map(fish => fish.name).join(', ')}</p>
+                            ${ratingHtml}
+                            <p class="price"><i class="fas fa-tag me-2"></i>${lake.price_12h} Lei/12h | ${lake.price_24h} Lei/24h</p>
+                            <div class="facilities">
+                                ${lake.facilities.map(facility => `
+                                    <span class="facility">
+                                        <i class="${facility.icon_class} me-1"></i>${facility.name}
+                                    </span>
+                                `).join('')}
+                            </div>
+                            <a href="/locations/lake/${lake.slug}/" class="btn btn-success">Vezi detalii</a>
+                        </div>
+                    `);
+                marker.addTo(map);
+                markers.push(marker);
+            });
+        }
+        
+        // Initial markers
+        try {
+            const lakesData = JSON.parse('{{ lakes_json|escapejs }}');
+            addMarkers(lakesData);
+
+            // Only set initial view if user hasn't made a location choice yet
+            // This prevents overriding the user's location-based view
+            if (!initialMapSetupComplete && lakesData && lakesData.length > 0) {
+                if (lakesData.length === 1) {
+                    // Single lake - center on it
+                    map.setView([lakesData[0].latitude, lakesData[0].longitude], 12);
+                } else {
+                    // Multiple lakes - fit bounds only if no location choice made
+                    const group = new L.featureGroup(markers);
+                    map.fitBounds(group.getBounds().pad(0.1));
+                }
+                initialMapSetupComplete = true;
+            }
+        } catch (error) {
+            console.error('Error parsing lakes data:', error);
+        }
+
+        // Function to normalize county names for GeoJSON matching
+        function normalizeCountyName(countyName) {
+            const countyMapping = {
+                'Alba': 'ALBA',
+                'Arad': 'ARAD',
+                'Argeș': 'ARGES',
+                'Bacău': 'BACAU',
+                'Bihor': 'BIHOR',
+                'Bistrița-Năsăud': 'BISTRITA-NASAUD',
+                'Botoșani': 'BOTOSANI',
+                'Brașov': 'BRASOV',
+                'București': 'BUCURESTI',
+                'Buzău': 'BUZAU',
+                'Caraș-Severin': 'CARAS-SEVERIN',
+                'Călărași': 'CALARASI',
+                'Cluj': 'CLUJ',
+                'Constanța': 'CONSTANTA',
+                'Covasna': 'COVASNA',
+                'Dâmbovița': 'DAMBOVITA',
+                'Dolj': 'DOLJ',
+                'Galați': 'GALATI',
+                'Giurgiu': 'GIURGIU',
+                'Gorj': 'GORJ',
+                'Harghita': 'HARGHITA',
+                'Hunedoara': 'HUNEDOARA',
+                'Ialomița': 'IALOMITA',
+                'Iași': 'IASI',
+                'Ilfov': 'ILFOV',
+                'Maramureș': 'MARAMURES',
+                'Mehedinți': 'MEHEDINTI',
+                'Mureș': 'MURES',
+                'Neamț': 'NEAMT',
+                'Olt': 'OLT',
+                'Prahova': 'PRAHOVA',
+                'Sălaj': 'SALAJ',
+                'Satu Mare': 'SATU MARE',
+                'Sibiu': 'SIBIU',
+                'Suceava': 'SUCEAVA',
+                'Teleorman': 'TELEORMAN',
+                'Timiș': 'TIMIS',
+                'Tulcea': 'TULCEA',
+                'Vaslui': 'VASLUI',
+                'Vâlcea': 'VALCEA',
+                'Vrancea': 'VRANCEA'
+            };
+
+            return countyMapping[countyName] || countyName.toUpperCase();
+        }
+
+        // Function to fit map to a specific county
+        function fitMapToCounty(countyName) {
+            if (!countiesGeoJSON) {
+                console.log('Counties GeoJSON data not available for auto-fit');
+                return;
+            }
+
+            // Normalize county name for GeoJSON matching
+            const normalizedCountyName = normalizeCountyName(countyName);
+
+            // Find the county in the GeoJSON data
+            const countyFeature = countiesGeoJSON.features.find(feature =>
+                feature.properties.shapeName &&
+                feature.properties.shapeName === normalizedCountyName
+            );
+
+            if (countyFeature) {
+                // Create a temporary layer to get bounds
+                const tempLayer = L.geoJSON(countyFeature);
+                const bounds = tempLayer.getBounds();
+
+                // Fit map to county bounds with some padding
+                map.fitBounds(bounds, {
+                    padding: [20, 20],
+                    animate: true,
+                    duration: 1.0
+                });
+
+                console.log(`Map fitted to county: ${countyName} (${normalizedCountyName})`);
+            } else {
+                console.log(`County not found in GeoJSON data: ${countyName} (${normalizedCountyName})`);
+            }
+        }
+
+        // Function to fit map to entire Romania
+        function fitMapToRomania() {
+            if (!countiesGeoJSON) {
+                console.log('Counties GeoJSON data not available for Romania fit');
+                return;
+            }
+
+            // Create a temporary layer with all counties to get Romania bounds
+            const tempLayer = L.geoJSON(countiesGeoJSON);
+            const bounds = tempLayer.getBounds();
+
+            // Fit map to Romania bounds with some padding
+            map.fitBounds(bounds, {
+                padding: [30, 30],
+                animate: true,
+                duration: 1.5
+            });
+
+            console.log('Map fitted to entire Romania');
+        }
+
+        // Function to get county style based on state
+        function getCountyStyle(feature) {
+            const countyName = feature.properties.shapeName;
+            const isSelected = selectedCountyName && normalizeCountyName(selectedCountyName) === countyName;
+
+            return {
+                color: 'white',
+                weight: 1,
+                fillColor: isSelected ? '#00ff88' : 'transparent',
+                fillOpacity: isSelected ? 0.3 : 0,
+                opacity: 0.7,
+                lineCap: 'round',
+                lineJoin: 'round'
+            };
+        }
+
+        // Function to setup county interaction (hover, click)
+        function setupCountyInteraction(feature, layer) {
+            const countyName = feature.properties.shapeName;
+
+            // Create tooltip for county name
+            layer.bindTooltip(getCountyDisplayName(countyName), {
+                permanent: false,
+                direction: 'center',
+                className: 'county-tooltip'
+            });
+
+            // Hover events
+            layer.on({
+                mouseover: function(e) {
+                    const layer = e.target;
+                    const isSelected = selectedCountyName && normalizeCountyName(selectedCountyName) === countyName;
+
+                    layer.setStyle({
+                        fillColor: '#00ff88',
+                        fillOpacity: 0.3,
+                        weight: 2
+                    });
+
+                    layer.openTooltip();
+                },
+                mouseout: function(e) {
+                    const layer = e.target;
+                    const isSelected = selectedCountyName && normalizeCountyName(selectedCountyName) === countyName;
+
+                    layer.setStyle({
+                        fillColor: isSelected ? '#00ff88' : 'transparent',
+                        fillOpacity: isSelected ? 0.3 : 0,
+                        weight: 1
+                    });
+
+                    layer.closeTooltip();
+                }
+            });
+        }
+
+        // Function to get display name for county (convert from GeoJSON format to readable format)
+        function getCountyDisplayName(geoJsonName) {
+            const displayMapping = {
+                'ALBA': 'Alba',
+                'ARAD': 'Arad',
+                'ARGES': 'Argeș',
+                'BACAU': 'Bacău',
+                'BIHOR': 'Bihor',
+                'BISTRITA-NASAUD': 'Bistrița-Năsăud',
+                'BOTOSANI': 'Botoșani',
+                'BRAILA': 'Brăila',
+                'BRASOV': 'Brașov',
+                'BUCURESTI': 'București',
+                'BUZAU': 'Buzău',
+                'CARAS-SEVERIN': 'Caraș-Severin',
+                'CALARASI': 'Călărași',
+                'CLUJ': 'Cluj',
+                'CONSTANTA': 'Constanța',
+                'COVASNA': 'Covasna',
+                'DAMBOVITA': 'Dâmbovița',
+                'DOLJ': 'Dolj',
+                'GALATI': 'Galați',
+                'GIURGIU': 'Giurgiu',
+                'GORJ': 'Gorj',
+                'HARGHITA': 'Harghita',
+                'HUNEDOARA': 'Hunedoara',
+                'IALOMITA': 'Ialomița',
+                'IASI': 'Iași',
+                'ILFOV': 'Ilfov',
+                'MARAMURES': 'Maramureș',
+                'MEHEDINTI': 'Mehedinți',
+                'MURES': 'Mureș',
+                'NEAMT': 'Neamț',
+                'OLT': 'Olt',
+                'PRAHOVA': 'Prahova',
+                'SALAJ': 'Sălaj',
+                'SATU MARE': 'Satu Mare',
+                'SIBIU': 'Sibiu',
+                'SUCEAVA': 'Suceava',
+                'TELEORMAN': 'Teleorman',
+                'TIMIS': 'Timiș',
+                'TULCEA': 'Tulcea',
+                'VASLUI': 'Vaslui',
+                'VALCEA': 'Vâlcea',
+                'VRANCEA': 'Vrancea'
+            };
+
+            return displayMapping[geoJsonName] || geoJsonName;
+        }
+
+        // Function to update county highlighting
+        function updateCountyHighlight(countyName) {
+            selectedCountyName = countyName;
+
+            if (countiesLayer) {
+                countiesLayer.eachLayer(function(layer) {
+                    layer.setStyle(getCountyStyle(layer.feature));
+                });
+            }
+        }
+
+        // Filter form submission
+        document.getElementById('filterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form values
+            const county = document.getElementById('county').value;
+            const fishTypes = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .filter(cb => ['Crap', 'Caras', 'Știucă', 'Șalău'].includes(cb.value))
+                .map(cb => cb.value);
+            const maxPrice = document.getElementById('priceRange').value;
+            const facilities = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .filter(cb => ['Parcare', 'Cazare', 'Restaurant', 'Toalete'].includes(cb.value))
+                .map(cb => cb.value);
+            const minRating = document.getElementById('ratingFilter').value;
+
+            // Build query string
+            const params = new URLSearchParams();
+            if (county) params.append('county', county);
+            fishTypes.forEach(type => params.append('fish_types[]', type));
+            if (maxPrice) params.append('max_price', maxPrice);
+            facilities.forEach(facility => params.append('facilities[]', facility));
+            if (minRating) params.append('min_rating', minRating);
+            
+            // Fetch filtered lakes
+            fetch(`/api/filter-lakes/?${params.toString()}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.lakes && Array.isArray(data.lakes)) {
+                        addMarkers(data.lakes);
+
+                        // Check if "Toate Județele" is selected (county field is empty)
+                        const selectedCountyId = document.getElementById('county').value;
+
+                        if (selectedCountyId === '' || selectedCountyId === '0') {
+                            // "Toate Județele" is selected - fit to entire Romania and clear county highlight
+                            updateCountyHighlight(null);
+                            fitMapToRomania();
+                        } else if (data.selected_county) {
+                            // Specific county is selected - fit to that county and highlight it
+                            updateCountyHighlight(data.selected_county);
+                            fitMapToCounty(data.selected_county);
+                        } else if (data.counties_in_results && data.counties_in_results.length > 0) {
+                            // If multiple counties in results, fit to all results and clear highlight
+                            updateCountyHighlight(null);
+                            if (data.lakes.length > 0) {
+                                const group = new L.featureGroup(markers);
+                                if (group.getBounds().isValid()) {
+                                    map.fitBounds(group.getBounds().pad(0.1));
+                                }
+                            }
+                        }
+                    } else {
+                        console.error('Invalid response format');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('A apărut o eroare la filtrarea lacurilor. Vă rugăm să încercați din nou.');
+                });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,325 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Întrebări Frecvente - Răsfățul Pescarului{% endblock %}
+
+{% block description %}Găsește răspunsuri la cele mai frecvente întrebări despre pescuit, locuri de pescuit, echipamente și regulamente. Ghid complet pentru pescarii din România.{% endblock %}
+
+{% block keywords %}întrebări frecvente pescuit, FAQ pescuit România, regulamente pescuit, echipamente pescuit, permise pescuit, tehnici pescuit{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "name": "Întrebări Frecvente - Pescuit România",
+    "description": "Răspunsuri la cele mai frecvente întrebări despre pescuitul în România",
+    "url": "https://rasfatul-pescarului.ro/faq/",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "Ce permise sunt necesare pentru pescuit în România?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Pentru pescuitul în România sunt necesare: permisul de pescuit sportiv, avizul de pescuit pentru apa respectivă și respectarea regulamentului local."
+            }
+        },
+        {
+            "@type": "Question", 
+            "name": "Care sunt cele mai bune luni pentru pescuit?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Cele mai bune luni pentru pescuit sunt aprilie-iunie și septembrie-octombrie, când peștii sunt mai activi datorită temperaturilor moderate."
+            }
+        }
+    ]
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.faq-hero {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    color: white;
+    padding: 4rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.faq-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{% static "images/hero.webp" %}') center/cover;
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.faq-hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+.faq-section {
+    padding: 4rem 0;
+    background: #f8f9fa;
+}
+
+.faq-category {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.faq-category h2 {
+    color: #198754;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.faq-item {
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.5rem 0;
+}
+
+.faq-item:last-child {
+    border-bottom: none;
+}
+
+.faq-question {
+    font-weight: 600;
+    color: #198754;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.faq-answer {
+    color: #6c757d;
+    line-height: 1.6;
+}
+
+.faq-answer ul {
+    margin-top: 1rem;
+    padding-left: 1.5rem;
+}
+
+.faq-answer li {
+    margin-bottom: 0.5rem;
+}
+
+.search-faq {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.search-faq input {
+    border: 2px solid #e9ecef;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    font-size: 1.1rem;
+}
+
+.search-faq input:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="faq-hero">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h1>Întrebări Frecvente</h1>
+                <p class="lead">Găsește răspunsuri la cele mai comune întrebări despre pescuit în România</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Content -->
+<section class="faq-section">
+    <div class="container">
+        <!-- Search FAQ -->
+        <div class="search-faq">
+            <h3 class="mb-3">Caută în întrebări</h3>
+            <input type="text" class="form-control" id="faqSearch" placeholder="Scrie aici pentru a căuta...">
+        </div>
+
+        <!-- Regulamente și Permise -->
+        <div class="faq-category">
+            <h2><i class="fas fa-gavel me-2"></i>Regulamente și Permise</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">Ce permise sunt necesare pentru pescuitul în România?</div>
+                <div class="faq-answer">
+                    Pentru pescuitul legal în România sunt necesare:
+                    <ul>
+                        <li><strong>Permisul de pescuit sportiv</strong> - eliberat de Agenția Națională pentru Pescuit și Acvacultură</li>
+                        <li><strong>Avizul de pescuit</strong> - pentru apa specifică unde doriți să pescuiți</li>
+                        <li><strong>Respectarea regulamentului local</strong> - fiecare lac poate avea reguli specifice</li>
+                    </ul>
+                    Permisele se pot obține online sau de la punctele autorizate.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Cât costă permisul de pescuit sportiv?</div>
+                <div class="faq-answer">
+                    Costurile pentru 2024 sunt:
+                    <ul>
+                        <li>Permis anual: 50 lei</li>
+                        <li>Permis lunar: 15 lei</li>
+                        <li>Permis zilnic: 5 lei</li>
+                    </ul>
+                    Prețurile pot varia în funcție de tipul apei și regulamentele locale.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Care sunt dimensiunile minime pentru captura peștilor?</div>
+                <div class="faq-answer">
+                    Dimensiunile minime legale pentru principalele specii:
+                    <ul>
+                        <li>Crap: 30 cm</li>
+                        <li>Șalău: 40 cm</li>
+                        <li>Știucă: 50 cm</li>
+                        <li>Somn: 60 cm</li>
+                        <li>Păstrăv: 25 cm</li>
+                    </ul>
+                    Peștii sub dimensiunea minimă trebuie eliberați imediat.
+                </div>
+            </div>
+        </div>
+
+        <!-- Echipamente -->
+        <div class="faq-category">
+            <h2><i class="fas fa-fishing-rod me-2"></i>Echipamente de Pescuit</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">Ce echipament de bază este necesar pentru un începător?</div>
+                <div class="faq-answer">
+                    Echipamentul esențial pentru începători include:
+                    <ul>
+                        <li><strong>Undița:</strong> 3-4 metri, acțiune medie</li>
+                        <li><strong>Mulineta:</strong> Mărimea 3000-4000</li>
+                        <li><strong>Fir:</strong> 0.25-0.30mm monofilament</li>
+                        <li><strong>Cârlige:</strong> Diverse mărimi (6-12)</li>
+                        <li><strong>Plumbi:</strong> Diferite greutăți</li>
+                        <li><strong>Momeli:</strong> Viermi, porumb, paste</li>
+                        <li><strong>Minciog:</strong> Pentru scoaterea peștilor</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Cum aleg undița potrivită?</div>
+                <div class="faq-answer">
+                    Alegerea undiței depinde de:
+                    <ul>
+                        <li><strong>Tipul pescuitului:</strong> Feeder, float, spinning</li>
+                        <li><strong>Specia țintă:</strong> Crap, șalău, știucă</li>
+                        <li><strong>Distanța de aruncare:</strong> Scurt, mediu, lung</li>
+                        <li><strong>Greutatea momelii:</strong> Ușoară, medie, grea</li>
+                    </ul>
+                    Pentru începători recomandăm o undița universală de 3.6m cu acțiune medie.
+                </div>
+            </div>
+        </div>
+
+        <!-- Tehnici de Pescuit -->
+        <div class="faq-category">
+            <h2><i class="fas fa-fish me-2"></i>Tehnici și Strategii</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">Care sunt cele mai bune ore pentru pescuit?</div>
+                <div class="faq-answer">
+                    Cele mai productive ore sunt:
+                    <ul>
+                        <li><strong>Dimineața devreme:</strong> 5:00-9:00</li>
+                        <li><strong>Seara:</strong> 18:00-22:00</li>
+                        <li><strong>Noaptea:</strong> Pentru specii precum somnul</li>
+                    </ul>
+                    Peștii sunt mai activi când temperatura este moderată și presiunea atmosferică este stabilă.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Cum folosesc calendarul solunar?</div>
+                <div class="faq-answer">
+                    Calendarul solunar indică perioadele când peștii sunt mai activi:
+                    <ul>
+                        <li><strong>Perioadele majore:</strong> 2 ore înainte și după trecerea lunii prin meridian</li>
+                        <li><strong>Perioadele minore:</strong> La răsăritul și apusul lunii</li>
+                        <li><strong>Fazele lunii:</strong> Luna nouă și plină sunt cele mai productive</li>
+                    </ul>
+                    Folosiți calendarul nostru solunar pentru planificarea optimă.
+                </div>
+            </div>
+        </div>
+
+        <!-- Locuri de Pescuit -->
+        <div class="faq-category">
+            <h2><i class="fas fa-map-marker-alt me-2"></i>Locuri de Pescuit</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">Cum găsesc cele mai bune locuri de pescuit?</div>
+                <div class="faq-answer">
+                    Pentru a găsi locuri bune de pescuit:
+                    <ul>
+                        <li>Folosiți harta noastră interactivă</li>
+                        <li>Citiți recenziile altor pescari</li>
+                        <li>Verificați informațiile despre specii și facilități</li>
+                        <li>Contactați proprietarul pentru detalii actualizate</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Ce înseamnă "pescuit la crap și la clean"?</div>
+                <div class="faq-answer">
+                    <ul>
+                        <li><strong>Pescuit la carp:</strong> Pescuitul specific pentru crap, folosind echipament și tehnici specializate</li>
+                        <li><strong>Pescuit la clean:</strong> Pescuitul pentru pești albi (roșioară, caras, plătică) cu echipament mai ușor</li>
+                    </ul>
+                    Fiecare tip necesită strategii și echipamente diferite.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('faqSearch');
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question').textContent.toLowerCase();
+            const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+            
+            if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = searchTerm === '' ? 'block' : 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

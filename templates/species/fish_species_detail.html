@@ -1,0 +1,481 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ species.name }} - Ghid Complet - Răsfățul Pescarului{% endblock %}
+
+{% block description %}{{ species.detailed_description|striptags|truncatewords:30|default:"Ghid complet pentru pescuitul speciei de pește"|safe }}{% endblock %}
+
+{% block keywords %}{{ species.name }}, {{ species.scientific_name }}, pescuit {{ species.name }}, {{ species.get_category_display }}{% endblock %}
+
+{% block canonical %}https://rasfatul-pescarului.ro{% url 'main:fish_species_detail' species.slug %}{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "{{ species.name }} - Ghid Complet",
+    "description": "{{ species.detailed_description|striptags|truncatewords:50|default:'Ghid complet pentru pescuitul speciei de pește'|safe }}",
+    {% if species.image %}
+    "image": "https://rasfatul-pescarului.ro{{ species.image.url }}",
+    {% endif %}
+    "author": {
+        "@type": "Organization",
+        "name": "Răsfățul Pescarului"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Răsfățul Pescarului",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://rasfatul-pescarului.ro{% static 'images/logo.png' %}"
+        }
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://rasfatul-pescarului.ro{% url 'main:fish_species_detail' species.slug %}"
+    },
+    "about": {
+        "@type": "Thing",
+        "name": "{{ species.name }}",
+        "alternateName": "{{ species.scientific_name }}"
+    }
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .species-hero {
+        background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+        color: white;
+        padding: 3rem 0 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .species-hero h1 {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .species-hero .lead {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .badge-success-custom {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        font-weight: 600;
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #198754;
+    }
+
+    .content-card h4 {
+        color: #198754;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .content-card .fa-fish,
+    .content-card .fa-info-circle,
+    .content-card .fa-water,
+    .content-card .fa-fishing-rod,
+    .content-card .fa-carrot,
+    .content-card .fa-gavel,
+    .content-card .fa-ruler {
+        color: #198754;
+    }
+
+    .species-image-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        margin-top: 2rem;
+    }
+
+    .species-image-container img {
+        width: 100%;
+        max-height: 500px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .species-image-container:hover img {
+        transform: scale(1.05);
+    }
+
+    .btn-success-custom {
+        background: linear-gradient(135deg, #198754, #20c997);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
+        color: white;
+    }
+
+    .spec-item {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        border-left: 3px solid #198754;
+    }
+
+    .spec-item strong {
+        color: #198754;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="species-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="mb-3">
+                    <a href="{% url 'main:fish_species_list' %}" class="btn btn-light btn-sm">
+                        <i class="fas fa-arrow-left"></i> Înapoi la Lista Speciilor
+                    </a>
+                </div>
+
+                <div class="mb-3">
+                    <span class="badge-success-custom">
+                        <i class="fas fa-fish me-2"></i>{{ species.get_category_display }}
+                    </span>
+                </div>
+
+                <h1 class="display-4">{{ species.name }}</h1>
+
+                {% if species.scientific_name %}
+                <p class="lead fst-italic">{{ species.scientific_name }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Featured Image -->
+    {% if species.image %}
+    <div class="row mb-4">
+        <div class="col-lg-10 mx-auto">
+            <div class="species-image-container">
+                <img src="{{ species.image.url }}" alt="{{ species.name }}">
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <!-- Detailed Description -->
+            {% if species.detailed_description %}
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-info-circle me-2"></i> Descriere
+                </h4>
+                <div class="species-content">
+                    {{ species.detailed_description|linebreaks }}
+                </div>
+            </div>
+            {% else %}
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-info-circle me-2"></i> Descriere
+                </h4>
+                <div class="species-content">
+                    <p class="text-muted">Descrierea detaliată pentru această specie va fi adăugată în curând.</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Habitat -->
+            {% if species.habitat %}
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-water me-2"></i> Habitat și Distribuție
+                </h4>
+                <div class="species-content">
+                    {{ species.habitat|safe }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Fishing Techniques -->
+            {% if species.fishing_techniques %}
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-fishing-rod me-2"></i> Tehnici de Pescuit
+                </h4>
+                <div class="species-content">
+                    {{ species.fishing_techniques|safe }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Best Baits -->
+            {% if species.best_baits %}
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-carrot me-2"></i> Momeală Recomandată
+                </h4>
+                <div class="species-content">
+                    {{ species.best_baits|safe }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Legal Information -->
+            {% if species.legal_info %}
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-gavel me-2"></i> Informații Legale
+                </h4>
+                <div class="species-content alert alert-warning">
+                    {{ species.legal_info|safe }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Lakes Where This Species Can Be Found -->
+            {% if lakes %}
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-map-marked-alt me-2"></i>
+                    Lacuri Unde Poți Găsi {{ species.name }}
+                    <small class="text-muted">({{ total_lakes }} locații)</small>
+                </h4>
+
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                    {% for lake in lakes %}
+                    <div class="col">
+                        <div class="card h-100 border-0 bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <a href="{% url 'main:lake_detail' lake.slug %}" class="text-success text-decoration-none">
+                                        {{ lake.name }}
+                                    </a>
+                                </h6>
+                                <p class="card-text small text-muted mb-2">
+                                    <i class="fas fa-map-marker-alt"></i> {{ lake.county.name }}
+                                </p>
+                                <p class="card-text small mb-0">
+                                    <span class="badge bg-success">{{ lake.price_24h }} RON / 24h</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% if total_lakes > 12 %}
+                <div class="text-center mt-3">
+                    <a href="{% url 'main:fishing_locations' %}?fish_types[]={{ species.name }}" class="btn btn-success">
+                        <i class="fas fa-search"></i> Vezi Toate Locațiile ({{ total_lakes }})
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Related Species -->
+            {% if related_species %}
+            <div class="content-card">
+                <h4>
+                    <i class="fas fa-fish me-2"></i> Specii Similare
+                </h4>
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                        {% for related in related_species %}
+                        <div class="col">
+                            <div class="card h-100 text-center border-0 bg-light hover-shadow">
+                                {% if related.image %}
+                                <img src="{{ related.image.url }}"
+                                     class="card-img-top"
+                                     alt="{{ related.name }}"
+                                     style="height: 120px; object-fit: cover;">
+                                {% else %}
+                                <div class="card-img-top d-flex align-items-center justify-content-center"
+                                     style="height: 120px; background-color: #f8f9fa;">
+                                    <i class="fas fa-fish fa-2x text-success"></i>
+                                </div>
+                                {% endif %}
+                                <div class="card-body">
+                                    <h6 class="card-title small mb-0">
+                                        <a href="{% url 'main:fish_species_detail' related.slug %}" class="text-success text-decoration-none">
+                                            {{ related.name }}
+                                        </a>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+            </div>
+            {% endif %}
+
+            <!-- Share Section -->
+            <div class="content-card" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                <h6 class="mb-3">
+                    <i class="fas fa-share-alt text-success me-2"></i> Distribuie acest ghid
+                </h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://rasfatul-pescarului.ro{% url 'main:fish_species_detail' species.slug %}"
+                       target="_blank"
+                       class="btn btn-sm btn-primary">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?url=https://rasfatul-pescarului.ro{% url 'main:fish_species_detail' species.slug %}&text={{ species.name }}"
+                       target="_blank"
+                       class="btn btn-sm btn-info text-white">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                    <a href="https://wa.me/?text={{ species.name }}%20https://rasfatul-pescarului.ro{% url 'main:fish_species_detail' species.slug %}"
+                       target="_blank"
+                       class="btn btn-sm btn-success">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="text-center">
+                <a href="{% url 'main:fish_species_list' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Înapoi la Lista Speciilor
+                </a>
+                <a href="{% url 'main:fish_species_list' %}?category={{ species.category }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-filter"></i> Mai multe în {{ species.get_category_display }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+.species-description,
+.species-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+}
+
+.species-content h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #198754;
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+.species-content h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #198754;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.species-content h4 {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #198754;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.species-content p {
+    margin-bottom: 1.25rem;
+}
+
+.species-content ul,
+.species-content ol {
+    margin-bottom: 1.25rem;
+    padding-left: 2rem;
+}
+
+.species-content li {
+    margin-bottom: 0.5rem;
+}
+
+.species-content blockquote {
+    border-left: 4px solid #198754;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #666;
+}
+
+.species-content table {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    border-collapse: collapse;
+}
+
+.species-content table th,
+.species-content table td {
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+}
+
+.species-content table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.hover-shadow {
+    transition: box-shadow 0.3s ease;
+}
+
+.hover-shadow:hover {
+    box-shadow: 0 .25rem .5rem rgba(0,0,0,.15) !important;
+}
+
+.card-title a {
+    color: #198754;
+}
+
+.card-title a:hover {
+    color: #146c43;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .species-description,
+    .species-content {
+        font-size: 1rem;
+    }
+
+    .species-content h2 {
+        font-size: 1.4rem;
+    }
+
+    .species-content h3 {
+        font-size: 1.2rem;
+    }
+
+    .species-content h4 {
+        font-size: 1rem;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,1137 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load main_extras %}
+
+{% block title %}Adaugă baltă nouă - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/modern-auth-theme.css' %}">
+<style>
+/* Modern Create Lake Styles */
+.create-lake-hero {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    color: white;
+    padding: 4rem 0 6rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.create-lake-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23pattern)"/></svg>') repeat;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.hero-icon {
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.hero-icon i {
+    font-size: 3rem;
+    color: white;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+.form-container {
+    margin-top: -4rem;
+    position: relative;
+    z-index: 3;
+}
+
+.form-section-modern {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    border-left: 4px solid #198754;
+    backdrop-filter: blur(20px);
+}
+
+.section-header-modern {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.section-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #198754, #20c997);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.section-icon i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.section-title-modern {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0;
+}
+
+.required-indicator {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+}
+
+.form-group-modern {
+    margin-bottom: 1.5rem;
+}
+
+.form-label-modern {
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-input-modern {
+    width: 100%;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f7fafc;
+}
+
+.form-input-modern:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+    background: white;
+    outline: none;
+}
+
+.form-input-modern.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.form-input-modern.is-valid {
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+}
+
+.help-text-modern {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.help-text-modern i {
+    margin-right: 0.5rem;
+    color: #198754;
+}
+
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    background: #f7fafc;
+}
+
+.checkbox-item-modern {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.checkbox-item-modern:hover {
+    border-color: #198754;
+    box-shadow: 0 2px 8px rgba(25, 135, 84, 0.1);
+}
+
+.checkbox-item-modern input[type="checkbox"] {
+    margin-right: 0.75rem;
+    accent-color: #198754;
+    transform: scale(1.2);
+}
+
+.checkbox-item-modern label {
+    margin: 0;
+    cursor: pointer;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.checkbox-item-modern.checked {
+    background: linear-gradient(135deg, rgba(25, 135, 84, 0.1), rgba(32, 201, 151, 0.1));
+    border-color: #198754;
+}
+
+.coordinates-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.textarea-modern {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.photo-upload-section {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 2px dashed #198754;
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.photo-upload-section:hover {
+    border-color: #146c43;
+    background: linear-gradient(135deg, #e9ecef, #dee2e6);
+}
+
+.upload-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #198754, #20c997);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.upload-icon i {
+    font-size: 2rem;
+    color: white;
+}
+
+.upload-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+}
+
+.upload-subtitle {
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.photo-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.photo-preview-item-modern {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.photo-preview-item-modern:hover {
+    transform: translateY(-2px);
+}
+
+.photo-preview-modern {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.photo-remove-modern {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 30px;
+    height: 30px;
+    background: rgba(220, 53, 69, 0.9);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.photo-remove-modern:hover {
+    background: #dc3545;
+    transform: scale(1.1);
+}
+
+.photo-main-badge-modern {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    background: linear-gradient(135deg, #198754, #20c997);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.photo-count-modern {
+    text-align: center;
+    margin-top: 1rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.photo-count-modern.max-reached {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #f1f5f9;
+}
+
+.btn-create-modern {
+    background: linear-gradient(135deg, #198754, #20c997);
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 3rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-create-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(25, 135, 84, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-cancel-modern {
+    background: white;
+    border: 2px solid #6c757d;
+    border-radius: 12px;
+    padding: 1rem 3rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #6c757d;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-cancel-modern:hover {
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+}
+
+.progress-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.progress-step {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin: 0 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.progress-step.active {
+    background: linear-gradient(135deg, #198754, #20c997);
+    color: white;
+}
+
+.progress-step.completed {
+    background: #198754;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .create-lake-hero {
+        padding: 3rem 0 4rem;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .form-container {
+        margin-top: -2rem;
+    }
+
+    .form-section-modern {
+        padding: 1.5rem;
+    }
+
+    .checkbox-grid {
+        grid-template-columns: 1fr;
+        max-height: 300px;
+    }
+
+    .coordinates-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .photo-preview-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="create-lake-hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-icon">
+                <i class="fas fa-plus-circle"></i>
+            </div>
+            <h1 class="hero-title">Adaugă baltă nouă</h1>
+            <p class="hero-subtitle">Completează informațiile despre balta ta de pescuit și partajează-o cu comunitatea</p>
+        </div>
+    </div>
+</div>
+
+<div class="container form-container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <!-- Basic Information -->
+        <div class="form-section-modern">
+            <div class="section-header-modern">
+                <div class="section-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div>
+                    <h3 class="section-title-modern">
+                        Informații de bază
+                        <span class="required-indicator">*</span>
+                    </h3>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group-modern">
+                        <label for="{{ form.name.id_for_label }}" class="form-label-modern">
+                            {{ form.name.label }}
+                        </label>
+                        {{ form.name|add_class:"form-input-modern" }}
+                        {% if form.name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.name.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="help-text-modern">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Numele complet al lacului sau bălții de pescuit</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group-modern">
+                        <label for="{{ form.lake_type.id_for_label }}" class="form-label-modern">
+                            {{ form.lake_type.label }}
+                        </label>
+                        {{ form.lake_type|add_class:"form-input-modern" }}
+                        {% if form.lake_type.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.lake_type.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group-modern">
+                <label for="{{ form.description.id_for_label }}" class="form-label-modern">
+                    {{ form.description.label }}
+                </label>
+                {{ form.description|add_class:"form-input-modern textarea-modern" }}
+                {% if form.description.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.description.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+                <div class="help-text-modern">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Descrie balta ta: tipul de pești, facilități, reguli speciale, etc.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location Information -->
+        <div class="form-section-modern">
+            <div class="section-header-modern">
+                <div class="section-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                    <h3 class="section-title-modern">
+                        Locație
+                        <span class="required-indicator">*</span>
+                    </h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group-modern">
+                        <label for="{{ form.address.id_for_label }}" class="form-label-modern">
+                            {{ form.address.label }}
+                        </label>
+                        {{ form.address|add_class:"form-input-modern" }}
+                        {% if form.address.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.address.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="help-text-modern">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Adresa completă a bălții (sat, comună, oraș)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group-modern">
+                        <label for="{{ form.county.id_for_label }}" class="form-label-modern">
+                            {{ form.county.label }}
+                        </label>
+                        {{ form.county|add_class:"form-input-modern" }}
+                        {% if form.county.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.county.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="coordinates-help" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid #198754;">
+                <h6 style="color: #198754; font-weight: 600; margin-bottom: 1rem;">
+                    <i class="fas fa-info-circle me-2"></i>Cum să găsești coordonatele:
+                </h6>
+                <ol style="margin: 0; color: #4a5568;">
+                    <li>Deschide <a href="https://maps.google.com" target="_blank" style="color: #198754; font-weight: 600;">Google Maps</a></li>
+                    <li>Caută locația bălții tale</li>
+                    <li>Fă click dreapta pe locația exactă</li>
+                    <li>Copiază coordonatele din primul rând (ex: 45.39189813235069, 24.62707585690222)</li>
+                </ol>
+            </div>
+
+            <div class="coordinates-grid">
+                <div class="form-group-modern">
+                    <label for="{{ form.latitude.id_for_label }}" class="form-label-modern">
+                        {{ form.latitude.label }}
+                    </label>
+                    {{ form.latitude|add_class:"form-input-modern" }}
+                    {% if form.latitude.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.latitude.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="help-text-modern">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Ex: 45.39189813235069</span>
+                    </div>
+                </div>
+                <div class="form-group-modern">
+                    <label for="{{ form.longitude.id_for_label }}" class="form-label-modern">
+                        {{ form.longitude.label }}
+                    </label>
+                    {{ form.longitude|add_class:"form-input-modern" }}
+                    {% if form.longitude.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.longitude.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="help-text-modern">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Ex: 24.62707585690222</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group-modern">
+                <label for="{{ form.google_maps_embed.id_for_label }}" class="form-label-modern">
+                    {{ form.google_maps_embed.label }}
+                </label>
+                {{ form.google_maps_embed|add_class:"form-input-modern textarea-modern" }}
+                {% if form.google_maps_embed.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.google_maps_embed.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+                <div class="help-text-modern">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Opțional: Link-ul de embed de la Google Maps pentru hartă interactivă</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fish Species & Facilities -->
+        <div class="form-section-modern">
+            <div class="section-header-modern">
+                <div class="section-icon">
+                    <i class="fas fa-fish"></i>
+                </div>
+                <div>
+                    <h3 class="section-title-modern">
+                        Specii de pești și facilități
+                        <span class="required-indicator">*</span>
+                    </h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">{{ form.fish_species.label }}</label>
+                        <div class="checkbox-grid">
+                            {{ form.fish_species }}
+                        </div>
+                        {% if form.fish_species.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.fish_species.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="help-text-modern">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Selectează toate speciile de pești disponibile în baltă</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">{{ form.facilities.label }}</label>
+                        <div class="checkbox-grid">
+                            {{ form.facilities }}
+                        </div>
+                        {% if form.facilities.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.facilities.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="help-text-modern">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Selectează facilitățile disponibile pentru pescari</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing & Rules -->
+        <div class="form-section-modern">
+            <div class="section-header-modern">
+                <div class="section-icon">
+                    <i class="fas fa-euro-sign"></i>
+                </div>
+                <div>
+                    <h3 class="section-title-modern">
+                        Preț și regulament
+                        <span class="required-indicator">*</span>
+                    </h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group-modern">
+                        <label for="{{ form.price_12h.id_for_label }}" class="form-label-modern">
+                            {{ form.price_12h.label }}
+                        </label>
+                        {{ form.price_12h|add_class:"form-input-modern" }}
+                        {% if form.price_12h.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.price_12h.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="help-text-modern">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Prețul pentru 12 ore de pescuit (în RON)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group-modern">
+                        <label for="{{ form.price_24h.id_for_label }}" class="form-label-modern">
+                            {{ form.price_24h.label }}
+                        </label>
+                        {{ form.price_24h|add_class:"form-input-modern" }}
+                        {% if form.price_24h.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.price_24h.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="help-text-modern">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Prețul pentru 24 ore de pescuit (în RON)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group-modern">
+                <label for="{{ form.rules.id_for_label }}" class="form-label-modern">
+                    {{ form.rules.label }}
+                </label>
+                {{ form.rules|add_class:"form-input-modern textarea-modern" }}
+                {% if form.rules.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.rules.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+                <div class="help-text-modern">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Regulile și restricțiile pentru pescuit (program, echipament permis, etc.)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="form-section-modern">
+            <div class="section-header-modern">
+                <div class="section-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <div>
+                    <h3 class="section-title-modern">
+                        Date de contact
+                        <span class="required-indicator">*</span>
+                    </h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group-modern">
+                        <label for="{{ form.contact_phone.id_for_label }}" class="form-label-modern">
+                            {{ form.contact_phone.label }}
+                        </label>
+                        {{ form.contact_phone|add_class:"form-input-modern" }}
+                        {% if form.contact_phone.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.contact_phone.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="help-text-modern">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Numărul de telefon pentru rezervări</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group-modern">
+                        <label for="{{ form.contact_email.id_for_label }}" class="form-label-modern">
+                            {{ form.contact_email.label }}
+                        </label>
+                        {{ form.contact_email|add_class:"form-input-modern" }}
+                        {% if form.contact_email.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.contact_email.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="help-text-modern">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Adresa de email pentru contact</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photo Upload Section -->
+        <div class="form-section-modern">
+            <div class="section-header-modern">
+                <div class="section-icon">
+                    <i class="fas fa-images"></i>
+                </div>
+                <div>
+                    <h3 class="section-title-modern">Fotografii baltă</h3>
+                </div>
+            </div>
+
+            <div class="upload-info" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border-left: 4px solid #198754;">
+                <h6 style="color: #198754; font-weight: 600; margin-bottom: 1rem;">
+                    <i class="fas fa-info-circle me-2"></i>Informații importante:
+                </h6>
+                <ul style="margin: 0; color: #4a5568;">
+                    <li>Poți adăuga până la 10 fotografii</li>
+                    <li>Formate acceptate: JPEG, PNG</li>
+                    <li>Dimensiune maximă: 2MB per imagine</li>
+                    <li>Prima imagine va deveni imaginea principală</li>
+                    <li>Fotografiile ajută la promovarea bălții tale</li>
+                </ul>
+            </div>
+
+            <div class="photo-upload-container">
+                <div class="photo-upload-section" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h5 class="upload-title">Glisează fotografiile aici</h5>
+                    <p class="upload-subtitle">sau fă click pentru a selecta fișierele</p>
+                    <input type="file" id="photoFiles" name="photos" multiple accept="image/jpeg,image/png" class="d-none">
+                    <button type="button" class="btn-create-modern" onclick="document.getElementById('photoFiles').click()">
+                        <i class="fas fa-plus me-2"></i>Selectează fotografii
+                    </button>
+                </div>
+
+                <div class="photo-preview-grid" id="photoPreviewGrid" style="display: none;">
+                    <div id="previewContainer"></div>
+                </div>
+
+                <div class="upload-progress" id="uploadProgress" style="display: none;">
+                    <div class="progress mb-2">
+                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <small class="text-muted">Se încarcă fotografiile...</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+            <button type="submit" class="btn-create-modern">
+                <i class="fas fa-plus me-2"></i>Creează balta
+            </button>
+            <a href="{% url 'main:utilizator_profil' %}" class="btn-cancel-modern">
+                <i class="fas fa-times me-2"></i>Anulează
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Style checkboxes
+    const checkboxes = document.querySelectorAll('.checkbox-grid input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        const parent = checkbox.closest('li') || checkbox.parentElement;
+        if (parent) {
+            parent.classList.add('checkbox-item-modern');
+
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    parent.classList.add('checked');
+                } else {
+                    parent.classList.remove('checked');
+                }
+            });
+
+            // Check initial state
+            if (checkbox.checked) {
+                parent.classList.add('checked');
+            }
+        }
+    });
+
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Check required fields
+        const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+        
+        // Check fish species
+        const fishSpeciesChecked = form.querySelectorAll('input[name="fish_species"]:checked');
+        if (fishSpeciesChecked.length === 0) {
+            alert('Vă rugăm să selectați cel puțin o specie de pește.');
+            isValid = false;
+        }
+        
+        // Check facilities
+        const facilitiesChecked = form.querySelectorAll('input[name="facilities"]:checked');
+        if (facilitiesChecked.length === 0) {
+            alert('Vă rugăm să selectați cel puțin o facilitate.');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            // Scroll to first error
+            const firstError = form.querySelector('.is-invalid');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+
+    // Auto-format coordinates
+    const latInput = document.getElementById('{{ form.latitude.id_for_label }}');
+    const lngInput = document.getElementById('{{ form.longitude.id_for_label }}');
+
+    [latInput, lngInput].forEach(input => {
+        if (input) {
+            input.addEventListener('blur', function() {
+                const value = this.value.trim();
+                if (value && !isNaN(value)) {
+                    // Format to high precision
+                    this.value = parseFloat(value).toFixed(15);
+                }
+            });
+        }
+    });
+
+    // Photo upload functionality
+    const uploadArea = document.getElementById('uploadArea');
+    const photoFiles = document.getElementById('photoFiles');
+    const previewGrid = document.getElementById('photoPreviewGrid');
+    const previewContainer = document.getElementById('previewContainer');
+    const uploadProgress = document.getElementById('uploadProgress');
+
+    let selectedFiles = [];
+    const maxFiles = 10;
+    const maxFileSize = 2 * 1024 * 1024; // 2MB
+    const allowedTypes = ['image/jpeg', 'image/png'];
+
+    // Drag and drop functionality
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const files = Array.from(e.dataTransfer.files);
+        handleFiles(files);
+    });
+
+    // File input change
+    photoFiles.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        handleFiles(files);
+    });
+
+    function handleFiles(files) {
+        const validFiles = files.filter(file => {
+            if (!allowedTypes.includes(file.type)) {
+                alert(`Fișierul ${file.name} nu este un format acceptat. Folosiți doar JPEG sau PNG.`);
+                return false;
+            }
+            if (file.size > maxFileSize) {
+                alert(`Fișierul ${file.name} este prea mare. Dimensiunea maximă este 2MB.`);
+                return false;
+            }
+            return true;
+        });
+
+        if (selectedFiles.length + validFiles.length > maxFiles) {
+            alert(`Puteți adăuga maximum ${maxFiles} fotografii. Aveți deja ${selectedFiles.length} fotografii selectate.`);
+            return;
+        }
+
+        validFiles.forEach(file => {
+            selectedFiles.push(file);
+            createPreview(file, selectedFiles.length - 1);
+        });
+
+        updateUI();
+    }
+
+    function createPreview(file, index) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const item = document.createElement('div');
+            item.className = 'photo-preview-item-modern';
+            item.innerHTML = `
+                <img src="${e.target.result}" alt="Preview" class="photo-preview-modern">
+                <button type="button" class="photo-remove-modern" onclick="removePhoto(${index})">
+                    <i class="fas fa-times"></i>
+                </button>
+                ${index === 0 ? '<div class="photo-main-badge-modern">Principală</div>' : ''}
+            `;
+            previewContainer.appendChild(item);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    window.removePhoto = function(index) {
+        selectedFiles.splice(index, 1);
+        updatePreviews();
+        updateUI();
+    };
+
+    function updatePreviews() {
+        previewContainer.innerHTML = '';
+        selectedFiles.forEach((file, index) => {
+            createPreview(file, index);
+        });
+    }
+
+    function updateUI() {
+        if (selectedFiles.length > 0) {
+            uploadArea.style.display = 'none';
+            previewGrid.style.display = 'block';
+
+            // Add photo count
+            let countElement = document.getElementById('photoCount');
+            if (!countElement) {
+                countElement = document.createElement('div');
+                countElement.id = 'photoCount';
+                countElement.className = 'photo-count';
+                previewGrid.appendChild(countElement);
+            }
+
+            countElement.innerHTML = `
+                <i class="fas fa-images me-2"></i>
+                ${selectedFiles.length} din ${maxFiles} fotografii selectate
+                ${selectedFiles.length === maxFiles ? '<br><span class="max-reached">Ați atins limita maximă</span>' : ''}
+            `;
+            countElement.className = 'photo-count-modern';
+
+            // Add button to add more photos if not at limit
+            if (selectedFiles.length < maxFiles) {
+                let addMoreBtn = document.getElementById('addMoreBtn');
+                if (!addMoreBtn) {
+                    addMoreBtn = document.createElement('button');
+                    addMoreBtn.id = 'addMoreBtn';
+                    addMoreBtn.type = 'button';
+                    addMoreBtn.className = 'btn-create-modern mt-2';
+                    addMoreBtn.onclick = () => photoFiles.click();
+                    previewGrid.appendChild(addMoreBtn);
+                }
+                addMoreBtn.innerHTML = `<i class="fas fa-plus me-2"></i>Adaugă mai multe fotografii`;
+            } else {
+                const addMoreBtn = document.getElementById('addMoreBtn');
+                if (addMoreBtn) addMoreBtn.remove();
+            }
+        } else {
+            uploadArea.style.display = 'block';
+            previewGrid.style.display = 'none';
+        }
+    }
+
+    // Form submission - add files to FormData
+    form.addEventListener('submit', function(e) {
+        if (selectedFiles.length > 0) {
+            // Remove any existing photo inputs
+            const existingPhotoInputs = form.querySelectorAll('input[name^="photo_"]');
+            existingPhotoInputs.forEach(input => input.remove());
+
+            // Create hidden inputs for files
+            selectedFiles.forEach((file, index) => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.name = `photo_${index}`;
+                input.style.display = 'none';
+
+                // Create a new FileList with just this file
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                input.files = dt.files;
+
+                form.appendChild(input);
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

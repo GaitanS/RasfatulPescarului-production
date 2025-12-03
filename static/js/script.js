@@ -1,0 +1,199 @@
+// Navbar scroll effect
+document.addEventListener('DOMContentLoaded', function() {
+    const navbar = document.querySelector('.navbar');
+    const navbarHeight = navbar.offsetHeight;
+    const navbarBrand = document.querySelector('.navbar-brand');
+    
+    function handleScroll() {
+        if (window.scrollY > navbarHeight) {
+            navbar.classList.add('scrolled');
+            navbarBrand.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+            navbarBrand.classList.remove('scrolled');
+        }
+    }
+
+    window.addEventListener('scroll', handleScroll);
+});
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Initialize tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+
+// Handle mobile menu
+document.addEventListener('DOMContentLoaded', function() {
+    const navbarToggler = document.querySelector('.navbar-toggler');
+    const navbarCollapse = document.querySelector('.navbar-collapse');
+
+    if (navbarToggler && navbarCollapse) {
+        // Initialize Bootstrap collapse
+        const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+            toggle: false
+        });
+
+        // Initialize Bootstrap dropdowns (only in navbar, not custom ones)
+        const dropdowns = document.querySelectorAll('.navbar .dropdown-toggle');
+        dropdowns.forEach(dropdown => {
+            new bootstrap.Dropdown(dropdown, {
+                popperConfig: function (defaultBsPopperConfig) {
+                    return defaultBsPopperConfig;
+                }
+            });
+        });
+
+        // Toggle menu when button is clicked - with improved event handling
+        navbarToggler.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            bsCollapse.toggle();
+        });
+
+        // Handle mobile dropdown clicks (only navbar dropdowns)
+        // Let Bootstrap handle the dropdown functionality, just ensure proper styling
+
+        // Close dropdown when clicking its items (only Bootstrap dropdowns, not custom ones)
+        document.querySelectorAll('.navbar .dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                bsCollapse.hide();
+                document.querySelectorAll('.navbar .dropdown-menu.show').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            });
+        });
+
+        // Close menu when clicking a regular link
+        document.querySelectorAll('.navbar-nav .nav-link:not(.dropdown-toggle)').forEach(link => {
+            link.addEventListener('click', () => {
+                bsCollapse.hide();
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!navbarCollapse.contains(e.target) &&
+                !navbarToggler.contains(e.target) &&
+                navbarCollapse.classList.contains('show')) {
+                bsCollapse.hide();
+                // Also close any open Bootstrap dropdowns (only in navbar)
+                document.querySelectorAll('.navbar .dropdown-menu.show').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+    }
+});
+
+// Lazy loading for images
+document.addEventListener('DOMContentLoaded', function() {
+    const lazyImages = document.querySelectorAll('img[data-src]');
+    
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+                observer.unobserve(img);
+            }
+        });
+    });
+
+    lazyImages.forEach(img => imageObserver.observe(img));
+});
+
+// Form validation
+document.addEventListener('DOMContentLoaded', function() {
+    const forms = document.querySelectorAll('.needs-validation');
+
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+
+    // Auto-hide alerts after 3 seconds
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 3000);
+});
+
+// Solunar data auto-update
+document.addEventListener('DOMContentLoaded', function() {
+    const solunarSection = document.querySelector('.solunar-section');
+    if (!solunarSection) return;
+
+    function updateSolunarData() {
+        fetch('/api/solunar-data/')
+            .then(response => response.json())
+            .then(data => {
+                data.predictions.forEach((prediction, index) => {
+                    const card = solunarSection.querySelectorAll('.solunar-card')[index];
+                    if (!card) return;
+
+                    // Update rating
+                    const ratingText = card.querySelector('.text-muted');
+                    if (ratingText) {
+                        ratingText.textContent = `Rating: ${parseFloat(prediction.rating).toFixed(2)}/5`;
+                    }
+
+                    // Update times
+                    const favorableTimes = card.querySelector('.fishing-times .text-success + div');
+                    if (favorableTimes) {
+                        const spans = favorableTimes.querySelectorAll('span');
+                        spans[0].textContent = prediction.major_start;
+                        spans[1].textContent = prediction.major_end;
+                    }
+
+                    const unfavorableTimes = card.querySelector('.fishing-times .text-danger + div');
+                    if (unfavorableTimes) {
+                        const spans = unfavorableTimes.querySelectorAll('span');
+                        spans[0].textContent = prediction.minor_start;
+                        spans[1].textContent = prediction.minor_end;
+                    }
+
+                    // Update fish icons
+                    const fishIcons = card.querySelectorAll('.fish-icons i');
+                    fishIcons.forEach((icon, i) => {
+                        if (i < Math.floor(prediction.rating)) {
+                            icon.classList.add('text-primary');
+                            icon.classList.remove('text-muted');
+                        } else {
+                            icon.classList.remove('text-primary');
+                            icon.classList.add('text-muted');
+                        }
+                    });
+                });
+            })
+            .catch(error => console.error('Error updating solunar data:', error));
+    }
+
+    // Update every minute
+    setInterval(updateSolunarData, 60000);
+});

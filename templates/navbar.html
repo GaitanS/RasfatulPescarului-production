@@ -1,0 +1,184 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'main:home' %}">
+            <img src="{% static 'images/logo.png' %}" alt="Răsfățul Pescarului" height="40">
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Left side menu -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'main:home' %}">
+                        <i class="fas fa-home me-1"></i>Acasă
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'main:fishing_locations' %}">
+                        <i class="fas fa-map-marker-alt me-1"></i>Bălți de pescuit
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'main:solunar_calendar' %}">
+                        <i class="fas fa-moon me-1"></i>Calendar Solunar
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'main:tutorials' %}">
+                        <i class="fas fa-play-circle me-1"></i>Tutoriale
+                    </a>
+                </li>
+
+                <!-- Resources Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-book me-1"></i>Resurse
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
+                        <li><a class="dropdown-item" href="{% url 'main:blog_home' %}">
+                            <i class="fas fa-newspaper me-2"></i>Blog Pescuit
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'main:fishing_dictionary' %}">
+                            <i class="fas fa-book-open me-2"></i>Dicționar Pescuit
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'main:fish_species_list' %}">
+                            <i class="fas fa-fish me-2"></i>Specii de Pești
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'main:ghid_incepatori' %}">
+                            <i class="fas fa-graduation-cap me-2"></i>Ghid Începători
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'main:faq' %}">
+                            <i class="fas fa-question-circle me-2"></i>Întrebări Frecvente
+                        </a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'main:about' %}">
+                        <i class="fas fa-info-circle me-1"></i>Despre noi
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'main:contact' %}">
+                        <i class="fas fa-envelope me-1"></i>Contact
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Right side menu - Authentication -->
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <!-- User profile link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'main:utilizator_profil' %}">
+                            <i class="fas fa-user-circle me-1"></i>
+                            {% if user.get_full_name %}
+                                {{ user.get_full_name }}
+                            {% else %}
+                                {{ user.username }}
+                            {% endif %}
+                        </a>
+                    </li>
+
+                    <!-- Logout button -->
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{% url 'main:deconectare' %}" title="Deconectare">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </li>
+
+                    <!-- Dropdown for other user actions -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Setări">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'main:baltile_mele' %}">
+                                <i class="fas fa-water me-2"></i>Balțile mele
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:creaza_balta' %}">
+                                <i class="fas fa-plus me-2"></i>Adaugă baltă
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'main:editare_profil' %}">
+                                <i class="fas fa-edit me-2"></i>Editează profilul
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:schimbare_parola' %}">
+                                <i class="fas fa-key me-2"></i>Schimbă parola
+                            </a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'main:autentificare' %}">
+                            <i class="fas fa-sign-in-alt me-1"></i>Autentificare
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-success ms-2" href="{% url 'main:inregistrare' %}">
+                            <i class="fas fa-user-plus me-1"></i>Înregistrare
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Styling pentru dropdown menu -->
+<style>
+/* Dropdown menu styling */
+.navbar .dropdown-menu {
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+    padding: 0.5rem 0;
+    margin-top: 0.125rem;
+    min-width: 220px;
+}
+
+.navbar .dropdown-item {
+    color: #212529;
+    padding: 0.5rem 1.5rem;
+    font-weight: 400;
+    transition: all 0.2s ease;
+}
+
+.navbar .dropdown-item:hover,
+.navbar .dropdown-item:focus {
+    background-color: #198754;
+    color: #ffffff;
+}
+
+.navbar .dropdown-item i {
+    color: inherit;
+    width: 20px;
+    text-align: center;
+}
+
+.navbar .dropdown-divider {
+    margin: 0.5rem 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Pentru mobile - asigură că dropdown-ul este vizibil */
+@media (max-width: 991px) {
+    .navbar .dropdown-menu {
+        border: none;
+        box-shadow: none;
+        background-color: #f8f9fa;
+        padding-left: 1rem;
+    }
+
+    .navbar .dropdown-item:hover {
+        background-color: #e9ecef;
+        color: #198754;
+    }
+}
+</style>

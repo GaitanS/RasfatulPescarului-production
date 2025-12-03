@@ -1,0 +1,206 @@
+{% load static %}
+{% load i18n %}
+
+<footer class="footer_color text-white pt-5 pb-3">
+    <div class="container-fluid px-5">
+        <div class="row">
+            <!-- Company Info -->
+            <div class="col-lg-4 mb-4">
+                <div class="footer-brand mb-4">
+                    <h4 class="text-white fw-bold">Răsfățul Pescarului</h4>
+                </div>
+                <p class="text-light">
+                    Magazinul tău online de încredere pentru echipamente de pescuit și informații despre cele mai bune locuri de pescuit din România.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="text-white me-3" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-white me-3" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-white me-3" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="text-white" target="_blank"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h5 class="text-white mb-4">Link-uri Rapide</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <a href="{% url 'main:home' %}" class="text-light text-decoration-none hover-link">
+                            <i class="fas fa-chevron-right me-2"></i>Acasă
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'main:locations_map' %}" class="text-light text-decoration-none hover-link">
+                            <i class="fas fa-chevron-right me-2"></i>Bălți
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'main:tutorials' %}" class="text-light text-decoration-none hover-link">
+                            <i class="fas fa-chevron-right me-2"></i>Tutoriale
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'main:solunar_calendar' %}" class="text-light text-decoration-none hover-link">
+                            <i class="fas fa-chevron-right me-2"></i>Calendar Solunar
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Resources -->
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h5 class="text-white mb-4">Resurse</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <a href="{% url 'main:blog_home' %}" class="text-light text-decoration-none hover-link">
+                            <i class="fas fa-chevron-right me-2"></i>Blog Pescuit
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'main:fishing_dictionary' %}" class="text-light text-decoration-none hover-link">
+                            <i class="fas fa-chevron-right me-2"></i>Dicționar
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'main:fish_species_list' %}" class="text-light text-decoration-none hover-link">
+                            <i class="fas fa-chevron-right me-2"></i>Specii de Pești
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'main:ghid_incepatori' %}" class="text-light text-decoration-none hover-link">
+                            <i class="fas fa-chevron-right me-2"></i>Ghid Începători
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'main:faq' %}" class="text-light text-decoration-none hover-link">
+                            <i class="fas fa-chevron-right me-2"></i>FAQ
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Legal Links -->
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h5 class="text-white mb-4">Informații</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <a href="{% url 'main:about' %}" class="text-light text-decoration-none hover-link">
+                            <i class="fas fa-chevron-right me-2"></i>Despre Noi
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'main:contact' %}" class="text-light text-decoration-none hover-link">
+                            <i class="fas fa-chevron-right me-2"></i>Contact
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'main:privacy' %}" class="text-light text-decoration-none hover-link">
+                            <i class="fas fa-chevron-right me-2"></i>Confidențialitate
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'main:terms' %}" class="text-light text-decoration-none hover-link">
+                            <i class="fas fa-chevron-right me-2"></i>Termeni și Condiții
+                        </a>
+                    </li>
+                </ul>
+            </div>
+             <!-- Contact Info -->
+            <div class="col-lg-4 mb-4">
+                <h5 class="text-white mb-4">Contact</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        {{ footer.address }}
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-phone me-2"></i>
+                        <a href="tel:+40123456789" class="text-light text-decoration-none hover-link">{{ footer.phone }}</a>
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-envelope me-2"></i>
+                        <a href="mailto:contact@rasfatulpescarului.ro" class="text-light text-decoration-none hover-link">
+                            {{ footer.email }}
+                        </a>
+                    </li>
+                    <li>
+                        <i class="fas fa-clock me-2"></i>
+                        {{ footer.working_hours }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- Copyright -->
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0">&copy; {% now "Y" %} Răsfățul Pescarului. Toate drepturile rezervate.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+.footer_color {
+    background: linear-gradient(135deg, #1a472a 0%, #2d5a3f 100%);
+}
+
+.footer-logo {
+    max-height: 60px;
+    width: auto;
+}
+
+.footer-flag {
+    height: 20px;
+    width: auto;
+}
+
+.social-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    background: #28a745;
+    transform: translateY(-3px);
+}
+
+.hover-link {
+    transition: color 0.3s ease;
+    display: inline-block;
+}
+
+.hover-link:hover {
+    color: #28a745 !important;
+}
+
+.payment-methods i {
+    color: rgba(255, 255, 255, 0.8);
+    transition: color 0.3s ease;
+}
+
+.payment-methods i:hover {
+    color: #ffffff;
+}
+
+.newsletter-form .form-control {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.newsletter-form .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.newsletter-form .form-control:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: none;
+}
+</style>

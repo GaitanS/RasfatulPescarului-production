@@ -1,0 +1,446 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Răsfățul Pescarului - Locuri de Pescuit și Echipamente de Calitate{% endblock %}
+
+{% block description %}Descoperă cele mai bune locuri de pescuit din România! Ghid complet cu lacuri, echipamente de pescuit, calendar solunar și sfaturi pentru pescari. Comunitatea pescarilor din România.{% endblock %}
+
+{% block keywords %}pescuit România, locuri pescuit, lacuri pescuit, echipamente pescuit, calendar solunar, pescuit sportiv, pescuit la crap, pescuit la șalău, pescuit la clean, ghid pescuit{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": "https://rasfatul-pescarului.ro/",
+    "name": "Răsfățul Pescarului - Locuri de Pescuit și Echipamente",
+    "description": "Descoperă cele mai bune locuri de pescuit din România! Ghid complet cu lacuri, echipamente de pescuit, calendar solunar și sfaturi pentru pescari.",
+    "url": "https://rasfatul-pescarului.ro/",
+    "mainEntity": {
+        "@type": "Organization",
+        "name": "Răsfățul Pescarului",
+        "url": "https://rasfatul-pescarului.ro",
+        "description": "Comunitatea pescarilor din România",
+        "sameAs": [
+            "{{ hero.facebook_url }}",
+            "{{ hero.tiktok_url }}"
+        ]
+    },
+    "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Acasă",
+            "item": "https://rasfatul-pescarului.ro/"
+        }]
+    }
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Random Lakes Section - Card Symmetry */
+.random-lakes .card {
+    display: flex;
+    flex-direction: column;
+}
+
+.random-lakes .card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* Title with minimum height */
+.random-lakes .card-title {
+    min-height: 3em;
+    line-height: 1.5;
+}
+
+/* Description with fixed height */
+.random-lakes .card-text {
+    min-height: 3.2em;
+    line-height: 1.6;
+    margin-bottom: 1rem !important;
+}
+
+/* Rating section with fixed height */
+.random-lakes .rating-section {
+    min-height: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* Fish species badges with FIXED height */
+.random-lakes .fish-species-section {
+    height: 5.5rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.random-lakes .fish-species-section .d-flex {
+    align-content: flex-start;
+}
+
+/* Lake info grows to fill space */
+.random-lakes .lake-info {
+    flex-grow: 1;
+}
+
+.random-lakes .lake-info ul {
+    margin-bottom: 0.5rem;
+}
+
+/* Button section stays at bottom */
+.random-lakes .card-footer-btn {
+    margin-top: auto;
+}
+
+.random-lakes .badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-image">
+        <img src="{% static 'images/hero.webp' %}" alt="Hero Background" loading="eager">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+        <h1>Bine ai venit la Răsfățul Pescarului</h1>
+        <p>Descoperă cele mai bune locuri de pescuit și echipamente de calitate pentru pasiunea ta!</p>
+        <a href="{{ hero.main_button_url }}" class="btn btn-success btn-lg mt-4">{{ hero.main_button_text }}</a>
+        <div class="social-icons mt-3">
+            <a href="{{ hero.facebook_url }}" class="social-icon" style="color: #198653; margin: 0 10px;">
+                <i class="fab fa-facebook fa-2x"></i>
+            </a>
+            <a href="{{ hero.tiktok_url }}" class="social-icon" style="color: #198653; margin: 0 10px;">
+                <i class="fab fa-tiktok fa-2x"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Valuri animate -->
+    <div class="waves-container">
+        <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+             viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+                <path id="gentle-wave"
+                      d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+            </defs>
+            <g class="parallax">
+                <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(222, 244, 252,0.7)"></use>
+                <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(222, 244, 252,0.5)"></use>
+                <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(222, 244, 252,0.3)"></use>
+                <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff"></use>
+            </g>
+        </svg>
+    </div>
+</section>
+
+<!-- Welcome Section -->
+<section class="welcome-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-5 image-container">
+                <img src="{% static 'images/logo.png' %}" alt="Răsfățul Pescarului - Pescuit în România" class="img-fluid" loading="lazy">
+            </div>
+            <div class="col-lg-7 text-container">
+                <h2>Bine ați venit pe Răsfățul Pescarului</h2>
+                <p class="lead">Platforma dedicată pasionaților de pescuit din toată țara! Aici, veți descoperi o resursă unică pentru iubitorii de pescuit: un serviciu inovator care vă permite să explorați toate speciile de pești și baltițele din România.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Top Banner Ad -->
+<!-- ADSENSE: REACTIVATE AFTER APPROVAL
+<div class="ad-banner">
+    <div class="container">
+        <div class="ad-label">
+            <small class="text-muted">Publicitate</small>
+        </div>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-4988585637197167"
+             data-ad-slot="auto"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+</div>
+-->
+
+<!-- Explore Section -->
+<section class="fishing-explore-section">
+    <div class="container">
+        <div class="fishing-explore-container">
+            <div class="fishing-text-content">
+                <h2>Explorați cu noi<br>lumea captivantă<br>a pescuitului.</h2>
+                <p class="mt-4">Fie că sunteți în căutarea unui loc de pescuit perfect sau doriți să aflați mai multe despre speciile de pești din apele noastre, Răsfățul Pescarului vă oferă toate informațiile necesare pentru a vă planifica o experiență de pescuit de neuitat. Alăturați-vă comunității noastre și începeți aventura pe ape!</p>
+            </div>
+            <div class="fishing-image-container">
+                <img src="{% static 'images/img_4.webp' %}" alt="Peisaj de pescuit" class="img-fluid" loading="lazy">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Random Lakes Section -->
+<section class="random-lakes py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Bălți recomandate</h2>
+        <p class="text-center mb-5">Descoperă cele mai interesante locuri de pescuit din România</p>
+
+        {% if random_lakes %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for lake in random_lakes %}
+            <div class="col">
+                <div class="card h-100">
+                    {% with display_image=lake.get_display_image %}
+                    {% if display_image %}
+                    <img src="{{ display_image.url }}" class="card-img-top" alt="{{ lake.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'images/lake-placeholder.webp' %}" class="card-img-top" alt="{{ lake.name }}" style="height: 200px; object-fit: cover;" loading="lazy">
+                    {% endif %}
+                    {% endwith %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ lake.name }}</h5>
+                        <p class="card-text">{{ lake.description|truncatechars:100 }}</p>
+
+                        <!-- Rating Display -->
+                        <div class="rating-section">
+                            {% if lake.total_reviews > 0 %}
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rating-stars">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= lake.average_rating %}
+                                            <i class="fas fa-star" style="color: #ffc107;"></i>
+                                        {% else %}
+                                            <i class="far fa-star" style="color: #e9ecef;"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <span class="fw-bold" style="color: #ffc107;">{{ lake.average_rating }}</span>
+                                <small class="text-muted">({{ lake.total_reviews }})</small>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Fish Species Badges -->
+                        <div class="fish-species-section">
+                            {% if lake.fish_species.all %}
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for fish in lake.fish_species.all|slice:":4" %}
+                                <span class="badge" style="background-color: #198754 !important; font-size: 0.75rem;">
+                                    <i class="fas fa-fish me-1"></i>{{ fish.name }}
+                                </span>
+                                {% endfor %}
+                                {% if lake.fish_species.count > 4 %}
+                                <span class="badge" style="background-color: #198754 !important; font-size: 0.75rem;">
+                                    +{{ lake.fish_species.count|add:"-4" }}
+                                </span>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Lake Information -->
+                        <div class="lake-info">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-coins me-2"></i>{{ lake.price_12h }} Lei/12h • {{ lake.price_24h }} Lei/24h</li>
+                                <li><i class="fas fa-map-marker-alt me-2"></i>{{ lake.address }}</li>
+                            </ul>
+                        </div>
+
+                        <!-- Button Section -->
+                        <div class="card-footer-btn">
+                            <div class="d-grid">
+                                <a href="{% url 'main:lake_detail' lake.slug %}" class="btn btn-success">
+                                    Vezi detalii
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'main:fishing_locations' %}" class="btn btn-outline-success btn-lg">
+                Vezi toate băltile
+            </a>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-water fa-3x text-muted mb-3"></i>
+            <h3>Nu există bălți disponibile</h3>
+            <p class="text-muted">Momentan nu avem bălți de pescuit înregistrate în sistem.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ADSENSE: REACTIVATE AFTER APPROVAL
+<div class="ad-inline">
+    <div class="container">
+        <div class="ad-label">
+            <small class="text-muted">Publicitate</small>
+        </div>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-4988585637197167"
+             data-ad-slot="auto"
+             data-ad-format="rectangle"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+</div>
+-->
+
+<!-- Call to Action -->
+<section class="cta py-5 bg-success text-white border-top">
+    <div class="container text-center">
+        <h2 class="mb-4">Pregătit să începi aventura?</h2>
+        <p class="lead mb-4">Alătură-te comunității noastre și descoperă cele mai bune locuri de pescuit!</p>
+        <a href="https://www.facebook.com/rasfatulpescarului" class="btn btn-light btn-lg">Descoperă mai multe</a>
+    </div>
+</section>
+
+<!-- Solunar Section -->
+<section class="solunar-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Calendar Solunar</h2>
+        <p class="text-center mb-5">Află cele mai bune perioade pentru pescuit bazate pe fazele lunii</p>
+        
+        <div class="row">
+            {% for prediction in solunar_predictions %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 solunar-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="moon-phase-icon me-3">
+                                {% if prediction.moon_phase < 0.125 %}
+                                    <svg width="60" height="60" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#1a1a1a" stroke="#333" stroke-width="2"/>
+                                    </svg>
+                                {% elif prediction.moon_phase < 0.375 %}
+                                    <svg width="60" height="60" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#f8f9fa" stroke="#333" stroke-width="2"/>
+                                        <path d="M30 2A28 28 0 0 1 30 58A28 28 0 0 0 30 2" fill="#1a1a1a"/>
+                                    </svg>
+                                {% elif prediction.moon_phase < 0.625 %}
+                                    <svg width="60" height="60" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#f8f9fa" stroke="#333" stroke-width="2"/>
+                                    </svg>
+                                {% elif prediction.moon_phase < 0.875 %}
+                                    <svg width="60" height="60" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#f8f9fa" stroke="#333" stroke-width="2"/>
+                                        <path d="M30 2A28 28 0 0 0 30 58A28 28 0 0 1 30 2" fill="#1a1a1a"/>
+                                    </svg>
+                                {% else %}
+                                    <svg width="60" height="60" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#1a1a1a" stroke="#333" stroke-width="2"/>
+                                    </svg>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <h5 class="card-title mb-0">
+                                    {% if forloop.first %}
+                                        Solunar azi
+                                    {% else %}
+                                        {{ prediction.date|date:"l, j F" }}
+                                    {% endif %}
+                                </h5>
+                                <div class="text-muted">Rating: {{ prediction.rating|floatformat:2 }}/5</div>
+                            </div>
+                        </div>
+                        
+                        <div class="fishing-times mb-3">
+                            <h6 class="text-success">Orar pescuit favorabil:</h6>
+                            <div class="d-flex justify-content-around">
+                                <span>{{ prediction.major_start|time:"H:i" }}</span>
+                                <span>{{ prediction.major_end|time:"H:i" }}</span>
+                            </div>
+                            
+                            <h6 class="text-danger mt-3">Orar pescuit nefavorabil:</h6>
+                            <div class="d-flex justify-content-around">
+                                <span>{{ prediction.minor_start|time:"H:i" }}</span>
+                                <span>{{ prediction.minor_end|time:"H:i" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="fishing-rating text-center">
+                            <div class="fish-icons">
+                                {% with ''|center:5 as range %}
+                                {% for _ in range %}
+                                    <i class="fas fa-fish {% if forloop.counter <= prediction.rating %}text-primary{% else %}text-muted{% endif %}"></i>
+                                {% endfor %}
+                                {% endwith %}
+                            </div>
+                            <small class="text-muted">Șanse de pescuit: {{ prediction.rating_text }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'main:solunar_calendar' %}" class="btn btn-outline-success btn-lg">
+                Vezi calendarul complet
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- County Selection Section -->
+<section class="county-selection-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-3">Selecteaza judetul</h2>
+        <p class="text-center mb-5">Selecteaza judetul in care te afli pentru a vedea zonele de pescuit plus ce tipuri de pestii poti gasi in ele.</p>
+        <div class="map-container text-center">
+            <a href="{% url 'main:locations_map' %}" class="map-link">
+                <img src="{% static 'images/romania.svg' %}" alt="Harta Romaniei" class="romania-map img-fluid">
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Videos -->
+<section class="featured-videos py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Tutoriale recente</h2>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for video in featured_videos %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="ratio ratio-16x9">
+                        <iframe src="{{ video.embed_url }}" title="{{ video.title }}" allowfullscreen></iframe>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ video.title }}</h5>
+                        <p class="card-text">{{ video.description|truncatechars:100 }}</p>
+                        <a href="{% url 'main:video_detail' video.id %}" class="btn btn-outline-success">
+                            Vezi tutorialul
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'main:tutorials' %}" class="btn btn-outline-success btn-lg">
+                Vezi toate tutorialele
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

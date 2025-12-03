@@ -1,0 +1,460 @@
+{% extends 'base.html' %}
+
+{% block title %}Calendar Solunar pentru Pescuit - Răsfățul Pescarului{% endblock %}
+
+{% block description %}Descoperă cele mai bune perioade pentru pescuit cu calendarul solunar. Află când peștii sunt cei mai activi bazat pe fazele lunii și poziția soarelui. Planifică-ți ieșirile la pescuit!{% endblock %}
+
+{% block keywords %}calendar solunar, pescuit solunar, faze luna pescuit, când să pescuiesc, activitate pești, perioade pescuit{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Calendar Solunar pentru Pescuit",
+    "description": "Descoperă cele mai bune perioade pentru pescuit cu calendarul solunar bazat pe fazele lunii și poziția soarelui.",
+    "url": "https://rasfatul-pescarului.ro/solunar-calendar/",
+    "mainEntity": {
+        "@type": "Thing",
+        "name": "Calendar Solunar",
+        "description": "Sistem de predicție a activității peștilor bazat pe fazele lunii"
+    }
+}
+</script>
+{% endblock %}
+
+{% block body_class %}solunar-page{% endblock %}
+{% load static main_extras %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/solunar.css' %}">
+<style>
+/* Clean Filter Controls Styles */
+.filter-controls {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 200px;
+}
+
+.filter-label {
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-select {
+    background: white;
+    border: 2px solid rgba(25, 135, 84, 0.3);
+    border-radius: 12px;
+    padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    width: 100%;
+    min-width: 180px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 3rem;
+}
+
+.filter-select:hover {
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+    transform: translateY(-1px);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #198754;
+    box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.2);
+}
+
+.filter-select option {
+    background: white;
+    color: #333;
+    padding: 0.5rem;
+}
+
+.filter-info {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+.filter-hint {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 0.75rem 1.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .filter-form {
+        flex-direction: row;
+        justify-content: center;
+        gap: 3rem;
+    }
+
+    .filter-group {
+        min-width: 220px;
+    }
+}
+
+@media (max-width: 767px) {
+    .filter-controls {
+        padding: 1.5rem 1rem;
+        margin: 0 0.5rem 2rem 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .filter-group {
+        width: 100%;
+        min-width: auto;
+        position: relative;
+    }
+
+    .filter-select {
+        min-width: auto;
+        width: 100%;
+        font-size: 16px;
+        position: relative;
+        z-index: 1;
+        /* Fix dropdown positioning on mobile */
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+
+    /* Ensure dropdown options are properly positioned */
+    .filter-select option {
+        background: white !important;
+        color: #333 !important;
+        padding: 0.5rem !important;
+    }
+
+    /* Mobile navbar overlap prevention */
+    .solunar-calendar {
+        padding-top: 1rem !important;
+        margin-top: 0 !important;
+    }
+
+    .solunar-calendar .container {
+        padding-top: 1rem !important;
+    }
+
+    /* Ensure proper spacing from top */
+    body.solunar-page {
+        padding-top: 0 !important;
+    }
+
+    /* Additional mobile fixes */
+    .navbar {
+        z-index: 1030 !important;
+    }
+
+    .filter-controls,
+    .solunar-calendar {
+        z-index: 1 !important;
+        position: relative !important;
+    }
+
+    /* Prevent horizontal overflow */
+    .filter-form {
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    /* Center dropdown content */
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+
+
+/* Success States */
+.filter-select.success {
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.2);
+}
+
+
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="solunar-calendar py-5">
+    <div class="container">
+        <h1 class="text-center mb-4" style="font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Calendar Solunar</h1>
+        
+        <!-- Legend Section -->
+        <div class="legend-section mb-5">
+            <div class="legend-header d-flex align-items-center justify-content-between mb-3">
+                <h5 class="mb-0">Legendă și Explicații</h5>
+                <button class="btn btn-link text-white" id="toggleLegend">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+            <div class="legend-content">
+                <div class="row g-4">
+                    <!-- Moon Phases -->
+                    <div class="col-12 col-md-6">
+                        <div class="legend-card">
+                            <h6 class="legend-title"><i class="fas fa-moon me-2"></i>Fazele Lunii</h6>
+                            <div class="legend-item">
+                                <div class="moon-icon">
+                                    <svg width="30" height="30" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#1a1a1a" stroke="#333" stroke-width="2"/>
+                                    </svg>
+                                </div>
+                                <span>Lună Nouă - Activitate crescută a peștilor</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="moon-icon">
+                                    <svg width="30" height="30" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#f8f9fa" stroke="#333" stroke-width="2"/>
+                                        <path d="M30 2A28 28 0 0 1 30 58A28 28 0 0 0 30 2" fill="#1a1a1a"/>
+                                    </svg>
+                                </div>
+                                <span>Primul Pătrar - Activitate moderată</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="moon-icon">
+                                    <svg width="30" height="30" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#f8f9fa" stroke="#333" stroke-width="2"/>
+                                    </svg>
+                                </div>
+                                <span>Lună Plină - Activitate maximă</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="moon-icon">
+                                    <svg width="30" height="30" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#f8f9fa" stroke="#333" stroke-width="2"/>
+                                        <path d="M30 2A28 28 0 0 0 30 58A28 28 0 0 1 30 2" fill="#1a1a1a"/>
+                                    </svg>
+                                </div>
+                                <span>Ultimul Pătrar - Activitate moderată</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Fishing Times -->
+                    <div class="col-12 col-md-6">
+                        <div class="legend-card">
+                            <h6 class="legend-title"><i class="fas fa-clock me-2"></i>Orare de Pescuit</h6>
+                            <div class="legend-item">
+                                <i class="fas fa-fish text-success"></i>
+                                <span>Perioada Favorabilă - Cele mai bune ore pentru pescuit</span>
+                            </div>
+                            <div class="legend-item">
+                                <i class="fas fa-ban text-danger"></i>
+                                <span>Perioada Nefavorabilă - Activitate redusă a peștilor</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filter Controls -->
+        <div class="filter-controls">
+            <div class="filter-hint text-center">
+                <h5 class="text-white mb-2">
+                    <i class="fas fa-calendar-alt me-2"></i>Selectează Luna și Anul
+                </h5>
+                <p class="text-light mb-0" style="font-size: 0.9rem;">
+                    Alege luna și anul pentru a vedea datele solunar specifice
+                </p>
+            </div>
+
+            <form method="get" class="filter-form" id="solunarFilterForm">
+                <div class="filter-group">
+                    <label class="filter-label" for="monthSelect">
+                        <i class="fas fa-calendar me-1"></i>Luna
+                    </label>
+                    <select name="month" id="monthSelect" class="filter-select" title="Selectează luna pentru calendar">
+                        {% for m_num, m_name in months %}
+                        <option value="{{ m_num }}" {% if m_num == current_month %}selected{% endif %}>{{ m_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="yearSelect">
+                        <i class="fas fa-calendar-week me-1"></i>Anul
+                    </label>
+                    <select name="year" id="yearSelect" class="filter-select" title="Selectează anul pentru calendar">
+                        {% for y in years_range %}
+                        <option value="{{ y }}" {% if y == current_year %}selected{% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+
+            <div class="filter-info">
+                <small class="text-light">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Calendarul se va actualiza automat după selectarea unei noi luni sau an
+                </small>
+            </div>
+        </div>
+
+        <!-- ADSENSE: REACTIVATE AFTER APPROVAL
+        <div class="ad-inline mb-4">
+            <div class="ad-label">
+                <small class="text-muted">Publicitate</small>
+            </div>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-4988585637197167"
+                 data-ad-slot="auto"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+        -->
+
+        <!-- Calendar Grid -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for prediction in calendar_data %}
+            <div class="col">
+                <div class="card h-100 solunar-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="moon-phase-icon me-3" style="position: relative;">
+                                {% if prediction.moon_phase < 0.125 %}
+                                    <svg width="60" height="60" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#1a1a1a" stroke="#333" stroke-width="2"/>
+                                    </svg>
+                                    <div class="moon-phase-label">Lună Nouă</div>
+                                {% elif prediction.moon_phase < 0.375 %}
+                                    <svg width="60" height="60" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#f8f9fa" stroke="#333" stroke-width="2"/>
+                                        <path d="M30 2A28 28 0 0 1 30 58A28 28 0 0 0 30 2" fill="#1a1a1a"/>
+                                    </svg>
+                                    <div class="moon-phase-label">Primul Pătrar</div>
+                                {% elif prediction.moon_phase < 0.625 %}
+                                    <svg width="60" height="60" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#f8f9fa" stroke="#333" stroke-width="2"/>
+                                    </svg>
+                                    <div class="moon-phase-label">Lună Plină</div>
+                                {% elif prediction.moon_phase < 0.875 %}
+                                    <svg width="60" height="60" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#f8f9fa" stroke="#333" stroke-width="2"/>
+                                        <path d="M30 2A28 28 0 0 0 30 58A28 28 0 0 1 30 2" fill="#1a1a1a"/>
+                                    </svg>
+                                    <div class="moon-phase-label">Ultimul Pătrar</div>
+                                {% else %}
+                                    <svg width="60" height="60" viewBox="0 0 60 60">
+                                        <circle cx="30" cy="30" r="28" fill="#1a1a1a" stroke="#333" stroke-width="2"/>
+                                    </svg>
+                                    <div class="moon-phase-label">Lună Nouă</div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <h5 class="card-title mb-0">{{ prediction.date|romanian_date }}</h5>
+                                <div class="text-muted" style="font-size: 0.9rem;">
+                                    <i class="fas fa-star me-1" style="color: #198653;"></i>
+                                    Rating: {{ prediction.rating|floatformat:2 }}/5
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="fishing-times mb-3">
+                            <h6 class="text-success">
+                                <i class="fas fa-fish me-2"></i>Orar pescuit favorabil:
+                            </h6>
+                            <div class="d-flex justify-content-around align-items-center" style="position: relative;">
+                                <span>{{ prediction.major_start|time:"H:i" }}</span>
+                                <span style="visibility: hidden;">→</span>
+                                <span>{{ prediction.major_end|time:"H:i" }}</span>
+                            </div>
+                            
+                            <h6 class="text-danger mt-3">
+                                <i class="fas fa-ban me-2"></i>Orar pescuit nefavorabil:
+                            </h6>
+                            <div class="d-flex justify-content-around align-items-center" style="position: relative;">
+                                <span>{{ prediction.minor_start|time:"H:i" }}</span>
+                                <span style="visibility: hidden;">→</span>
+                                <span>{{ prediction.minor_end|time:"H:i" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="fishing-rating text-center">
+                            <div class="fish-icons">
+                                {% with ''|center:5 as range %}
+                                {% for _ in range %}
+                                    <i class="fas fa-fish {% if forloop.counter <= prediction.rating %}text-primary{% else %}text-muted{% endif %}"></i>
+                                {% endfor %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- ADSENSE: REACTIVATE AFTER APPROVAL
+        <div class="ad-inline mt-5">
+            <div class="ad-label">
+                <small class="text-muted">Publicitate</small>
+            </div>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-4988585637197167"
+                 data-ad-slot="auto"
+                 data-ad-format="rectangle"
+                 data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+        -->
+    </div>
+</section>
+
+{% block extra_js %}
+<script src="{% static 'js/solunar.js' %}"></script>
+{% endblock %}
+{% endblock %}

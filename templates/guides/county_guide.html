@@ -1,0 +1,363 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ghid Pescuit {{ county.name }} - Răsfățul Pescarului{% endblock %}
+
+{% block description %}{{ county.guide_excerpt|default:"Ghid complet de pescuit în județul "|add:county.name|add:". Descoperă cele mai bune locuri de pescuit, specii de pești și sfaturi pentru pescari." }}{% endblock %}
+
+{% block keywords %}pescuit {{ county.name }}, lacuri {{ county.name }}, ghid pescuit {{ county.name }}, locuri pescuit {{ county.name }}{% endblock %}
+
+{% block canonical %}https://rasfatul-pescarului.ro{% url 'main:county_guide' county.slug %}{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "{{ county.guide_title|default:'Ghid Pescuit '|add:county.name }}",
+    "description": "{{ county.guide_excerpt }}",
+    "author": {
+        "@type": "Organization",
+        "name": "Răsfățul Pescarului"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Răsfățul Pescarului",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://rasfatul-pescarului.ro{% static 'images/logo.png' %}"
+        }
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://rasfatul-pescarului.ro{% url 'main:county_guide' county.slug %}"
+    },
+    "about": {
+        "@type": "Place",
+        "name": "{{ county.name }}",
+        "geo": {
+            "@type": "GeoCoordinates",
+            "addressCountry": "RO"
+        }
+    }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-lg-10 mx-auto">
+            <!-- Back to Counties -->
+            <div class="mb-3">
+                <a href="{% url 'main:fishing_locations' %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Înapoi la Locații
+                </a>
+            </div>
+
+            <!-- County Badge -->
+            <div class="mb-3">
+                <span class="badge bg-success">
+                    <i class="fas fa-map-marker-alt"></i> Județul {{ county.name }}
+                </span>
+            </div>
+
+            <!-- Title -->
+            <h1 class="display-4 mb-3">
+                {{ county.guide_title|default:"Ghid Pescuit în Județul "|add:county.name }}
+            </h1>
+
+            <!-- Excerpt -->
+            {% if county.guide_excerpt %}
+            <p class="lead text-muted">{{ county.guide_excerpt }}</p>
+            {% endif %}
+
+            <!-- Quick Stats -->
+            <div class="row mt-4">
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h4 class="text-primary mb-0">{{ total_lakes }}</h4>
+                            <small class="text-muted">Lacuri</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h4 class="text-primary mb-0">{{ fish_species|length }}</h4>
+                            <small class="text-muted">Specii de Pești</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h4 class="text-primary mb-0"><i class="fas fa-star text-warning"></i></h4>
+                            <small class="text-muted">Top Destinație</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3 mb-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h4 class="text-primary mb-0"><i class="fas fa-check text-success"></i></h4>
+                            <small class="text-muted">Verificat</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <!-- Guide Content -->
+            {% if county.guide_content %}
+            <div class="card shadow-sm mb-5">
+                <div class="card-body">
+                    <div class="guide-content">
+                        {{ county.guide_content|safe }}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="card shadow-sm mb-5">
+                <div class="card-body">
+                    <div class="guide-content">
+                        <h2><i class="fas fa-water text-primary"></i> Despre Pescuitul în {{ county.name }}</h2>
+                        <p>
+                            Județul {{ county.name }} oferă pescărilor pasionați o varietate de locuri excelente pentru pescuit.
+                            Cu {{ total_lakes }} lacuri și {{ fish_species|length }} specii de pești disponibile,
+                            acest județ este o destinație ideală pentru pescuitul sportiv.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Fish Species Section -->
+            {% if fish_species %}
+            <div class="mb-5">
+                <h2 class="mb-4">
+                    <i class="fas fa-fish text-primary"></i> Specii de Pești Disponibile
+                </h2>
+                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                    {% for species in fish_species %}
+                    <div class="col">
+                        <div class="card h-100 text-center border-0 bg-light">
+                            <div class="card-body">
+                                <i class="fas fa-fish fa-2x text-primary mb-2"></i>
+                                <h6 class="card-title mb-0">{{ species.name }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Lakes Section -->
+            {% if lakes %}
+            <div class="mb-5">
+                <h2 class="mb-4">
+                    <i class="fas fa-map-marked-alt text-primary"></i> Cele Mai Bune Lacuri din {{ county.name }}
+                </h2>
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for lake in lakes %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm hover-shadow">
+                            {% if lake.get_display_image %}
+                            <img src="{{ lake.get_display_image.url }}"
+                                 class="card-img-top"
+                                 alt="{{ lake.name }}"
+                                 style="height: 200px; object-fit: cover;">
+                            {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                                 style="height: 200px;">
+                                <i class="fas fa-water fa-3x text-muted"></i>
+                            </div>
+                            {% endif %}
+
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="{% url 'main:lake_detail' lake.slug %}" class="text-decoration-none">
+                                        {{ lake.name }}
+                                    </a>
+                                </h5>
+
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        <i class="fas fa-map-marker-alt"></i> {{ lake.address }}
+                                    </small>
+                                </p>
+
+                                <!-- Fish Species -->
+                                {% if lake.fish_species.all %}
+                                <div class="mb-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-fish"></i>
+                                        {% for species in lake.fish_species.all|slice:":3" %}
+                                            {{ species.name }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                        {% if lake.fish_species.count > 3 %}
+                                            +{{ lake.fish_species.count|add:"-3" }}
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                {% endif %}
+
+                                <!-- Pricing -->
+                                <div class="mb-3">
+                                    <span class="badge bg-success">
+                                        {{ lake.price_24h }} RON / 24h
+                                    </span>
+                                </div>
+
+                                <!-- Rating -->
+                                {% if lake.average_rating %}
+                                <div class="mb-3">
+                                    <small class="text-warning">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= lake.average_rating %}
+                                                <i class="fas fa-star"></i>
+                                            {% else %}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </small>
+                                    <small class="text-muted">
+                                        ({{ lake.total_reviews }} recenzii)
+                                    </small>
+                                </div>
+                                {% endif %}
+
+                                <a href="{% url 'main:lake_detail' lake.slug %}" class="btn btn-sm btn-outline-primary">
+                                    Vezi Detalii <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- View All Lakes -->
+                {% if total_lakes > 10 %}
+                <div class="text-center mt-4">
+                    <a href="{% url 'main:county_lakes' county.slug %}" class="btn btn-primary">
+                        <i class="fas fa-th"></i> Vezi Toate Lacurile din {{ county.name }} ({{ total_lakes }})
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Tips Section -->
+            <div class="card bg-light mb-5">
+                <div class="card-body">
+                    <h4 class="mb-3">
+                        <i class="fas fa-lightbulb text-warning"></i> Sfaturi pentru Pescuit în {{ county.name }}
+                    </h4>
+                    <ul class="mb-0">
+                        <li>Verifică întotdeauna regulamentul local înainte de a pescui</li>
+                        <li>Respectă perioadele de prohibiție pentru fiecare specie</li>
+                        <li>Asigură-te că ai permis de pescuit valabil</li>
+                        <li>Practică pescuitul responsabil și protejează mediul înconjurător</li>
+                        <li>Informează-te despre metodele de pescuit permise în zonă</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="text-center">
+                <a href="{% url 'main:fishing_locations' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-map"></i> Explorează Alte Județe
+                </a>
+                <a href="{% url 'main:locations_map' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-map-marked-alt"></i> Vezi pe Hartă
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+.guide-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+}
+
+.guide-content h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #198754;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.guide-content h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #198754;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.guide-content p {
+    margin-bottom: 1.25rem;
+}
+
+.guide-content ul,
+.guide-content ol {
+    margin-bottom: 1.25rem;
+    padding-left: 2rem;
+}
+
+.guide-content li {
+    margin-bottom: 0.5rem;
+}
+
+.guide-content blockquote {
+    border-left: 4px solid #198754;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #666;
+}
+
+.hover-shadow {
+    transition: box-shadow 0.3s ease;
+}
+
+.hover-shadow:hover {
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+}
+
+.card-title a {
+    color: #198754;
+}
+
+.card-title a:hover {
+    color: #146c43;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .guide-content {
+        font-size: 1rem;
+    }
+
+    .guide-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .guide-content h3 {
+        font-size: 1.25rem;
+    }
+}
+</style>
+{% endblock %}

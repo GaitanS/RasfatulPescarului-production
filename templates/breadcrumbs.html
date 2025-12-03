@@ -1,0 +1,104 @@
+{% load static %}
+
+{% if breadcrumbs %}
+<nav aria-label="breadcrumb" class="breadcrumb-nav">
+    <div class="container">
+        <ol class="breadcrumb bg-light rounded p-3 mb-4">
+            <li class="breadcrumb-item">
+                <a href="{% url 'main:home' %}" class="text-success">
+                    <i class="fas fa-home me-1"></i>Acasă
+                </a>
+            </li>
+            
+            {% for breadcrumb in breadcrumbs %}
+                {% if forloop.last %}
+                    <li class="breadcrumb-item active" aria-current="page">
+                        {{ breadcrumb.name }}
+                    </li>
+                {% else %}
+                    <li class="breadcrumb-item">
+                        <a href="{{ breadcrumb.url }}" class="text-success">
+                            {{ breadcrumb.name }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    </div>
+</nav>
+
+<!-- Structured Data for Breadcrumbs -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Acasă",
+            "item": "https://rasfatul-pescarului.ro/"
+        }
+        {% for breadcrumb in breadcrumbs %}
+        ,{
+            "@type": "ListItem",
+            "position": {{ forloop.counter|add:1 }},
+            "name": "{{ breadcrumb.name }}",
+            {% if not forloop.last %}
+            "item": "https://rasfatul-pescarului.ro{{ breadcrumb.url }}"
+            {% else %}
+            "item": "https://rasfatul-pescarului.ro{{ request.get_full_path }}"
+            {% endif %}
+        }
+        {% endfor %}
+    ]
+}
+</script>
+{% endif %}
+
+<style>
+.breadcrumb-nav {
+    margin-top: 1rem;
+}
+
+.breadcrumb {
+    background-color: #f8f9fa !important;
+    border: 1px solid #e9ecef;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    color: #6c757d;
+    font-weight: bold;
+}
+
+.breadcrumb-item a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: #146c43 !important;
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: #495057;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .breadcrumb {
+        font-size: 0.8rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .breadcrumb-item {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+</style>
